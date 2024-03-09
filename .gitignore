@@ -4,6 +4,7 @@ arxiv_papers/
 filter_accepted/
 logs/
 papermage/
+subtask1_equation/
 
 # data
 beaker_configs/ni_*.yaml
