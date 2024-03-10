@@ -61,3 +61,37 @@ class EquationRewrite_Easy(ConversationPrompt):
             "```\n\n" +
             "### Wrong Version:\n"
         )
+        
+
+# used for testing model's performance on subtask1
+class Equation_eval(ConversationPrompt):
+    def __init__(self):
+        super().__init__()
+        self.system = (
+            "You are an expert in Machine Learning and Natural Language Processing (NLP)." + 
+            "Your responsibility is to help the user write the correct latex equations."
+        )
+        self.query_prompt = (
+            "### Task:\n" +
+            "You are given the latex source code of the context before and after an equation in an NLP paper, while this equation is masked. Your task is to select a correct equation out of four options (A, B ,C ,D).\n\n" +
+            "### Requirements:\n" +
+            "Only provide the option ID (either A, B, C, or D). Avoid any explanations.\n\n" +
+            "### Context Before:\n" +
+            "```\n" +
+            "{context_before}\n" +
+            "```\n\n" +
+            "### Context After:\n" +
+            "```\n" +
+            "{context_after}\n" +
+            "```\n\n" +
+            "### Options:\n" +
+            "{options}\n\n" +
+            "### Your Answer:\n"
+        )
+
+    def extract_content(self, content:str):
+        '''
+        simply remove the empty space at the begining and end of the content
+        '''
+        content = content.strip()
+        return content

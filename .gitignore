@@ -5,6 +5,7 @@ filter_accepted/
 logs/
 papermage/
 subtask1_equation/
+subtask1_equation_unified/
 
 # data
 beaker_configs/ni_*.yaml
