@@ -35,7 +35,7 @@ from calculate_metrics_src import metric_max_over_ground_truths, exact_match_sco
 
 @dataclasses.dataclass
 class OpenAIDecodingArguments(object):
-    max_tokens: int = 5600
+    max_tokens: int = 4000
     temperature: float = 1
     top_p: float = 0.99
     n: int = 1
