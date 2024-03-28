@@ -312,8 +312,11 @@ def main():
     parser.add_argument("--api_name", type=str, default="gpt-3.5-turbo-1106", help="the name of the openai model to use.")
     parser.add_argument("--template", type=int, default=1, help="the type of prompt template to use.")
     parser.add_argument("--root_dir", type=str, default="./subtask1_equation", help="the directory to save the downloaded papers.")
+    parser.add_argument("--save_dir", type=str, default="./subtask1_equation_unified", help="the directory to save the generated instances.")
+    parser.add_argument("--save_file", type=str, default="equation_gpt-gen-wrong-eq.json", help="the file to save the generated instances.")
     parser.add_argument("--overwrite", action="store_true", help="whether to overwrite the existing files.")
-    parser.add_argument("--ins_per_paper", type=int, default=1, help="the number of instances to generate per paper. for an eval set, we can use one paper for multiple instances, but not for training set.")
+    # parser.add_argument("--ins_per_paper", type=int, default=1, help="the number of instances to generate per paper. for an eval set, we can use one paper for multiple instances, but not for training set.")
+    parser.add_argument("--total_ins_num", type=int, default=1500, help="the total number of instances to generate.")
     parser.add_argument("--seed", type=int, default=42, help="random seed for reproducibility")
     parser.add_argument("--add_left_equation", action="store_true", help="whether to add the left part of the equation to the context.")
 
@@ -337,63 +340,57 @@ def main():
     
     random.seed(args.seed)
     
-    rewrite_ins_num = 0
+    
+    os.makedirs(args.save_dir, exist_ok=True)
+    save_file = os.path.join(args.save_dir, args.save_file)
+    save_file_filtered = save_file.replace(".json", "_gpt-filtered.json")
+    # check if there is already a file under the subfolder
+    if os.path.exists(save_file) and not args.overwrite:
+        raise ValueError(f"The file {save_file} already exists. Please set --overwrite to overwrite it.")
+    if os.path.exists(save_file_filtered) and not args.overwrite:
+        raise ValueError(f"The file {save_file_filtered} already exists. Please set --overwrite to overwrite it.")
+    
+    
     origin_total_ins_num = 0
+    all_eq_num, correct_eq_num = 0, 0
+    overall_retry_cnt_same_as_ori = 0
+    # overall_retry_cnt_gpt4_false = 0
+    new_ins_list = []
+    new_ins_list_filtered = []
     
     # for each subdir under root_dir
-    for subfolder in tqdm(os.listdir(args.root_dir)):
-        # paper_id = subfolder
-        # meta_path = os.path.join(args.root_dir, subfolder, f"{subfolder}_metadata.json")
-        # main_tex = read_tex(os.path.join(args.root_dir, subfolder, "cleaned_tex.tex"))
-        # if main_tex is None:
-        #     raise ValueError(f"Cannot read the tex file of {subfolder}")
-        
+    for subfolder in tqdm(os.listdir(args.root_dir)):        
         # read the equations.json file
         equation_file = os.path.join(args.root_dir, subfolder, "equations.json")
         with open(equation_file, "r") as f:
             ins_list = json.load(f)
         
-        save_folder = os.path.join(args.root_dir, subfolder)    
-        save_file = os.path.join(save_folder, "equations_cls.json")
-        # check if there is already a file under the subfolder
-        if os.path.exists(save_file) and not args.overwrite:
-            continue
-        
         origin_total_ins_num += len(ins_list)
         
-        sample_ins_num = min(args.ins_per_paper, len(ins_list))
-        
-        ins_list = ins_list[:sample_ins_num]
-        
+        # we don't sample subset here, since we are filtering the equations
+        # sample_ins_num = min(args.ins_per_paper, len(ins_list))
+        # ins_list = ins_list[:sample_ins_num]
         try:
             # for each instance in the ins_list, create a new instance 
-            overall_retry_cnt_same_as_ori = 0
-            overall_retry_cnt_gpt4_false = 0
-            new_ins_list = []
             for ins in ins_list:
                 context_before = ins["context_before"]
                 context_after = ins["context_after"]
                 equation = ins["equation"]
-                gpt_query = {
-                    "ori_equation": equation
-                }
-                ### 1. ask GPT to rewrite the equation
-                # wrong_eq_1, cost = openai_chat_completion(client,gpt_query, template, decoding_args, model_name=args.api_name)
-                # wrong_eq_2, cost = openai_chat_completion(client,gpt_query, template, decoding_args, model_name=args.api_name)
-                # wrong_eq_3, cost = openai_chat_completion(client,gpt_query, template, decoding_args, model_name=args.api_name)
+                # gpt_query = {
+                #     "ori_equation": equation
+                # }
                 
-                
-                
-                ### 2. ask GPT to generate the equation from the context
                 equation = simplify_equation(equation)  # simplify the equation, to avoid shortcut in the ori equation
                 # get the "="'s left part of the equation
                 if args.add_left_equation:
                     equation_left_part = get_lhs_of_equation(equation)
                 else:
                     equation_left_part = ""
+                
+                # print(f"==> left part of the equation: {equation_left_part}")
                 # equation_left_part either is a string or an empty string
                 
-                MAX_LEN = 200
+                MAX_LEN = 100
                 # for context_before, use the last context_max_len words
                 context_before = " ".join(context_before.split()[-MAX_LEN:])
                 # for context_after, use the first context_max_len words
@@ -409,23 +406,13 @@ def main():
                 wrong_eq_list = []
                 wrong_eq_1 = copy.deepcopy(equation)
                 cnt = 0 
-                flag = "wrong"
-                while wrong_eq_1 == equation or flag != "correct":  # or wrong_eq_1 in wrong_eq_list
+                while wrong_eq_1 == equation:
                     # wrong equation generation
                     wrong_eq_1, cost = openai_chat_completion(client,gpt_query, template, decoding_args, model_name=args.api_name)
                     wrong_eq_1 = equation_left_part + wrong_eq_1
                     # count how may times the same equation is generated (which means the LLM do good at equation recovery)
                     if wrong_eq_1 == equation:
                         retry_cnt += 1
-                    # let the gpt itself do the filtering
-                    # TODO: currectly, I use the same API as the equation generation, as well as the decoding args
-                    flag, cost = openai_chat_completion(client, {"equation": wrong_eq_1}, filter_template, decoding_args, model_name=args.api_name)  
-                    flag = re.sub(r"[^\w\s]", "", flag) # remove punctuations
-                    flag = flag.strip().lower()
-                    # assert flag in ["correct", "wrong"], f"Unknown flag: {flag}"
-                    print(f"flag: {flag}")
-                    if flag == "wrong":
-                        retry_cnt_gpt4_filter += 1
                     cnt += 1
                     if cnt > 10:
                         wrong_eq_1 = "None"
@@ -434,19 +421,11 @@ def main():
                 
                 wrong_eq_2 = copy.deepcopy(equation)
                 cnt = 0
-                flag = "wrong"
-                while wrong_eq_2 == equation or flag != "correct":  # or wrong_eq_2 in wrong_eq_list
+                while wrong_eq_2 == equation:  # or wrong_eq_2 in wrong_eq_list
                     wrong_eq_2, cost = openai_chat_completion(client,gpt_query, template, decoding_args, model_name=args.api_name)
                     wrong_eq_2 = equation_left_part + wrong_eq_2
                     if wrong_eq_2 == equation:
                         retry_cnt += 1
-                    flag, cost = openai_chat_completion(client, {"equation": wrong_eq_2}, filter_template, decoding_args, model_name=args.api_name)
-                    flag = re.sub(r"[^\w\s]", "", flag) # remove punctuations
-                    flag = flag.strip().lower()
-                    # assert flag in ["correct", "wrong"], f"Unknown flag: {flag}"
-                    print(f"flag: {flag}")
-                    if flag == "wrong":
-                        retry_cnt_gpt4_filter += 1
                     cnt += 1
                     if cnt > 10:
                         wrong_eq_2 = "None"
@@ -455,80 +434,55 @@ def main():
                 
                 wrong_eq_3 = copy.deepcopy(equation)
                 cnt = 0
-                flag = "wrong"
-                while wrong_eq_3 == equation or flag != "correct":  # or wrong_eq_3 in wrong_eq_list
+                while wrong_eq_3 == equation:  # or wrong_eq_3 in wrong_eq_list
                     wrong_eq_3, cost = openai_chat_completion(client,gpt_query, template, decoding_args, model_name=args.api_name)
                     wrong_eq_3 = equation_left_part + wrong_eq_3
                     if wrong_eq_3 == equation:
                         retry_cnt += 1
-                    flag, cost = openai_chat_completion(client, {"equation": wrong_eq_3}, filter_template, decoding_args, model_name=args.api_name)
-                    flag = re.sub(r"[^\w\s]", "", flag) # remove punctuations
-                    flag = flag.strip().lower()
-                    # assert flag in ["correct", "wrong"], f"Unknown flag: {flag}"
-                    print(f"flag: {flag}")
-                    if flag == "wrong":
-                        retry_cnt_gpt4_filter += 1
                     cnt += 1
                     if cnt > 10:
                         wrong_eq_3 = "None"
                         break
                 wrong_eq_list.append(wrong_eq_3)
                 
+                
+                # do the filtering
+                # TODO: currectly, I use the same API as the equation generation, as well as the decoding args
+                if wrong_eq_1 != "None":
+                    flag_1, cost = openai_chat_completion(client, {"equation": wrong_eq_1}, filter_template, decoding_args, model_name=args.api_name)  
+                    flag_1 = re.sub(r"[^\w\s]", "", flag_1) # remove punctuations
+                    flag_1 = flag_1.strip().lower()
+                else:
+                    flag_1 = "wrong"
+                
+                if wrong_eq_2 != "None":
+                    flag_2, cost = openai_chat_completion(client, {"equation": wrong_eq_2}, filter_template, decoding_args, model_name=args.api_name)
+                    flag_2 = re.sub(r"[^\w\s]", "", flag_2) # remove punctuations
+                    flag_2 = flag_2.strip().lower()
+                else:
+                    flag_2 = "wrong"
+                
+                if wrong_eq_3 != "None":
+                    flag_3, cost = openai_chat_completion(client, {"equation": wrong_eq_3}, filter_template, decoding_args, model_name=args.api_name)
+                    flag_3 = re.sub(r"[^\w\s]", "", flag_3) # remove punctuations
+                    flag_3 = flag_3.strip().lower()
+                else:
+                    flag_3 = "wrong"
+                
+                flag_list = [flag_1, flag_2, flag_3]
+                # if all the falg is "correct", then final_flag is 1, otherwise, 0
+                # final_flag = 1 if all(["correct" in flag for flag in flag_list]) else 0
+                final_flag = 1 if any(["correct" in flag for flag in flag_list]) else 0  # TODO: all three equations are correct is too hard to achieve
+                
                 # clean all the wrong equations
                 wrong_eq_1 = simplify_equation(wrong_eq_1)
                 wrong_eq_2 = simplify_equation(wrong_eq_2)
                 wrong_eq_3 = simplify_equation(wrong_eq_3)
                 
-                # print("retry count (due to the same as the original equation):", retry_cnt)
-                # print("retry count (due to the GPT-4 filtering):", retry_cnt_gpt4_filter)
-                # exit()
                 overall_retry_cnt_same_as_ori += retry_cnt
-                overall_retry_cnt_gpt4_false += retry_cnt_gpt4_filter
-                
-                
-                
-                ### 3. randomly make subtle changes to the original equation
-                # wrong_eq_1 = copy.deepcopy(equation)
-                # cnt = 0
-                # while wrong_eq_1 == equation:
-                #     wrong_eq_1 = random_rewriting(equation, option=1)
-                #     cnt += 1
-                #     if cnt > 10:
-                #         wrong_eq_1 = None
-                #         break
-                # wrong_eq_2 = copy.deepcopy(equation)
-                # cnt = 0
-                # while wrong_eq_2 == equation:
-                #     wrong_eq_2 = random_rewriting(equation, option=2)
-                #     cnt += 1
-                #     if cnt > 10:
-                #         wrong_eq_2 = None
-                #         break
-                # wrong_eq_3 = copy.deepcopy(equation)
-                # cnt = 0
-                # while wrong_eq_3 == equation:
-                #     wrong_eq_3 = random_rewriting(equation, option=3)
-                #     cnt += 1
-                #     if cnt > 10:
-                #         wrong_eq_3 = None
-                #         break
-                # wrong_eq_4 = copy.deepcopy(equation)
-                # cnt = 0
-                # while wrong_eq_4 == equation:
-                #     wrong_eq_4 = random_rewriting(equation, option=4)
-                #     cnt += 1
-                #     if cnt > 10:
-                #         wrong_eq_4 = None
-                #         break
-                # three_wrong_eqs = [wrong_eq_1, wrong_eq_2, wrong_eq_3, wrong_eq_4]
-                # random.shuffle(three_wrong_eqs)
-                # # not none 
-                # filtered_wrong_eqs = [eq for eq in three_wrong_eqs if eq is not None]
-                # # if less than 3 wrong equations, add the empty string to make it 3
-                # filtered_wrong_eqs += [""] * (3 - len(filtered_wrong_eqs))
-                # wrong_eq_1, wrong_eq_2, wrong_eq_3 = filtered_wrong_eqs[:3]
-                
-                
+                # non-none wrong equations num
+                all_eq_num += sum([1 for eq in wrong_eq_list if eq != "None"])
+                correct_eq_num += sum([1 for flag in flag_list if "correct" in flag])
                 
                 # make a multi-choice question with these 4 options
                 options = [equation, wrong_eq_1, wrong_eq_2, wrong_eq_3]
@@ -538,46 +492,56 @@ def main():
                 ordered_options = f"(A). `{options[0]}`;\n(B). `{options[1]}`;\n(C). `{options[2]}`;\n(D). `{options[3]}`"  # in our dataset, we provide the shuffled order of the options, to ensure others could reproduce the results
                 correct_option = chr(ord('A') + correct_idx)
                 
-                new_ins = copy.deepcopy(ins)
-                new_ins["wrong_equations"] = [wrong_eq_1, wrong_eq_2, wrong_eq_3]
-                new_ins["options"] = ordered_options
-                new_ins["answer"] = correct_option
+                new_ins = {
+                    # "context_before": context_before,
+                    # "context_after": context_after,
+                    "context_before": ins["context_before"],
+                    "context_after": ins["context_after"],
+                    "options": ordered_options,
+                    "answer": correct_option,
+                    "options_list": options,  # have to save this information to avoid loss of information
+                }
                 new_ins_list.append(new_ins)
+                if final_flag == 1:  # valid 4 option classification instance
+                    new_ins_list_filtered.append(new_ins)
+                if len(new_ins_list_filtered) >= args.total_ins_num:
+                    print(f"==> Total instance num reaches {args.total_ins_num}, break the loop.")
+                    break
         # except openai.error.RateLimitError as e:
         except tenacity.RetryError as e:
             print("==> Error: {}".format(e))
             print("\nOpenAI API rate limit reached. Please increase the waiting/retry times in the tenacity decorator.\n")
             # save_intermediate_results(outputs, args, "RateLimitError")
             # sys.exit(0)  # Exit the program gracefully
-        
-        # save the new_ins_list to the new file, under the same folder
-        with open(save_file, "w") as f:
-            json.dump(new_ins_list, f, indent=4)
-        
-        rewrite_ins_num += len(new_ins_list)
+
+        if len(new_ins_list_filtered) >= args.total_ins_num:
+            print(f"==> Total instance num reaches {args.total_ins_num}, break the loop.")
+            break
+    
+    # add instance num to the file
+    save_file = save_file.replace(".json", f"_{len(new_ins_list_filtered)}.json")
+    save_file_filtered = save_file_filtered.replace(".json", f"_{len(new_ins_list_filtered)}.json")
+    with open(save_file, "w") as f:
+        json.dump(new_ins_list, f, indent=2)
+    with open(save_file_filtered, "w") as f:
+        json.dump(new_ins_list_filtered, f, indent=2)
     
     
+    print("==> Summary:")
+    print("save the generated instances to:", save_file)
+    print("save the filtered instances to:", save_file_filtered)
     print("="*50)
-    print(f"Total instances before rewriting: {origin_total_ins_num}")
-    print(f"Select the first (at most) {args.ins_per_paper} instances for each paper, and rewrite the equations")
-    print(f"Total instances after rewriting: {rewrite_ins_num}")
+    print(f"Total instance num: {origin_total_ins_num}")
+    print(f"Among these instances, we create 3 wrong equations for each ins")
+    print(f"Total created wrong equations num (exclude those 'None'): {all_eq_num}")
+    print(f"Use GPT to filter the wrong equations, and get {correct_eq_num} equations")
     print("="*50)
+    print(f"Overall instance num: {len(new_ins_list)}")
+    print(f"Overall instance num (after filtering; all 3 wrong equations should be identified as 'correct'): {len(new_ins_list_filtered)}")
     print(f"Overall retry count (due to the same as the original equation): {overall_retry_cnt_same_as_ori}")
-    print(f"Overall retry count (due to the GPT-4 filtering): {overall_retry_cnt_gpt4_false}")
-    print(f"AVG retry count (due to the same as the original equation): {overall_retry_cnt_same_as_ori / rewrite_ins_num:.2f}")
-    print(f"AVG retry count (due to the GPT-4 filtering): {overall_retry_cnt_gpt4_false / rewrite_ins_num:.2f}")
+    print(f"AVG retry count (due to the same as the original equation): {overall_retry_cnt_same_as_ori / (origin_total_ins_num*3):.2f}")
     
     
     
 if __name__ == "__main__":
     main()
-    # ori_equation = "\\begin{equation}\n    p_s(s_t | u_{\\leq t}, s_{<t}) = \\prod^{m_{s_t}}_{i=1} P(w_i | w_{< i}, u_{\\leq t}, s_{<t})\n\\end{equation}"
-    # print("### Original equation\n", ori_equation, "\n\n")
-    # new_latex_equation_1 = random_rewriting(ori_equation, option=1)
-    # print("### modify the operator\n", new_latex_equation_1, "\n\n") # Modified equation
-    # new_latex_equation_2 = random_rewriting(ori_equation, option=2)
-    # print("### modify the variable\n", new_latex_equation_2, "\n\n") # Modified equation
-    # new_latex_equation_3 = random_rewriting(ori_equation, option=3)
-    # print("### modify the position\n", new_latex_equation_3, "\n\n") # Modified equation
-    # new_latex_equation_4 = random_rewriting(ori_equation, option=4)
-    # print("### modify the constant\n", new_latex_equation_4, "\n\n") # Modified equation

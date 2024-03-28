@@ -30,7 +30,7 @@ import nltk
 os.environ["NLTK_DATA"] = "/data/rml6079/nltk_data"
 
 from chat_completion import openai_chat_completion
-from prompt_templates import EquationRewrite_Difficult, EquationRewrite_Easy, Equation_eval
+from prompt_templates import EquationRewrite_Difficult, EquationRewrite_Easy, Equation_eval_none
 from calculate_metrics_src import metric_max_over_ground_truths, exact_match_score
 
 @dataclasses.dataclass
@@ -108,7 +108,7 @@ def main():
     client = openai.OpenAI()
     decoding_args = OpenAIDecodingArguments()
     if args.template == 1:
-        template = Equation_eval()
+        template = Equation_eval_none()
     else:
         raise ValueError(f"Unknown template type: {args.template}")
     
@@ -120,13 +120,59 @@ def main():
         eval_data = json.load(f)
     
     os.makedirs(os.path.join(args.save_dir, f"{args.eval_data_file}", f"{args.api_name}"), exist_ok=True)
-    record_save_file = os.path.join(args.save_dir, f"{args.eval_data_file}", f"{args.api_name}", "performances.json")
-    prediction_save_file = os.path.join(args.save_dir, f"{args.eval_data_file}", f"{args.api_name}", "eval_results.json")
+    record_save_file = os.path.join(args.save_dir, f"{args.eval_data_file}", f"{args.api_name}", "performances-none_prediction.json")
+    prediction_save_file = os.path.join(args.save_dir, f"{args.eval_data_file}", f"{args.api_name}", "eval_results-none_prediction.json")
     
     results_list = []
     try:
         for eval_ins in tqdm(eval_data):
-            answer = eval_ins.pop("answer")
+            answer = eval_ins.pop("answer")  # either A, B, C, or D
+            options_str = eval_ins["options"]
+            option_list = eval_ins.get("options_list", None)
+            # options is a string: f"(A). `{options[0]}`;\n(B). `{options[1]}`;\n(C). `{options[2]}`;\n(D). `{options[3]}`"
+            # use re to split the options into four parts
+            def extract_options(text):
+                # Pattern to capture content inside backticks including backslashes and newlines
+                pattern = r"`([^`]*)`"
+                
+                # Find all matches and return them as a list
+                return re.findall(pattern, text)
+            
+            if option_list is None:
+                options = extract_options(options_str)
+                if len(options) > 4:
+                    # try to do some simple combination
+                    combine_num = len(options) // 4
+                    new_options = []
+                    for i in range(combine_num):
+                        new_options.append(" ".join(options[i*4:(i+1)*4]))
+                    options = new_options
+                    print(f"==> len(options) > 4, combine the options into {combine_num} new options")
+                elif len(options) < 4:
+                    # # try to do some simple split (by empty strings, e.g., " ", "/n", etc.)
+                    # split_num = 4 // len(options)
+                    # new_options = []
+                    # for i in range(len(options)):
+                    #     new_options.extend(re.split(r"\s+", options[i]))
+                    # options = new_options
+                    # print(f"==> len(options) < 4, split the options into {split_num} new options")
+                    # simply add some empty options
+                    add_num = 4 - len(options)
+                    options = options + [""] * add_num
+                    print(f"==> len(options) < 4, add {add_num} empty options")
+            else:
+                options = option_list
+                   
+            assert len(options) == 4, f"options: {options}, len: {len(options)}"
+            
+            # delete the answer from the options
+            answer_idx = ord(answer) - ord("A")
+            wrong_options = options[:answer_idx] + options[answer_idx+1:]
+            assert len(wrong_options) == 3, f"wrong_options: {wrong_options}, len: {len(wrong_options)}"
+            
+            random.shuffle(wrong_options)
+            wrong_option_str = f"(A). `{wrong_options[0]}`;\n(B). `{wrong_options[1]}`;\n(C). `{wrong_options[2]}`"
+            
             # only use context_max_len words for the context input
             context_before = eval_ins["context_before"]
             context_after = eval_ins["context_after"]
@@ -134,17 +180,20 @@ def main():
             context_before = " ".join(context_before.split()[-args.context_max_len:])
             # for context_after, use the first context_max_len words
             context_after = " ".join(context_after.split()[:args.context_max_len])
-            # update the context_before and context_after
-            eval_ins["context_before"] = context_before
-            eval_ins["context_after"] = context_after
             
-            pred, cost = openai_chat_completion(client,eval_ins, template, decoding_args, model_name=args.api_name)
+            value_dict = {
+                "context_before": context_before,
+                "context_after": context_after,
+                "options": wrong_option_str
+            }
+            
+            pred, cost = openai_chat_completion(client,value_dict, template, decoding_args, model_name=args.api_name)
             results_list.append({
                 "context_before": context_before,
                 "context_after": context_after,
-                "options": eval_ins["options"],
+                "options": wrong_options,
                 "pred": str(pred),
-                "answer": str(answer),
+                "answer": "None", # the ground truth answer is None --- we hope the model can predict None since all three options are wrong
                 "cost": cost
             })
     except tenacity.RetryError as e:
@@ -153,12 +202,12 @@ def main():
             save_intermediate_results(results_list, "eval_results.json", os.path.join(args.save_dir, f"{args.eval_data_file}", f"{args.api_name}"), e)
             sys.exit(1)
     
-    # calculate the EM
+    # calculate the EM --- how much the model predict as none, i.e., identify the wrong options successfully
     exact_match = 0
     for res in results_list:
         pred = res["pred"]
-        answer = res["answer"]
-        score = exact_match_score(pred, answer)
+        pred = pred.strip().lower()
+        score = "none" in pred
         score = int(score)
         exact_match += score
     exact_match = 100.0 * exact_match / len(results_list)
@@ -166,7 +215,7 @@ def main():
     
     # save the performances and those important args
     records = {
-        "EM": exact_match,
+        "EM (none-predict percentage)": exact_match,
         "total_instances": len(results_list),
         "model_name": args.api_name,
         "eval_data_file": args.eval_data_file,
