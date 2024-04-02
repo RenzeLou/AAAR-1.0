@@ -176,10 +176,20 @@ def main():
             # only use context_max_len words for the context input
             context_before = eval_ins["context_before"]
             context_after = eval_ins["context_after"]
+            
             # for context_before, use the last context_max_len words
             context_before = " ".join(context_before.split()[-args.context_max_len:])
             # for context_after, use the first context_max_len words
             context_after = " ".join(context_after.split()[:args.context_max_len])
+            
+            # # for the context_before, use the last 3 paragraphs
+            # MAX_PARA = 3
+            # # use "\n", "\n\n", "\n\n\n", etc. namely the paragraph separator
+            # sentence_split_pattern = re.compile(r"\n+")
+            # context_before = sentence_split_pattern.split(context_before)
+            # context_after = sentence_split_pattern.split(context_after)
+            # context_before = " ".join(context_before[-MAX_PARA:])
+            # context_after = " ".join(context_after[:MAX_PARA])
             
             value_dict = {
                 "context_before": context_before,

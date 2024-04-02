@@ -58,3 +58,8 @@ python scripts/subtask1_equation_model_eval-none_prediction.py --api_name 'gpt-4
 ```
 
 All the evaluation results are saved to `./subtask1_equation_unified/eval_results`
+
+
+### 4. final data:
+
+- `equation_gpt-gen-wrong-eq_gpt-filtered_1449.json`
