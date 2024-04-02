@@ -215,6 +215,10 @@ def main():
             # meanwhile, copy the meta file to the target directory, if meta file exists
             if os.path.exists(meta_path):
                 shutil.copy(meta_path, os.path.join(target_path, f"{subfolder}_metadata.json"))
+            # also copy the pdf file to the target directory, if pdf file exists
+            pdf_file = os.path.join(args.root_dir, subfolder, f"{subfolder}.pdf")
+            if os.path.exists(pdf_file):
+                shutil.copy(pdf_file, os.path.join(target_path, f"{subfolder}.pdf"))
             # also save the cleaned tex content
             with open(os.path.join(target_path, "cleaned_tex.tex"), "w") as f:
                 f.writelines(clean_tex)

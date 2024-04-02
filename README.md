@@ -5,7 +5,7 @@ python crawl_acl.py --begin_year 2021 --end_year 2023
 
 Will crwal papers from the top-tier conferences in NLP (2021,2022,2023). Those papers are found in the ACL Anthology. Crawl the source package of each paper from Arxiv (save to `./acl_papers`).
 
-
+04/02: I have crawled more papers. currently, there are papers from 2019 to 2023 (2019, 2020, 2021, 2022, 2023).
 
 
 ## SubTask 1 --- equation classification
@@ -63,3 +63,15 @@ All the evaluation results are saved to `./subtask1_equation_unified/eval_result
 ### 4. final data:
 
 - `equation_gpt-gen-wrong-eq_gpt-filtered_1449.json`
+
+
+
+## SubTask 2 --- experiments design
+
+### 1. Data seperation
+
+use the following command to seperate the context before and after "Experiment" section in the tex.
+
+```bash
+python scripts/subtask2_context_seperate.py --root_dir './acl_papers' --target_dir './subtask2_expriment'
+```
