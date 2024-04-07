@@ -172,6 +172,7 @@ def combine_tex(tex_files:list):
     content_list = []
     main_idx = -1
     main_tex_content = None
+    main_tex_name = None
     for i, file in enumerate(tex_files):
         content_lines = red_tex(file)
         if content_lines is None:
@@ -183,9 +184,10 @@ def combine_tex(tex_files:list):
             if re.search(r"\\documentclass", line):
                 if main_tex_content is not None:
                     # if we already find the main.tex, but there is another main.tex, then raise an error
-                    return None, "multiple main.tex files (have \\documentclass) founded in one project"
+                    return None, "multiple main.tex files (have \\documentclass) founded in one project (you can try to manually delete those duplicated files): {} <==> {}".format(main_tex_name, file_name)
                 main_idx = i
                 main_tex_content = content_lines
+                main_tex_name = file_name
                 # then delete this file from the content_list
                 # delete the last element
                 # content_list.pop()
