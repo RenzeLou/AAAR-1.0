@@ -260,11 +260,13 @@ def main():
         
         if len(tex_files) == 0:
             # TODO: why there is no .tex file in this paper?
+            print(f"==> {subfolder} has no tex file, skip.")  ## Human annotation needed, delete it when doing large-scale automatic annotation
             continue
         elif len(tex_files) > 1:
             # try to combine multiple tex files into one
             combined_tex, e_message = combine_tex(tex_files)
             if combined_tex is None:
+                print(f"==> {subfolder} {e_message}, skip.")  ## Human annotation needed, delete it when doing large-scale automatic annotation
                 continue
             else:
                 # print("==> {} paper need to combine multiple tex files".format(subfolder))
@@ -278,12 +280,14 @@ def main():
             tex_content = red_tex(main_tex)
             if tex_content is None:
                 # if the tex file cannot be read, skip this paper
+                print(f"==> {subfolder} source tex file cannot be read, skip.")  ## Human annotation needed, delete it when doing large-scale automatic annotation
                 continue
         
         clean_tex = tex_cleaning(tex_content)
         locations = find_expriment_location(clean_tex)
         if len(locations) == 0:
             # mean there is no "experiment" section in this paper, skip this paper
+            print(f"==> {subfolder} has no experiment section, skip.") ## Human annotation needed, delete it when doing large-scale automatic annotation 
             continue
         suitable_paper_num += 1
         
@@ -318,7 +322,7 @@ def main():
     print("="*50)
     print("Totally {} papers under {}".format(total_paper, args.root_dir))
     print("Among them, {} papers are suitable for this task (exclude no tex paper)".format(suitable_paper_num))
-    print("Finally used {} papers to extract equations and generate instances (some has no experiments section)".format(final_used_paper))
+    print("Finally used {} papers to generate instances (some has no experiments section)".format(final_used_paper))
     print("="*50)
     print("Data are saved under {}".format(args.target_dir))
         
