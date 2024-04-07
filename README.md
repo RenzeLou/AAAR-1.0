@@ -68,10 +68,36 @@ All the evaluation results are saved to `./subtask1_equation_unified/eval_result
 
 ## SubTask 2 --- experiments design
 
-### 1. Data seperation
+<!-- ### 1. Data seperation
 
 use the following command to seperate the context before and after "Experiment" section in the tex.
 
 ```bash
 python scripts/subtask2_context_seperate.py --root_dir './acl_papers' --target_dir './subtask2_expriment'
+``` -->
+
+### 1. Check paper validity
+
+If we are using human to annotaote (100 papers), then first is to check if the annotator's paper choice is valid, by running `scripts/subtask2_download_process_verify.py`.
+
+For example:
+
+```bash
+python scripts/subtask2_download_process_verify.py --paper_urls https://arxiv.org/abs/2109.01247,https://arxiv.org/abs/2104.08773,https://arxiv.org/abs/2204.07705,https://arxiv.org/abs/2202.12837,https://arxiv.org/abs/2109.07830,https://arxiv.org/abs/2212.10560,https://arxiv.org/abs/2212.09689,https://arxiv.org/abs/2306.04751,https://arxiv.org/abs/2305.14327,https://arxiv.org/abs/2312.02436 --annotator "rz"
 ```
+
+It will download all the papers and print any errors on the screen, if there is any errors in the paper choices (e.g., duplicated paper, paper not found, etc.), let this annotator to choose another paper.
+
+
+
+Then try to process those downloaded papers, and seperate the context before and after the "Experiment" section. For example:
+
+```bash
+python scripts/subtask2_context_seperate.py --root_dir './subtask2_experiment_human_anno/rz' --target_dir './subtask2_experiment_human_anno/rz_seperate'
+```
+
+If there are some `multiple main.tex files (have \documentclass) founded in one project, skip.` warnings, you should mannually delete those older versions of the main.tex files. (or simply ask the annotator to choose another paper)
+
+For all the other warnings, ask the annotator to change the paper choice.
+
+The final data is saved in `./subtask2_experiment_human_anno`, each subfolder is named by the annotator's name. and the `XXX_seperate` contains the final processed latex source code data (context before and after the "Experiment" section), that should have at least 10 papers under each annotator's folder.
