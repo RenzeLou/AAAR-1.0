@@ -65,6 +65,22 @@ All the evaluation results are saved to `./subtask1_equation_unified/eval_result
 - `equation_gpt-gen-wrong-eq_gpt-filtered_1449.json`
 
 
+### 5. human filtering
+
+I used `python scripts/subtask1_equation_data_seperate_combine.py` seperated the data into 3 parts, and then ask the annotator to filter the data.
+
+Then, each annotator run `python scripts/subtask1_equation_human_filter.py`, to do the filtering in the terminal.
+
+### 6. final data (after human filtering):
+
+- `1049.human_filter.json`
+
+```
+==> totoal data length:  1449
+==> filtered data length:  1049
+==> percentage:  0.7239475500345065
+```
+
 
 ## SubTask 2 --- experiments design
 
