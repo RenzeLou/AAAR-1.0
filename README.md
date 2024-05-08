@@ -81,6 +81,21 @@ Then, each annotator run `python scripts/subtask1_equation_human_filter.py`, to 
 ==> percentage:  0.7239475500345065
 ```
 
+### 7. data statistics
+
+```bash
+python scripts/subtask1_data_statistics.py
+
+=== statistics of equation ===
+==> <context before> word length: min=711, max=24849, mean=4376.7550047664445
+==> <context before> sentence length: min=12, max=540, mean=112.40610104861773
+==> <context after> word length: min=8, max=32948, mean=6362.4795042897995
+==> <context after> sentence length: min=1, max=608, mean=154.02573879885605
+==> <ground truth answer> equation length (in non-white character): min=1, max=1039, mean=55.2745471877979
+==> <GPT-craft wrong> equation length (in non-white character): min=1, max=306, mean=48.25293930727677
+==> <answer> distribution: {'A': 261, 'B': 266, 'C': 261, 'D': 261}
+```
+
 
 ## SubTask 2 --- experiments design
 
