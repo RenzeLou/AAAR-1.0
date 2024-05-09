@@ -11,9 +11,6 @@ import tiktoken
 from tqdm import tqdm
 from typing import Optional, Sequence, Union, List
 
-import litellm
-litellm.drop_params=True  # allow litellm to drop the parameters that are not supported by the model
-
 from tenacity import (
     retry,
     stop_after_attempt,
@@ -115,18 +112,19 @@ def construct_prompt_gpt4(input_dic: dict, template: ConversationPrompt, max_tok
 
 
 @retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(16))
-def completion_with_backoff(model_name,messages,decoding_args):
+def completion_with_backoff(client,**kwargs):
     '''
     # Retry with exponential backoff
     # See https://github.com/openai/openai-cookbook/blob/main/examples/How_to_handle_rate_limits.ipynb
     '''
-    result = litellm.completion(model=model_name, messages=messages, **decoding_args)
+    # result = openai.ChatCompletion.create(**kwargs)
+    result = client.chat.completions.create(**kwargs)
     
     return result
 
 
 def openai_chat_completion(
-    client: OpenAI,  # useless
+    client: OpenAI,
     input_dic: dict,
     template: ConversationPrompt,
     decoding_args,
@@ -145,26 +143,36 @@ def openai_chat_completion(
         
     return (None, None) if the input is too long (exceeds the max length of ChatGPT)
     '''
+    batch_decoding_args = copy.deepcopy(decoding_args)
     
-    user_content = template.query_prompt.format_map(input_dic)
-    messages = [
-            {"role": "system", "content": template.system},
-            {"role": "user", "content": user_content}
-        ]
+    # construct the prompt, and try to reduce max_tokens of completion if the message is too long
+    if "gpt-3.5-turbo" in model_name:
+        messages, batch_decoding_args.max_tokens = construct_prompt_gpt35(input_dic, template, max_tokens=batch_decoding_args.max_tokens, model=model_name)
+    elif "gpt-4" in model_name:
+        messages, batch_decoding_args.max_tokens = construct_prompt_gpt4(input_dic, template, max_tokens=batch_decoding_args.max_tokens, model=model_name)
+    else:
+        raise NotImplementedError("we only support gpt-3.5-turbo and gpt-4 series, instead of {}".format(model_name))
     
-    # convert decoding_args to a dictionary
-    decoding_args = dataclasses.asdict(decoding_args)
-    # res = litellm.completion(model_name, messages, **decoding_args)
-    res = completion_with_backoff(model_name=model_name,messages=messages,decoding_args=decoding_args)
-    response = res.choices[0].message.content
-    cost = res.usage.total_tokens
+    if batch_decoding_args.max_tokens == 0:
+        # the input is too long that exceeds the max length of GPT (4096 or 8192), return None to skip this instance
+        return None, None
+    
+    # print("messages: ", messages)
+    # exit()
+    
+    shared_kwargs = dict(
+        model=model_name,
+        messages=messages,
+        **batch_decoding_args.__dict__,
+        **decoding_kwargs,
+    )
+    completion = completion_with_backoff(client=client,**shared_kwargs)
+    # completion = openai.ChatCompletion.create(**shared_kwargs)
+    choices = completion.choices
+    reponse = choices[0].message.content
+    cost = completion.usage.total_tokens
 
     # extract the contents from the response
-    content = template.extract_content(response)
-    
-    # print("==")
-    # print(res)
-    # print(content)
-    # exit()
+    content = template.extract_content(reponse)
 
     return content, cost

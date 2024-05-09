@@ -13,21 +13,12 @@ from tenacity import (
     stop_after_attempt,
     wait_random_exponential,
 )  # for exponential backoff
-import shutil
-import subprocess
-import time
-import arxiv
-from arxiv import Client
-import requests
+
 import os
 import json
 import argparse
 from bs4 import BeautifulSoup
 from tqdm import tqdm
-from acl_anthology import Anthology
-import nltk
-
-os.environ["NLTK_DATA"] = "/data/rml6079/nltk_data"
 
 from chat_completion import openai_chat_completion
 from prompt_templates import EquationRewrite_Difficult, EquationRewrite_Easy, Equation_eval
@@ -119,7 +110,10 @@ def main():
     with open(eval_data, "r") as f:
         eval_data = json.load(f)
     
-    target_dir = os.path.join(args.save_dir, f"{args.eval_data_file}", f"{args.api_name}", str(args.context_max_len))
+    # sometimes the api_name will be like a path (for the open source LLM), e.g., `mistralai/Mistral-7B-Instruct-v0.1`
+    # replace `/` with `_` to avoid the error of creating a directory with the name of the path
+    api_name_save = args.api_name.replace("/", "_")
+    target_dir = os.path.join(args.save_dir, f"{args.eval_data_file}", f"{api_name_save}", str(args.context_max_len))
     os.makedirs(target_dir, exist_ok=True)
     record_save_file = os.path.join(target_dir, "performances.json")
     prediction_save_file = os.path.join(target_dir, "eval_results.json")

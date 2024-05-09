@@ -45,7 +45,21 @@ Will ask GPT-4 to craft the equation based on the contetx before and after the e
 
 ### 3. Model Evaluation
 
-- classification Accuracy (use --context_max_len to control the context length):
+- close source API LLMs (e.g., Openai GPT)
+
+Use `litellm` to unify the api call of all the close-source LLMs. First, install the `litellm` package:
+
+```bash
+conda activate litellm
+```
+
+then run the following command to evaluate the model:
+
+```bash
+python scripts/subtask1_equation_model_eval.py --api_name 'gpt-4-turbo' --root_dir './subtask1_equation_unified' --eval_data_file '1049.human_filter.json' --save_dir './subtask1_equation_unified/eval_results' --context_max_len 700
+```
+
+<!-- - classification Accuracy (use --context_max_len to control the context length):
 ```bash
 python scripts/subtask1_equation_model_eval.py --api_name 'gpt-4-1106-preview' --root_dir './subtask1_equation_unified' --eval_data_file 'equation_gpt-gen-wrong-eq_gpt-filtered_1449.json' --save_dir './subtask1_equation_unified/eval_results' --context_max_len 100
 python scripts/subtask1_equation_model_eval.py --api_name 'gpt-4-1106-preview' --root_dir './subtask1_equation_unified' --eval_data_file 'equation_gpt-gen-wrong-eq_gpt-filtered_1449.json' --save_dir './subtask1_equation_unified/eval_results_no-context' --context_max_len 0
@@ -56,8 +70,13 @@ python scripts/subtask1_equation_model_eval.py --api_name 'gpt-4-1106-preview' -
 python scripts/subtask1_equation_model_eval-none_prediction.py --api_name 'gpt-4-1106-preview' --root_dir './subtask1_equation_unified' --eval_data_file 'equation_gpt-gen-wrong-eq_gpt-filtered_1449.json' --save_dir './subtask1_equation_unified/eval_results' --context_max_len 100
 python scripts/subtask1_equation_model_eval-none_prediction.py --api_name 'gpt-4-1106-preview' --root_dir './subtask1_equation_unified' --eval_data_file 'equation_gpt-gen-wrong-eq_gpt-filtered_1449.json' --save_dir './subtask1_equation_unified/eval_results_no-context' --context_max_len 0
 ```
+-->
 
-All the evaluation results are saved to `./subtask1_equation_unified/eval_results`
+- open source API LLMs (e.g., Llama-3)
+
+TODO
+
+All the evaluation results are saved to `./subtask1_equation_unified/eval_results` 
 
 
 ### 4. final data:
