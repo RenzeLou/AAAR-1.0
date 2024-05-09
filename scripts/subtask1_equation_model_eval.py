@@ -119,9 +119,9 @@ def main():
     with open(eval_data, "r") as f:
         eval_data = json.load(f)
     
-    os.makedirs(os.path.join(args.save_dir, f"{args.eval_data_file}", f"{args.api_name}"), exist_ok=True)
-    record_save_file = os.path.join(args.save_dir, f"{args.eval_data_file}", f"{args.api_name}", "performances.json")
-    prediction_save_file = os.path.join(args.save_dir, f"{args.eval_data_file}", f"{args.api_name}", "eval_results.json")
+    os.makedirs(os.path.join(args.save_dir, f"{args.eval_data_file}", f"{args.api_name}"), f"{args.context_max_len}", exist_ok=True)
+    record_save_file = os.path.join(args.save_dir, f"{args.eval_data_file}", f"{args.api_name}", f"{args.context_max_len}", "performances.json")
+    prediction_save_file = os.path.join(args.save_dir, f"{args.eval_data_file}", f"{args.api_name}", f"{args.context_max_len}", "eval_results.json")
     
     results_list = []
     try:
