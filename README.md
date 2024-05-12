@@ -62,7 +62,7 @@ python scripts/subtask1_equation_model_eval.py --api_name 'gpt-4-turbo' --root_d
 For `Gemini`:
 ```bash
 conda activate google_genmini
- python scripts/subtask1_equation_model_eval.py --api_name 'gemini/gemini-1.5-pro-latest' --root_dir './subtask1_equation_unified' --eval_data_file '1049.human_filter.json' --save_dir './subtask1_equation_unified/eval_results' --context_max_len 1000
+python scripts/subtask1_equation_model_eval.py --api_name 'gemini/gemini-1.5-pro-latest' --root_dir './subtask1_equation_unified' --eval_data_file '1049.human_filter.json' --save_dir './subtask1_equation_unified/eval_results' --context_max_len 1000
 ```
 
 <!-- - classification Accuracy (use --context_max_len to control the context length):
