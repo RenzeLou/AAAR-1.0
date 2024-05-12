@@ -13,6 +13,7 @@ from typing import Optional, Sequence, Union, List
 
 import litellm
 litellm.drop_params=True  # allow litellm to drop the parameters that are not supported by the model
+# litellm.set_verbose=True  # for debugging
 
 from tenacity import (
     retry,
@@ -154,6 +155,15 @@ def openai_chat_completion(
     
     # convert decoding_args to a dictionary
     decoding_args = dataclasses.asdict(decoding_args)
+    
+    # translate decoding_args 
+    if "gemini" in model_name:
+        decoding_args = {
+            "temperature": decoding_args["temperature"],
+            "top_p": decoding_args["top_p"],
+            "top_k": 0,
+            "max_output_tokens": decoding_args["max_tokens"]
+        }
     # res = litellm.completion(model_name, messages, **decoding_args)
     res = completion_with_backoff(model_name=model_name,messages=messages,decoding_args=decoding_args)
     response = res.choices[0].message.content

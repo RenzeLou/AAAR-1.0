@@ -59,6 +59,12 @@ then run the following command to evaluate the model:
 python scripts/subtask1_equation_model_eval.py --api_name 'gpt-4-turbo' --root_dir './subtask1_equation_unified' --eval_data_file '1049.human_filter.json' --save_dir './subtask1_equation_unified/eval_results' --context_max_len 700
 ```
 
+For `Gemini`:
+```bash
+conda activate google_genmini
+ python scripts/subtask1_equation_model_eval.py --api_name 'gemini/gemini-1.5-pro-latest' --root_dir './subtask1_equation_unified' --eval_data_file '1049.human_filter.json' --save_dir './subtask1_equation_unified/eval_results' --context_max_len 1000
+```
+
 <!-- - classification Accuracy (use --context_max_len to control the context length):
 ```bash
 python scripts/subtask1_equation_model_eval.py --api_name 'gpt-4-1106-preview' --root_dir './subtask1_equation_unified' --eval_data_file 'equation_gpt-gen-wrong-eq_gpt-filtered_1449.json' --save_dir './subtask1_equation_unified/eval_results' --context_max_len 100
