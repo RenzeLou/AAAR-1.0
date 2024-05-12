@@ -22,7 +22,7 @@ pip install six
 
 #### 2. Download the full dataset
 
-There is already a data json file under ``./subtask1_equation_unified`, however, this is just a dummy data.
+There is already a data json file under `./subtask1_equation_unified`, however, this is just a dummy data.
 
 You can access our full data at: https://drive.google.com/file/d/1lNaRdRXIwUz2mC8OQDRh-lOxUxFw7HKK/view?usp=sharing
 
