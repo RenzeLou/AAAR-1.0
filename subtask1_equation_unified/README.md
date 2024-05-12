@@ -26,7 +26,7 @@ There is already a data json file under `./subtask1_equation_unified`, however, 
 
 You can access our full data at: https://drive.google.com/file/d/1lNaRdRXIwUz2mC8OQDRh-lOxUxFw7HKK/view?usp=sharing
 
-Please download the data and put it in the `./subtask1_equation_unified` directory (replace it with the dummy data).
+Please download the data and used it in the `./subtask1_equation_unified` directory (replace it with the dummy data).
 
 
 #### 3. Model Evaluation (put in the main table)
