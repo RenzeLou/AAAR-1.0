@@ -1,3 +1,4 @@
+!subtask1_equation_unified/1049.human_filter.json
 subtask2_experiment_human_anno/
 subtask2_expriment/
 acl_papers/
@@ -7,7 +8,7 @@ filter_accepted/
 logs/
 papermage/
 subtask1_equation/
-subtask1_equation_unified/
+subtask1_equation_unified/*
 
 # data
 beaker_configs/ni_*.yaml
