@@ -10,6 +10,7 @@ import logging
 import tiktoken
 from tqdm import tqdm
 from typing import Optional, Sequence, Union, List
+import google.generativeai as genai
 
 import litellm
 litellm.drop_params=True  # allow litellm to drop the parameters that are not supported by the model
@@ -126,6 +127,61 @@ def completion_with_backoff(model_name,messages,decoding_args):
     return result
 
 
+# @retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(16))
+def completion_with_backoff_gemini(model_name,messages,decoding_args):
+    '''
+    # Retry with exponential backoff
+    # See https://github.com/openai/openai-cookbook/blob/main/examples/How_to_handle_rate_limits.ipynb
+    '''
+    # result = litellm.completion(model=model_name, messages=messages, **decoding_args)
+    # Set up the model
+    generation_config = decoding_args
+
+    safety_settings = [
+            {
+                "category": "HARM_CATEGORY_DANGEROUS",
+                "threshold": "BLOCK_NONE",
+            },
+            {
+                "category": "HARM_CATEGORY_HARASSMENT",
+                "threshold": "BLOCK_NONE",
+            },
+            {
+                "category": "HARM_CATEGORY_HATE_SPEECH",
+                "threshold": "BLOCK_NONE",
+            },
+            {
+                "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                "threshold": "BLOCK_NONE",
+            },
+            {
+                "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                "threshold": "BLOCK_NONE",
+            },
+        ]
+
+    system_instruction = messages[0]["content"]
+
+    model = genai.GenerativeModel(model_name=model_name,
+                                generation_config=generation_config,
+                                system_instruction=system_instruction,
+                                safety_settings=safety_settings)
+
+    convo = model.start_chat(history=[
+    ])
+    
+    user_input = messages[1]["content"]
+
+    convo.send_message(user_input)
+    
+    result = convo.last.text
+    
+    print(result)
+    exit()
+    
+    return result
+
+
 def openai_chat_completion(
     client: OpenAI,  # useless
     input_dic: dict,
@@ -161,16 +217,21 @@ def openai_chat_completion(
         decoding_args = {
             "temperature": decoding_args["temperature"],
             "top_p": decoding_args["top_p"],
-            "top_k": 0,
+            "top_k": 1,
             "max_output_tokens": decoding_args["max_tokens"]
         }
-    # res = litellm.completion(model_name, messages, **decoding_args)
-    res = completion_with_backoff(model_name=model_name,messages=messages,decoding_args=decoding_args)
-    response = res.choices[0].message.content
-    cost = res.usage.total_tokens
+        response = completion_with_backoff_gemini(model_name=model_name,messages=messages,decoding_args=decoding_args)
+        # extract the contents from the response
+        content = template.extract_content(response)
+        cost = -1  # just a placeholder 
+    else:
+        # res = litellm.completion(model_name, messages, **decoding_args)
+        res = completion_with_backoff(model_name=model_name,messages=messages,decoding_args=decoding_args)
+        response = res.choices[0].message.content
+        cost = res.usage.total_tokens
 
-    # extract the contents from the response
-    content = template.extract_content(response)
+        # extract the contents from the response
+        content = template.extract_content(response)
     
     # print("==")
     # print(res)
