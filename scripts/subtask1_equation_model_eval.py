@@ -96,7 +96,11 @@ def main():
         raise ValueError(unparsed)
     
     openai.api_key = os.getenv("OPENAI_API_KEY") if args.api_key is None else args.api_key
-    client = openai.OpenAI()
+    if 'gemini' in args.api_name:
+        client = None
+    else:
+        client = openai.OpenAI()
+
     decoding_args = OpenAIDecodingArguments()
     if args.template == 1:
         template = Equation_eval()
