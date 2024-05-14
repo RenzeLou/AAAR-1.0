@@ -126,7 +126,7 @@ def completion_with_backoff(model_name,messages,decoding_args):
     
     return result
 
-
+import time
 # @retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(16))
 def completion_with_backoff_gemini(model_name,messages,decoding_args):
     '''
@@ -160,25 +160,24 @@ def completion_with_backoff_gemini(model_name,messages,decoding_args):
             },
         ]
 
-    system_instruction = messages[0]["content"]
+    genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+    # system_instruction = messages[0]["content"]
 
     model = genai.GenerativeModel(model_name=model_name,
                                 generation_config=generation_config,
-                                system_instruction=system_instruction,
                                 safety_settings=safety_settings)
 
-    convo = model.start_chat(history=[
-    ])
+    convo = model.start_chat(history=[])
     
-    user_input = messages[1]["content"]
+    user_input = messages[0]["content"] + messages[1]["content"]
 
     convo.send_message(user_input)
     
     result = convo.last.text
     
     print(result)
-    exit()
-    
+    # exit()
+    time.sleep(5)
     return result
 
 
