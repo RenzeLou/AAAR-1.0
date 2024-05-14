@@ -95,7 +95,8 @@ def main():
     if unparsed:
         raise ValueError(unparsed)
     
-    openai.api_key = os.getenv("OPENAI_API_KEY") if args.api_key is None else args.api_key
+    os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY") if args.api_key is None else args.api_key
+    # openai.api_key = os.getenv("OPENAI_API_KEY") if args.api_key is None else args.api_key
     client = openai.OpenAI()
     decoding_args = OpenAIDecodingArguments()
     if args.template == 1:
@@ -103,6 +104,10 @@ def main():
     else:
         raise ValueError(f"Unknown template type: {args.template}")
     
+    # print os.environ["OPENAI_API_KEY"]
+    # print(f"==> Using OpenAI API key: {os.getenv('OPENAI_API_KEY')}")
+    # print(openai.api_key)
+    # exit(0)
     
     random.seed(args.seed)
     
