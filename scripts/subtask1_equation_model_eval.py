@@ -26,7 +26,7 @@ from calculate_metrics_src import metric_max_over_ground_truths, exact_match_sco
 
 @dataclasses.dataclass
 class OpenAIDecodingArguments(object):
-    max_tokens: int = 4000
+    max_tokens: int = 200  # make sue to set this value smaller, otherwise, the repeated reduce will be very slow
     temperature: float = 1
     top_p: float = 0.99
     n: int = 1
