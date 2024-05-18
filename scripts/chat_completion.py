@@ -127,7 +127,7 @@ def completion_with_backoff(model_name,messages,decoding_args):
     except Exception as e:
         if "context_length_exceeded" in str(e):
             # if the context length is exceeded, reduce the max output tokens
-            decoding_args["max_tokens"] = decoding_args["max_tokens"] // 2  # TODO: "max_tokens" might only work for GPT, for other models, param name might be different
+            decoding_args["max_tokens"] = max(decoding_args["max_tokens"] // 2, 1)  # TODO: "max_tokens" might only work for GPT, for other models, param name might be different
             time.sleep(5)  # avoid too frequent recursive calls
             return completion_with_backoff(model_name,messages,decoding_args)
         else:
