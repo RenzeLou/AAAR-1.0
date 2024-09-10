@@ -187,3 +187,14 @@ For example:
 ```
 
 within this file, there should be four keys: `context_before_exp`, `context_after_exp`, `context_before_exp_cleaned`, `del_percentage`.
+
+### 4. final data
+
+then run `python combine_single_data_file.py` to get the final data, under `./subtask2_experiment_human_anno/final_data`.
+
+Where each paper folder contains the following files:
+```
+data_text.json: the pure text data (input context and output experiment idea list)
+images: all the images in this paper (suplementary data)
+XX.source.tar.gz: the source code of the paper (suplementary data; raw data)
+```
