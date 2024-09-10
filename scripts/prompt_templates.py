@@ -215,6 +215,37 @@ class Equation_eval_none(ConversationPrompt):
         return content    
 
 
+# used for prompting the LLM delete the sentence leaking the experiment ideas.
+class Experiment_leak(ConversationPrompt):
+    def __init__(self):
+        super().__init__()
+        self.system = (
+            "You are an expert in Machine Learning and Natural Language Processing (NLP)." + 
+            "Your responsibility is to help the user read a scientific paper."
+        )
+        self.query_prompt = (
+            "You are given a sentence (or a short paragraph) from an NLP paper, along with a list of the experiments from this paper; help me decide whether this sentence discusses any experiments in the list.\n\n" +
+            "Let's say, if one sentence includes clues for coming up with any experiments in the list, we call this sentence a 'leaking sentence'; otherwise, if any experiment ideas cannot be inferred from the sentence, we call it a 'non-leak sentence'.\n\n" +
+            "Please give me a '1' if this sentence is a 'leaking sentence'; otherwise, give me a '0'.\n\n" +
+            "### Experiment List:\n" +
+            "```\n" +
+            "{experiment_list}\n" +
+            "```\n\n" +
+            "### Sentence:\n" +
+            "```\n" +
+            "{sentence}\n" +
+            "```\n\n" +
+            "Now, give me your decision (give me either '0' or '1', only the number, without any explanations):"
+        )
+
+    def extract_content(self, content:str):
+        '''
+        simply remove the empty space at the begining and end of the content
+        '''
+        content = content.strip()
+        return content    
+
+
 if __name__ == "__main__":
     # test the prompt templates
     # eq_eval_template = Equation_eval()

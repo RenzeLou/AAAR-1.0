@@ -304,9 +304,14 @@ def main():
         
         target_path = os.path.join(args.target_dir, subfolder)
         os.makedirs(target_path, exist_ok=True)
-        # save the extracted equations of this paper
-        with open(os.path.join(target_path, "context_before_after_exp.json"), "w") as f:
-            json.dump(save_content, f, indent=4)
+        # save the exp context of this paper
+        if not os.path.exists(os.path.join(target_path, "context_before_after_exp.json")):
+            with open(os.path.join(target_path, "context_before_after_exp.json"), "w") as f:
+                json.dump(save_content, f, indent=4)
+        else:
+            print(f"==> {subfolder}'s context_before_after_exp.json already exists, to avoid overwrite your manual adjustment, skip.")
+            final_used_paper += 1
+            continue
         # meanwhile, copy the meta file to the target directory, if meta file exists
         if os.path.exists(meta_path):
             shutil.copy(meta_path, os.path.join(target_path, f"{subfolder}_metadata.json"))

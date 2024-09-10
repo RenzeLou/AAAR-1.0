@@ -156,4 +156,34 @@ If there are some `multiple main.tex files (have \documentclass) founded in one 
 
 For all the other warnings, ask the annotator to change the paper choice.
 
-The final data is saved in `./subtask2_experiment_human_anno`, each subfolder is named by the annotator's name. and the `XXX_seperate` contains the final processed latex source code data (context before and after the "Experiment" section), that should have at least 10 papers under each annotator's folder.
+The final data is saved in `./subtask2_experiment_human_anno`, each subfolder is named by the annotator's name. and the `XXX_seperate` contains the final processed latex source code data (context before and after the "Experiment" section), that should have at least 10 papers under each annotator's folder. Those paper dir named with "_dep" or "_deperacated" are omitted.
+
+### 2. Manual annotation
+
+Have asked 10 expertise to annotate totaly 100 papers. The raw human annotation list can be found in this [google sheet](https://docs.google.com/spreadsheets/d/1GDNJyXWMrnYzQKQVMe8ITShbpF-jsSxhMrsuYIWJFDI/edit?gid=0#gid=0).
+
+I have manually copied all the annotation exp list in to each paper subfolder. For example:
+```
+/data/rml6079/projects/scientific_doc/subtask2_experiment_human_anno/renze_seperate/2104.08773/what.txt
+/data/rml6079/projects/scientific_doc/subtask2_experiment_human_anno/renze_seperate/2104.08773/why.txt
+```
+
+and ran `python process_and_combine_annotation.py` can combine both `what` and `why` into one single json file, namely the `annotation.json` under each papaer folder.
+
+### 3. del leaking sentence
+
+since we use the `context_beforw_exp` as the model's input, we have to delete those sentences in `context_beforw_exp` that might leak the output (i.e., experiment idea list).
+
+here we provide gpt with the ground-truth exp list (from `annotation.json`), along with the `context_beforw_exp` to let gpt to do a binary classification. If the sentence is classified as leaking the experiment ideas, then we delete it.
+
+```bash
+python ./scripts/subtask2_del_sentence_leak.py
+```
+All the delete version of `context_beforw_exp` will be saved as a new filed named `context_before_exp_cleaned`, in the original paper folder's context file.
+
+For example:
+```
+./subtask2_experiment_human_anno/jianxie_seperate/2303.11366/context_before_after_exp.json
+```
+
+within this file, there should be four keys: `context_before_exp`, `context_after_exp`, `context_before_exp_cleaned`, `del_percentage`.
