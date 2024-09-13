@@ -198,3 +198,20 @@ data_text.json: the pure text data (input context and output experiment idea lis
 images: all the images in this paper (suplementary data)
 XX.source.tar.gz: the source code of the paper (suplementary data; raw data)
 ```
+
+The final statistics (run `python calculate_statistics.py`):
+
+```
+==================================================
+==> Input statistics
+Number of sentences: AVG: 345.15, MAX: 952, MIN: 53
+Number of words: AVG: 4288.3, MAX: 9799, MIN: 698
+==================================================
+==> Output statistics
+Number of items in output: AVG: 5.7, MAX: 13, MIN: 2
+Number of words per item (what): AVG: 34.333333333333336, MAX: 135, MIN: 9
+Number of words per item (why): AVG: 27.145614035087718, MAX: 89, MIN: 9
+==================================================
+==> Image statistics
+Number of images per paper: AVG: 16.01, MAX: 91, MIN: 0
+```
