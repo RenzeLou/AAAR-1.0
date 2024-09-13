@@ -5,12 +5,18 @@ import sys
 import os
 import argparse
 import logging
+import torch
 from collections import Counter
+from tqdm import tqdm
+import os
+os.environ["TRANSFORMERS_CACHE"] = "/scratch/rml6079/.cache/huggingface"
 
 sys.path.append("/scratch/rml6079/project/Instruct_dataset_training_code/src")
 
 import numpy as np
 from rouge import rouge_scorer
+# from evaluate import load
+from sentence_transformers import SentenceTransformer, util
 
 
 logger = logging.getLogger(__name__)
@@ -182,62 +188,123 @@ def parse_args():
     return parser.parse_args()
 
 
-if __name__ == "__main__":
-    args = parse_args()
-    with open(args.predictions) as fin:
-        examples = [json.loads(l) for l in fin]
+# if __name__ == "__main__":
+#     args = parse_args()
+#     with open(args.predictions) as fin:
+#         examples = [json.loads(l) for l in fin]
 
-    predictions = [e["prediction"] for e in examples]
-    references = [e["Instance"]["output"] for e in examples]
-    tasks = []
-    for e in examples:
-        if e["Task"] == "task121_atomic_question_rewriting":
-            e["Task"] = "task121_zest_question_rewriting"
-        tasks.append(e["Task"])
+#     predictions = [e["prediction"] for e in examples]
+#     references = [e["Instance"]["output"] for e in examples]
+#     tasks = []
+#     for e in examples:
+#         if e["Task"] == "task121_atomic_question_rewriting":
+#             e["Task"] = "task121_zest_question_rewriting"
+#         tasks.append(e["Task"])
 
-    results = compute_metrics(predictions, references, xlingual=args.track == "xlingual")
-    print("======== Overall Metrics ========")
-    print("all_rougeL", results["rougeL"])
-    print("all_EM", results["exact_match"])
-    print()
+#     results = compute_metrics(predictions, references, xlingual=args.track == "xlingual")
+#     print("======== Overall Metrics ========")
+#     print("all_rougeL", results["rougeL"])
+#     print("all_EM", results["exact_match"])
+#     print()
     
-    category_metrics = [
-        ("Textual Entailment", "exact_match"),
-        ("Cause Effect Classification", "exact_match"),
-        ("Coreference Resolution", "exact_match"),
-        ("Dialogue Act Recognition", "exact_match"),
-        ("Answerability Classification", "exact_match"),
-        ("Word Analogy", "exact_match"),
-        ("Overlap Extraction", "rougeL"),
-        ("Keyword Tagging", "rougeL"),
-        ("Question Rewriting", "rougeL"),
-        ("Title Generation", "rougeL"),
-        ("Data to Text", "rougeL"),
-        ("Grammar Error Correction", "rougeL"),
-    ]
-    category_metrics = {"_".join(category.lower().split()): metric for category, metric in category_metrics}
+#     category_metrics = [
+#         ("Textual Entailment", "exact_match"),
+#         ("Cause Effect Classification", "exact_match"),
+#         ("Coreference Resolution", "exact_match"),
+#         ("Dialogue Act Recognition", "exact_match"),
+#         ("Answerability Classification", "exact_match"),
+#         ("Word Analogy", "exact_match"),
+#         ("Overlap Extraction", "rougeL"),
+#         ("Keyword Tagging", "rougeL"),
+#         ("Question Rewriting", "rougeL"),
+#         ("Title Generation", "rougeL"),
+#         ("Data to Text", "rougeL"),
+#         ("Grammar Error Correction", "rougeL"),
+#     ]
+#     category_metrics = {"_".join(category.lower().split()): metric for category, metric in category_metrics}
 
-    if args.compute_per_category_metrics:
-        print("======== Metrics per category ========")
-        task_category = {}
-        for task in set(tasks):
-            with open(os.path.join("./data/tasks/", task+".json")) as fin:
-                task_data = json.load(fin)
-                task_category[task] = "_".join(task_data["Categories"][0].lower().split())
-        categories = [task_category[e["Task"]] for e in examples] 
-        results.update(compute_grouped_metrics(predictions, references, categories, xlingual=args.track=="xlingual"))
+#     if args.compute_per_category_metrics:
+#         print("======== Metrics per category ========")
+#         task_category = {}
+#         for task in set(tasks):
+#             with open(os.path.join("./data/tasks/", task+".json")) as fin:
+#                 task_data = json.load(fin)
+#                 task_category[task] = "_".join(task_data["Categories"][0].lower().split())
+#         categories = [task_category[e["Task"]] for e in examples] 
+#         results.update(compute_grouped_metrics(predictions, references, categories, xlingual=args.track=="xlingual"))
         
-        for category, metric in category_metrics.items():
-            # category = "_".join(category.lower().split())
-            if f"{metric}_for_{category}" in results:
-                print(f"{metric}_for_{category}", results[f"{metric}_for_{category}"])
-        print()
+#         for category, metric in category_metrics.items():
+#             # category = "_".join(category.lower().split())
+#             if f"{metric}_for_{category}" in results:
+#                 print(f"{metric}_for_{category}", results[f"{metric}_for_{category}"])
+#         print()
             
-    if args.compute_per_task_metrics:
-        print("======== Metrics per task ========")
-        results_by_task = compute_grouped_metrics(predictions, references, tasks, xlingual=args.track=="xlingual")
-        for task in sorted(list(set(tasks))):
-            category = task_category[task]
-            metric = category_metrics[category]
-            print(task, results_by_task[f"{metric}_for_{task}"])
-        print()
+#     if args.compute_per_task_metrics:
+#         print("======== Metrics per task ========")
+#         results_by_task = compute_grouped_metrics(predictions, references, tasks, xlingual=args.track=="xlingual")
+#         for task in sorted(list(set(tasks))):
+#             category = task_category[task]
+#             metric = category_metrics[category]
+#             print(task, results_by_task[f"{metric}_for_{task}"])
+#         print()
+
+
+def soft_f1(prediction, reference, model):
+    '''
+    prediction: list of strings [x,x,x, ...]
+    reference: list of strings [y,y,y, ...]
+    
+    return f1, precision, recall
+    '''
+    pred_vec = []
+    ref_vec = []
+    for pred in prediction:
+        embed_pred= model.encode(pred, convert_to_tensor=True)
+        pred_vec.append(embed_pred)
+    for ref in reference:   
+        embed_ref = model.encode(ref, convert_to_tensor=True)
+        ref_vec.append(embed_ref)
+    
+    pred_vec = torch.stack(pred_vec)
+    ref_vec = torch.stack(ref_vec)
+    sim_matrix = util.pytorch_cos_sim(pred_vec, ref_vec)  # tensor with shape of (len(pred_vec), len(ref_vec))
+    # import pdb; pdb.set_trace()
+    precision = sim_matrix.max(dim=1)[0].mean().item()
+    recall = sim_matrix.max(dim=0)[0].mean().item()
+    f1 = 2 * precision * recall / (precision + recall + 1e-10)
+    return f1, precision, recall
+    
+        
+'''
+sentence similarity based precision, recall, f1
+'''
+def SentenceSemanticMetric(predictions, references):
+    '''
+    predicstions: [[x,x,x],[y,y,y], ...]
+    references: [[x,x,x],[y,y,y], ...]
+    
+    return F1, precision, recall
+    '''
+    assert len(predictions) == len(references), f"# of predictions {len(predictions)} doesn't match # of references {len(references)}."
+    # bertscore = load("bertscore")
+    f1_list, precision_list, recall_list = [], [], []
+    model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+    for prediction, reference in tqdm(zip(predictions, references)):
+        f1, precision, recall = soft_f1(prediction, reference, model)
+        # import pdb; pdb.set_trace()
+        f1_list.append(f1)
+        precision_list.append(precision)
+        recall_list.append(recall)
+    
+    f1 = np.mean(f1_list)
+    precision = np.mean(precision_list)
+    recall = np.mean(recall_list)
+    return f1, precision, recall
+
+
+if __name__ == "__main__":
+    predictions = [["hello world", "this is my world", "I wanna get you back my home"],["I am a student", "I am a teacher"]]
+    references = [["take you back home", "oops, I am sorry"],["you are my baby", "I am a good teacher", "how old are you"]]
+    f1, precision, recall = SentenceSemanticMetric(predictions, references)
+     
+        
