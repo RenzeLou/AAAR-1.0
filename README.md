@@ -215,3 +215,27 @@ Number of words per item (why): AVG: 27.145614035087718, MAX: 89, MIN: 9
 ==> Image statistics
 Number of images per paper: AVG: 16.01, MAX: 91, MIN: 0
 ```
+
+### 5. run experiment
+
+- close source model (e.g., Openai GPT)
+
+use following command to get the eval prediction of close source model:
+
+```bash
+conda activate litellm
+
+python scripts/subtask2_experiment_model_prediction.close_source.py --api_name "gpt-4" --root_dir "./subtask2_experiment_human_anno/final_data" --save_dir "./subtask2_experiment_human_anno/eval_results" --max_word_len 5000 --oracle
+```
+
+- open source model (e.g., Llama-3)
+TODO
+
+then, use the following command to get the final evaluation metrics:
+```bash
+conda activate crawl_arxiv
+
+python scripts/subtask2_metric.py --root_dir './subtask2_experiment_human_anno/eval_results/xxx'
+```
+
+the eval performance will be saved in `--root_dir` folder.

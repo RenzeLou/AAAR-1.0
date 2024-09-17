@@ -212,10 +212,17 @@ def openai_chat_completion(
     '''
     
     user_content = template.query_prompt.format_map(input_dic)
-    messages = [
-            {"role": "system", "content": template.system},
+    
+    if "o1" in model_name:
+        # TODO: currently, o1 doesn't support the system message
+        messages = [
             {"role": "user", "content": user_content}
         ]
+    else:
+        messages = [
+                {"role": "system", "content": template.system},
+                {"role": "user", "content": user_content}
+            ]
     
     # convert decoding_args to a dictionary
     decoding_args = dataclasses.asdict(decoding_args)
@@ -233,6 +240,9 @@ def openai_chat_completion(
         content = template.extract_content(response)
         cost = -1  # just a placeholder 
     else:
+        if "o1" in model_name:
+            # TODO: currently, o1 doesn't support any hyperparameters
+            decoding_args = {}
         # res = litellm.completion(model_name, messages, **decoding_args)
         res = completion_with_backoff(model_name=model_name,messages=messages,decoding_args=decoding_args)
         response = res.choices[0].message.content
