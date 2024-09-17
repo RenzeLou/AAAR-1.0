@@ -5,7 +5,6 @@ import sys
 import os
 import argparse
 import logging
-import torch
 from collections import Counter
 from tqdm import tqdm
 import os
@@ -15,8 +14,6 @@ sys.path.append("/scratch/rml6079/project/Instruct_dataset_training_code/src")
 
 import numpy as np
 from rouge import rouge_scorer
-# from evaluate import load
-from sentence_transformers import SentenceTransformer, util
 
 
 logger = logging.getLogger(__name__)
@@ -256,6 +253,8 @@ def soft_f1(prediction, reference, model):
     
     return f1, precision, recall
     '''
+    import torch
+    from sentence_transformers import SentenceTransformer, util
     pred_vec = []
     ref_vec = []
     for pred in prediction:
@@ -285,10 +284,13 @@ def SentenceSemanticMetric(predictions, references):
     
     return F1, precision, recall
     '''
+    import torch
+    from sentence_transformers import SentenceTransformer, util
     assert len(predictions) == len(references), f"# of predictions {len(predictions)} doesn't match # of references {len(references)}."
     # bertscore = load("bertscore")
     f1_list, precision_list, recall_list = [], [], []
-    model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+    # model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+    model = SentenceTransformer('sentence-transformers/all-mpnet-base-v2')
     for prediction, reference in tqdm(zip(predictions, references)):
         f1, precision, recall = soft_f1(prediction, reference, model)
         # import pdb; pdb.set_trace()

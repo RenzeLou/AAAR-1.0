@@ -243,7 +243,107 @@ class Experiment_leak(ConversationPrompt):
         simply remove the empty space at the begining and end of the content
         '''
         content = content.strip()
-        return content    
+        return content   
+    
+    
+# used for prompting the model to generate experiment list in subtask2
+class Exp_eval(ConversationPrompt):
+    def __init__(self):
+        super().__init__()
+        self.system = (
+            "You are an expert in Machine Learning and Natural Language Processing (NLP). " +
+            "Your responsibility is to help the user design experiments and develop new ideas."
+        )
+        self.query_prompt = (
+            "You are partially given an NLP paper (in latex), including some useful sections (e.g., 'abstract' and 'introduction') having some basic introductions to the research of this paper, where all the 'experiment' related sections are deleted.\n\n" +
+            "Please first help me carefully read these sections and try to understand the motivations of this research, such as 'what the authors are trying to propose/demonstrate?' and 'what are the main contributions/differences of this paper from others?'\n\n" +
+            "Then, based on your in-depth understanding of this paper, imagine that you are the authors of this paper; what experiments do you have to conduct to prove your research? Namely, you have to **recover the deleted experiments** by providing me with **a list of experiment ideas**, where the list briefly summarizes the experiments the authors should conduct.\n\n" +
+            "Here is an example:\n" +
+            "```\n" +
+            "1. Cross-label generalisation comparison with the previous works. Since this work proposes a new method for open-domain relation type discovery, the authors should test this idea on some widely used benchmarks, such as FewRel.\n" +
+            "2. Semantic representation visualisation on the test set. The authors should conduct further visualisation by using some dimension-reduce methods (e.g., t-SNE) on the widely adopted cross-label test set (e.g., FewRel).\n" +
+            "3. and so on ...\n" +
+            "```\n\n" +
+            "Here is the target NLP paper (partial content):\n" +
+            "```\n" +
+            "{context_input}\n" +
+            "```\n\n" +
+            "Now, based on this paper, give me a list of experiments the author has to do. Please only give me the list, without any other words.\n\n" +
+            "### Your Experiment List:\n"+
+            "```\n"
+        )
+
+    def extract_content(self, content:str):
+        '''
+        extract the list from the model's response
+        
+        for example, the ori response is:
+        
+        "
+        ### Your Experiment List:
+        ```  
+        1. Performance comparison on standard NLP benchmarks (e.g., GLUE, SQuAD) between adapter-based tuning and fine-tuning.
+        2. Parameter efficiency evaluation by measuring the number of parameters required per task for adapter-based tuning vs fine-tuning.
+        ```
+        "
+        
+        the final extracted content is a list:
+        [
+            "1. Performance comparison on standard NLP benchmarks (e.g., GLUE, SQuAD) between adapter-based tuning and fine-tuning.",
+            "2. Parameter efficiency evaluation by measuring the number of parameters required per task for adapter-based tuning vs fine-tuning."
+        ]
+        
+        use re to extract the list
+        '''
+        content = content.strip()
+        content = re.findall(r"\d+\..*", content)
+        return content
+
+
+
+# used for prompting the model to generate explanation list in subtask2
+class Exp_explanation_eval(ConversationPrompt):
+    def __init__(self):
+        super().__init__()
+        self.system = (
+            "You are an expert in Machine Learning and Natural Language Processing (NLP). " +
+            "Your responsibility is to help the user undertand a paper."
+        )
+        self.query_prompt = (
+            "You are partially given an NLP paper (in latex), including some useful sections (e.g., 'abstract' and 'introduction') having some basic introductions to this research, where all the 'experiment' related sections are deleted.\n\n" +
+            "Meanwhile, you are also given a list of experiments that try to predict the missed experiments in this paper.\n\n" +
+            "Now, imagine the experiment list you created; you have to explain **why you suggested these experiments**.\n\n" +
+            "Here is an example experiment list:\n" +
+            "```\n" +
+            "1. Cross-label generalisation comparison with the previous works. Since this work proposes a new method for open-domain relation type discovery, the authors should test this idea on some widely used benchmark, such as FewRel.\n" +
+            "2. Semantic representation visualisation on the test set. The authors should conduct further visualisation by using some dimension-reduce methods (e.g., t-SNE) on the widely adopted cross-label test set (e.g., FewRel).\n" +
+            "```\n" +
+            "Here is the example corresponding explanation list:\n" +
+            "```\n" +
+            "1. To support the effectiveness of deep metric learning compared with the unsupervised algorithm.\n" +
+            "2. To demonstrate the explainability and robustness of the proposed semi-supervised algorithm.\n" +
+            "```\n\n" +
+            "Now, help me look at the following paper:\n" +
+            "### Paper:\n" +
+            "```\n" +
+            "{context_input}\n" +
+            "```\n\n" +
+            "### Experiment List:\n" +
+            "```\n" +
+            "{experiment_list}\n" +
+            "```\n\n" +
+            "Please give me your explanation list, which should be the same length as the 'Experiment List'; the items of the two lists correspond one-to-one. Only give me the list without any other useless words.\n" +
+            "### Explanation List:\n"
+        )
+
+    def extract_content(self, content:str):
+        '''
+        use re to extract the list
+        '''
+        content = content.strip()
+        content = re.findall(r"\d+\..*", content)
+        return content
+
 
 
 if __name__ == "__main__":
@@ -274,8 +374,22 @@ if __name__ == "__main__":
     # print(equation_gen.query_prompt.format(**value_dic))
     
     
-    equation_identify = Equation_Filtering()
+    # equation_identify = Equation_Filtering()
+    # value_dic = {
+    #     "equation": "The equation."
+    # }
+    # print(equation_identify.query_prompt.format(**value_dic))
+    
+    exp_eval = Exp_eval()
     value_dic = {
-        "equation": "The equation."
+        "context_input": "The context input."
     }
-    print(equation_identify.query_prompt.format(**value_dic))
+    # print(exp_eval.query_prompt.format(**value_dic))
+    response = '''
+    ### Your Experiment List:
+    ```  
+    1. Performance comparison on standard NLP benchmarks (e.g., GLUE, SQuAD) between adapter-based tuning and fine-tuning.
+    2. Parameter efficiency evaluation by measuring the number of parameters required per task for adapter-based tuning vs fine-tuning.
+    ```
+    '''
+    print(exp_eval.extract_content(response))
