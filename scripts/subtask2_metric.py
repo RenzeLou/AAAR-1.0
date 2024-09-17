@@ -46,6 +46,7 @@ def main():
     explanation_f1_list, explanation_p_list, explanation_r_list = [], [], []
     gt_experiments_len, gt_explanations_len = [], []
     pred_experiments_len, pred_explanations_len = [], []
+    empty_experiment_num, empty_explanation_num = 0, 0 
     pred_num = 0
     for paper_id in tqdm(os.listdir(args.root_dir)):
         pred_file = os.path.join(args.root_dir, paper_id, "eval_results.json")
@@ -70,7 +71,10 @@ def main():
             ## for explanation list
             explanation_f1, explanation_p, explanation_r = soft_f1(pred_explanations, gt_explanations, model)
             
-            
+        if len(pred_experiments) == 0:
+            empty_experiment_num += 1
+        if len(pred_explanations) == 0:
+            empty_explanation_num += 1
         for item_experiment, item_explanation in zip(gt_experiments, gt_explanations):
             gt_word_num_experiment.append(word_num(item_experiment))
             gt_word_num_explanation.append(word_num(item_explanation))
@@ -109,7 +113,7 @@ def main():
     
     
     print("="*20)
-    print(f"Total number of predictions: {pred_num}")
+    print(f"Total number of predictions: {pred_num}; empty experiment: {empty_experiment_num}; empty explanation: {empty_explanation_num}")
     print("="*20)
     print(f"Experiment metrics:")
     print(f"Average F1: {sum(experiment_f1_list)/len(experiment_f1_list):.4f}")
@@ -136,15 +140,18 @@ def main():
     # save all the metrics
     with open(os.path.join(args.root_dir, "all_metrics.json"), "w") as f:
         json.dump({
+            "total_num": pred_num,
             "experiment": {
                 "f1": sum(experiment_f1_list)/len(experiment_f1_list),
                 "precision": sum(experiment_p_list)/len(experiment_p_list),
-                "recall": sum(experiment_r_list)/len(experiment_r_list)
+                "recall": sum(experiment_r_list)/len(experiment_r_list),
+                "empty_num": empty_experiment_num
             },
             "explanation": {
                 "f1": sum(explanation_f1_list)/len(explanation_f1_list),
                 "precision": sum(explanation_p_list)/len(explanation_p_list),
-                "recall": sum(explanation_r_list)/len(explanation_r_list)
+                "recall": sum(explanation_r_list)/len(explanation_r_list),
+                "empty_num": empty_explanation_num
             },
             "word_num": {
                 "gt_experiment": {

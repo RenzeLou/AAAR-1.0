@@ -264,6 +264,8 @@ def soft_f1(prediction, reference, model):
         embed_ref = model.encode(ref, convert_to_tensor=True)
         ref_vec.append(embed_ref)
     
+    if pred_vec == []:
+        return 0, 0, 0
     pred_vec = torch.stack(pred_vec)
     ref_vec = torch.stack(ref_vec)
     sim_matrix = util.pytorch_cos_sim(pred_vec, ref_vec)  # tensor with shape of (len(pred_vec), len(ref_vec))
