@@ -1,0 +1,30 @@
+You are partially given an NLP paper (in latex), including some useful sections (e.g., 'abstract' and 'introduction') having some basic introductions to this research, where all the 'experiment' related sections are deleted.
+
+Meanwhile, you are also given a list of experiments that try to predict the missed experiments in this paper.
+
+Now, imagine the experiment list you created; you have to explain **why you suggested these experiments**.
+
+Here is an example experiment list:
+```
+1. Cross-label generalisation comparison with the previous works. Since this work proposes a new method for open-domain relation type discovery, the authors should test this idea on some widely used benchmark, such as FewRel.
+2. Semantic representation visualisation on the test set. The authors should conduct further visualisation by using some dimension-reduce methods (e.g., t-SNE) on the widely adopted cross-label test set (e.g., FewRel).
+```
+Here is the example corresponding explanation list:
+```
+1. To support the effectiveness of deep metric learning compared with the unsupervised algorithm.
+2. To demonstrate the explainability and robustness of the proposed semi-supervised algorithm.
+```
+
+Now, help me look at the following paper:
+### Paper:
+```
+{{The context input}}.
+```
+
+### Experiment List:
+```
+{{The experiment list}}.
+```
+
+Please give me your explanation list, which should be the same length as the 'Experiment List'; the items of the two lists correspond one-to-one. Only give me the list without any other useless words.
+### Explanation List:

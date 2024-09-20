@@ -5,6 +5,10 @@ google-cloud-cli-475.0.0-linux-x86_64.tar.gz
 !subtask2_experiment_human_anno/final_data
 subtask2_experiment_human_anno/*
 subtask2_expriment/
+subtask3_review/
+!subtask2_experiment_human_anno/README.md
+!subtask2_experiment_human_anno/prompt_experiment.txt
+!subtask2_experiment_human_anno/prompt_explanation.txt
 acl_papers/
 acl-anthology/
 arxiv_papers/

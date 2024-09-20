@@ -380,16 +380,23 @@ if __name__ == "__main__":
     # }
     # print(equation_identify.query_prompt.format(**value_dic))
     
-    exp_eval = Exp_eval()
-    value_dic = {
-        "context_input": "The context input."
-    }
+    # exp_eval = Exp_eval()
+    # value_dic = {
+    #     "context_input": "The context input."
+    # }
     # print(exp_eval.query_prompt.format(**value_dic))
-    response = '''
-    ### Your Experiment List:
-    ```  
-    1. Performance comparison on standard NLP benchmarks (e.g., GLUE, SQuAD) between adapter-based tuning and fine-tuning.
-    2. Parameter efficiency evaluation by measuring the number of parameters required per task for adapter-based tuning vs fine-tuning.
-    ```
-    '''
-    print(exp_eval.extract_content(response))
+    
+    exp_explanation_eval = Exp_explanation_eval()
+    value_dic = {
+        "context_input": "The context input.",
+        "experiment_list": "The experiment list."
+    }
+    print(exp_explanation_eval.query_prompt.format(**value_dic))
+    # response = '''
+    # ### Your Experiment List:
+    # ```  
+    # 1. Performance comparison on standard NLP benchmarks (e.g., GLUE, SQuAD) between adapter-based tuning and fine-tuning.
+    # 2. Parameter efficiency evaluation by measuring the number of parameters required per task for adapter-based tuning vs fine-tuning.
+    # ```
+    # '''
+    # print(exp_eval.extract_content(response))
