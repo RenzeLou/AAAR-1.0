@@ -229,9 +229,18 @@ python scripts/subtask2_experiment_model_prediction.close_source.py --api_name "
 ```
 
 - open source model (e.g., Llama-3)
-TODO
 
-then, use the following command to get the final evaluation metrics:
+use following command to get the eval prediction of open source model:
+
+```bash
+conda activate vllm
+
+sh scripts/run_subtask2.sh [GPUs] [model_name] [max_word_len for input] [max_model_len]
+sh scripts/run_subtask2.sh 4,5 meta-llama/Meta-Llama-3.1-70B-Instruct 2000 10000
+sh scripts/run_subtask2.sh 6,7 tiiuae/falcon-40b 2000 8192
+```
+
+then, use the following command to get the final evaluation metrics, for both close source and open source models:
 ```bash
 conda activate crawl_arxiv
 
