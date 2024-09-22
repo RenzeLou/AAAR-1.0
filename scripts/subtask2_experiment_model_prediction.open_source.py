@@ -17,7 +17,9 @@ from tqdm import tqdm
 from prompt_templates import Exp_eval, Exp_explanation_eval
 from vllm import LLM, SamplingParams
 from huggingface_hub import login
-login("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")
+with open("huggingface_key.txt", "r") as f:
+    hf_key = f.read().strip()
+login(hf_key)
 
 import nltk
 from nltk import sent_tokenize, word_tokenize
