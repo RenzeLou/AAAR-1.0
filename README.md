@@ -90,8 +90,8 @@ sh scripts/run_subtask1.sh 6,7 meta-llama/Meta-Llama-3.1-70B-Instruct 1000 10000
 sh scripts/run_subtask1.sh 4,5,6,7 mistralai/Mixtral-8x22B-Instruct-v0.1 1000 8192
 sh scripts/run_subtask1.sh 4,5,6,7 Qwen/Qwen2.5-72B-Instruct 1000 8192
 sh scripts/run_subtask1.sh 4,5,6,7 google/gemma-2-27b 1000 8192
-sh scripts/run_subtask1.sh 4,5,6,7 tiiuae/falcon-40b 1000 8192
-sh scripts/run_subtask1.sh 4,5,6,7 allenai/OLMo-7B 1000 8192
+sh scripts/run_subtask1.sh 4,5,6,7 tiiuae/falcon-40b 500 8192
+sh scripts/run_subtask1.sh 4,5,6,7 allenai/OLMo-7B-0724-Instruct-hf 500 8192
 ```
 
 All the evaluation results are saved to `./subtask1_equation_unified/eval_results` 
