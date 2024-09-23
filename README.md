@@ -275,3 +275,20 @@ python scripts/subtask2_metric.py --root_dir '/data/rml6079/projects/scientific_
 ```
 
 the eval performance will be saved in `--root_dir` folder.
+
+## SubTask 3 --- review weakness generation
+
+### 1. preprocess the data
+
+Download the raw data from [google drive](https://drive.google.com/drive/folders/1KKpMFj3S5CLUWF_vIo7vaBpXnAYrIxtv)
+
+```bash
+cd subtask3_review
+
+python step3.5_weakness_extraction.py --csv '/data/rml6079/projects/scientific_doc/subtask3_review/our_dataset/ICLR_2022/ICLR_2022_draft_comment.csv'
+python step3.5_weakness_extraction.py --csv '/data/rml6079/projects/scientific_doc/subtask3_review/our_dataset/ICLR_2023/ICLR_2023_draft_comment.csv'
+python step3.5_weakness_extraction.py --csv '/data/rml6079/projects/scientific_doc/subtask3_review/our_dataset/NeurIPS_2021/NeurIPS_2021_draft_comment.csv'
+python step3.5_weakness_extraction.py --csv '/data/rml6079/projects/scientific_doc/subtask3_review/our_dataset/NeurIPS_2022/NeurIPS_2022_draft_comment.csv'
+```
+
+The above commands will process all the csv files to json files, by **using GPT4 to extract the weakness list** from the raw review comments. The extracted weakess list for each paper are saved at `./subtask3_review/all_weakness.json`, such as `./subtask3_review/ICLR_2023_all_weakness.json`
