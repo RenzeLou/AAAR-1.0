@@ -245,6 +245,79 @@ def parse_args():
 #             print(task, results_by_task[f"{metric}_for_{task}"])
 #         print()
 
+def rouge_score(prediction, reference):
+    '''
+    prediction: list of strings [x,x,x, ...]
+    reference: list of strings [y,y,y, ...]
+    
+    return rouge1 and rougeL score
+    '''
+    if len(prediction) == 0:
+        return 0.0, 0.0
+    
+    if len(prediction) < len(reference):
+        reference = reference[:len(prediction)]
+    elif len(prediction) > len(reference):
+        prediction = prediction[:len(reference)]
+    
+    r1_list, rl_list = [], []
+    for pred, ref in zip(prediction, reference):
+        r1 = rouge1_score(pred, ref)
+        rl = rougeL_score(pred, ref)
+        r1_list.append(r1)
+        rl_list.append(rl)
+    
+    rouge1 = np.mean(r1_list)
+    rougeL = np.mean(rl_list)
+    return rouge1, rougeL
+    
+
+def soft_score(prediction, reference, model):
+    '''
+    different from `soft_f1`, this function assumes two lists have the same length --- each item in one list is corresponding to the item in the other list.
+    
+    prediction: list of strings [x,x,x, ...]
+    reference: list of strings [y,y,y, ...]
+    
+    return a score
+    '''
+    if len(prediction) != len(reference):
+        # TODO: not sure how to deal with the length mismatch.
+        # print(f"# of predictions {len(prediction)} doesn't match # of references {len(reference)}. Go for soft_f1.")
+        # f1, precision, recall = soft_f1(prediction, reference, model)
+        # return f1
+        print(f"# of predictions {len(prediction)} doesn't match # of references {len(reference)}. Cut the longer one.")
+        if len(prediction) == 0:
+            return 0.0
+        else:
+            # cut the pred or ref to the same length
+            if len(prediction) > len(reference):
+                prediction = prediction[:len(reference)]
+            else:
+                reference = reference[:len(prediction)]
+    
+    assert len(prediction) == len(reference), f"# of predictions {len(prediction)} doesn't match # of references {len(reference)}."
+    # otherwise, we calculate the average similarity score between each pair of prediction and reference.
+    import torch
+    from sentence_transformers import SentenceTransformer, util
+    pred_vec = []
+    ref_vec = []
+    for pred in prediction:
+        embed_pred= model.encode(pred, convert_to_tensor=True)
+        pred_vec.append(embed_pred)
+    for ref in reference:   
+        embed_ref = model.encode(ref, convert_to_tensor=True)
+        ref_vec.append(embed_ref)
+    
+    pred_vec = torch.stack(pred_vec)
+    ref_vec = torch.stack(ref_vec)
+    sim_matrix = util.pytorch_cos_sim(pred_vec, ref_vec)  # tensor with shape of (len(pred_vec), len(ref_vec))
+    # get the diagonal elements
+    score = sim_matrix.diag().mean().item()
+    
+    return score
+    
+
 
 def soft_f1(prediction, reference, model):
     '''

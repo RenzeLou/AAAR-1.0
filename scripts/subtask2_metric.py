@@ -14,7 +14,7 @@ os.environ["TRANSFORMERS_CACHE"] = "/scratch/rml6079/.cache/huggingface"
 
 import torch
 from sentence_transformers import SentenceTransformer, util
-from calculate_metrics_src import soft_f1, SentenceSemanticMetric
+from calculate_metrics_src import soft_f1, SentenceSemanticMetric, soft_score, rouge_score
 
 import nltk
 from nltk import sent_tokenize, word_tokenize
@@ -43,7 +43,7 @@ def main():
     pred_word_num_experiment, pred_word_num_explanation = [], []
     gt_word_num_experiment, gt_word_num_explanation = [], []
     experiment_f1_list, experiment_p_list, experiment_r_list = [], [], []
-    explanation_f1_list, explanation_p_list, explanation_r_list = [], [], []
+    explanation_f1_list, explanation_p_list, explanation_r_list, explanation_score_list, explanation_rouge1_list, explanation_rougeL_list = [], [], [], [], [], []
     gt_experiments_len, gt_explanations_len = [], []
     pred_experiments_len, pred_explanations_len = [], []
     empty_experiment_num, empty_explanation_num = 0, 0 
@@ -70,6 +70,9 @@ def main():
             experiment_f1, experiment_p, experiment_r = soft_f1(pred_experiments, gt_experiments, model)
             ## for explanation list
             explanation_f1, explanation_p, explanation_r = soft_f1(pred_explanations, gt_explanations, model)
+            ## for explanation list, since its oracle setting, the pred_explanations should be the same length as gt_explanations, each item is corresponding to the others
+            explanation_score = soft_score(pred_explanations, gt_explanations, model)
+            explanation_rouge1, explanation_rougeL = rouge_score(pred_explanations, gt_explanations)
             
         if len(pred_experiments) == 0:
             empty_experiment_num += 1
@@ -93,6 +96,10 @@ def main():
         explanation_f1_list.append(explanation_f1)
         explanation_p_list.append(explanation_p)
         explanation_r_list.append(explanation_r)
+        if oracle:
+            explanation_score_list.append(explanation_score)
+            explanation_rouge1_list.append(explanation_rouge1)
+            explanation_rougeL_list.append(explanation_rougeL)
         score = {
             "experiment": {
                 "f1": experiment_f1,
@@ -102,7 +109,10 @@ def main():
             "explanation": {
                 "f1": explanation_f1,
                 "precision": explanation_p,
-                "recall": explanation_r
+                "recall": explanation_r,
+                "soft_score": explanation_score if oracle else None,
+                "rouge1": explanation_rouge1 if oracle else None,
+                "rougeL": explanation_rougeL if oracle else None
             }
         }
         
@@ -124,6 +134,10 @@ def main():
     print(f"Average F1: {sum(explanation_f1_list)/len(explanation_f1_list):.4f}")
     print(f"Average Precision: {sum(explanation_p_list)/len(explanation_p_list):.4f}")
     print(f"Average Recall: {sum(explanation_r_list)/len(explanation_r_list):.4f}")
+    if len(explanation_score_list) > 0:  # if oracle, then explanation_score_list is not empty
+        print(f"Average Soft Score: {sum(explanation_score_list)/len(explanation_score_list):.4f}")
+        print(f"Average Rouge1: {sum(explanation_rouge1_list)/len(explanation_rouge1_list):.4f}")
+        print(f"Average RougeL: {sum(explanation_rougeL_list)/len(explanation_rougeL_list):.4f}")
     print("="*20)
     print(f"Word number statistics:")
     print(f"GT experiment: AVG: {sum(gt_word_num_experiment)/len(gt_word_num_experiment)}, MAX: {max(gt_word_num_experiment)}, MIN: {min(gt_word_num_experiment)}")
@@ -151,6 +165,9 @@ def main():
                 "f1": sum(explanation_f1_list)/len(explanation_f1_list),
                 "precision": sum(explanation_p_list)/len(explanation_p_list),
                 "recall": sum(explanation_r_list)/len(explanation_r_list),
+                "soft_score": sum(explanation_score_list)/len(explanation_score_list) if len(explanation_score_list) > 0 else None,
+                "rouge1": sum(explanation_rouge1_list)/len(explanation_rouge1_list) if len(explanation_rouge1_list) > 0 else None,
+                "rougeL": sum(explanation_rougeL_list)/len(explanation_rougeL_list) if len(explanation_rougeL_list) > 0 else None,
                 "empty_num": empty_explanation_num
             },
             "word_num": {

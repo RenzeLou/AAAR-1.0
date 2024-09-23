@@ -252,11 +252,26 @@ sh scripts/run_subtask2.sh 4,5 meta-llama/Meta-Llama-3.1-70B-Instruct 2000 10000
 sh scripts/run_subtask2.sh 6,7 tiiuae/falcon-40b 2000 8192
 ```
 
+### 6. metrics calculation
+
 then, use the following command to get the final evaluation metrics, for both close source and open source models:
 ```bash
 conda activate crawl_arxiv
 
 python scripts/subtask2_metric.py --root_dir './subtask2_experiment_human_anno/eval_results/xxx'
+```
+
+for example:
+```bash
+python scripts/subtask2_metric.py --root_dir '/data/rml6079/projects/scientific_doc/subtask2_experiment_human_anno/eval_results/tiiuae_falcon-40b-2000-oracle---202409211523'
+python scripts/subtask2_metric.py --root_dir '/data/rml6079/projects/scientific_doc/subtask2_experiment_human_anno/eval_results/mistralai_Mistral-7B-Instruct-v0.3-2000-oracle---202409210421'
+python scripts/subtask2_metric.py --root_dir '/data/rml6079/projects/scientific_doc/subtask2_experiment_human_anno/eval_results/meta-llama_Meta-Llama-3.1-70B-Instruct-2000-oracle---202409210239'
+python scripts/subtask2_metric.py --root_dir '/data/rml6079/projects/scientific_doc/subtask2_experiment_human_anno/eval_results/allenai_OLMo-7B-0724-Instruct-hf-2000-oracle---202409211510'
+python scripts/subtask2_metric.py --root_dir '/data/rml6079/projects/scientific_doc/subtask2_experiment_human_anno/eval_results/google_gemma-2-27b-2000-oracle---202409210156'
+python scripts/subtask2_metric.py --root_dir '/data/rml6079/projects/scientific_doc/subtask2_experiment_human_anno/eval_results/gemini-1.5-pro-3000-oracle---202409211345/gemini-1.5-pro-3000-oracle---202409211345'
+python scripts/subtask2_metric.py --root_dir '/data/rml6079/projects/scientific_doc/subtask2_experiment_human_anno/eval_results/claude-3-5-sonnet-20240620-3000-oracle---202409211939'
+python scripts/subtask2_metric.py --root_dir '/data/rml6079/projects/scientific_doc/subtask2_experiment_human_anno/eval_results/gpt-4o-3200-oracle---202409152244'
+python scripts/subtask2_metric.py --root_dir '/data/rml6079/projects/scientific_doc/subtask2_experiment_human_anno/eval_results/gpt-4-3000-oracle---202409162134'
 ```
 
 the eval performance will be saved in `--root_dir` folder.
