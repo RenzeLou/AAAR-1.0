@@ -292,3 +292,29 @@ python step3.5_weakness_extraction.py --csv '/data/rml6079/projects/scientific_d
 ```
 
 The above commands will process all the csv files to json files, by **using GPT4 to extract the weakness list** from the raw review comments. The extracted weakess list for each paper are saved at `./subtask3_review/all_weakness.json`, such as `./subtask3_review/ICLR_2023_all_weakness.json`
+
+Then use the following command to combine all the output (weakness list) with the input, and extract download the figure and table in the paper.
+
+```bash
+conda activate papermage
+
+# v1, that download the source package and extract all the source pic, tables (really time-consuming)
+python ./subtask3_review/data_process.py --root_dir "./subtask3_review" --target_dir "./subtask3_review_processed"
+
+# v2, that don't download the source package, will use pdffigures to extract the figures and tables from the draft later (really fast)
+python ./subtask3_review/data_process.v2.py --root_dir "./subtask3_review" --target_dir "./subtask3_review_processed_v2" --blacklist 'NeurIPS_2021_all_weakness.json' --num_per_conf 500
+```
+
+the processed data will be saved in `./subtask3_review_processed` folder, where each paper is the subfolder, and there are three type of files under each paper folder: 1. `data_text.json`, 2. `images`, 3. `tables`
+
+while `./subtask3_review_processed_v2` folder contains only the `data_text.json` file.
+
+### 2. extract the image and table
+
+since the arxiv table and images might not be under-review version, we use the `pdffigures` to extract the figures and tables from the draft version of the paper.
+
+I run the pdffigures on my local machine.
+
+after run `python subtask3_review/process_final_data.py`, get the finald data under `subtask3_review_final_light` (simply combine the `data_text.json` and `images`, del useless files such as arxiv source)
+
+### 3. statistics
