@@ -24,8 +24,7 @@ from bs4 import BeautifulSoup
 from tqdm import tqdm
 
 from chat_completion import openai_chat_completion
-from prompt_templates import Exp_eval, Exp_explanation_eval
-from calculate_metrics_src import metric_max_over_ground_truths, exact_match_score
+from prompt_templates import Weakness_eval
 
 import nltk
 from nltk import sent_tokenize, word_tokenize
@@ -50,6 +49,44 @@ def cut_word(input_context:str, max_word_len:int):
     cutted_text = TreebankWordDetokenizer().detokenize(words)
     return cutted_text
 
+def cut_word_by_piece(input_context:str, num_pieces:int):
+    '''
+    cut the string into `num_pieces` pieces
+    
+    return a list contains all the pieces
+    '''
+    words = word_tokenize(input_context)
+    input_text_length = len(words)
+    num_words_per_piece = input_text_length // num_pieces + 1
+    all_pieces = []
+    for i in range(num_pieces):
+        start_idx = i * num_words_per_piece
+        end_idx = (i + 1) * num_words_per_piece
+        piece = words[start_idx:end_idx]
+        piece_text = TreebankWordDetokenizer().detokenize(piece)
+        all_pieces.append(piece_text)
+    return all_pieces
+
+def word_num(input_text):
+    words = word_tokenize(input_text)
+    number_of_words = len(words)
+    return number_of_words
+
+def process_input_text(input_dict:dict):
+    title = input_dict["title"]
+    main_text = []
+    for section in input_dict["sections"]:
+        main_text.append(str(section["heading"]) + " " + str(section["text"]))
+    main_text = "\n".join(main_text)
+    abs = input_dict["abstractText"]
+    
+    # make sure every text is a string, avoid bytes-like object
+    title = str(title)
+    main_text = str(main_text)
+    abs = str(abs)
+    
+    input_text = abs + "\n\n" + title + "\n\n" + main_text
+    return input_text
 
 
 def main():
@@ -57,11 +94,11 @@ def main():
     parser.add_argument("--api_key", type=str, 
                         default=None, help="not recommended; better to set env varaible.")
     parser.add_argument("--api_name", type=str, default="gpt-4-1106-preview", help="the name of the openai model to use.")
-    parser.add_argument("--root_dir", type=str, default="./subtask2_experiment_human_anno/final_data", help="the directory save the data.")
-    parser.add_argument("--save_dir", type=str, default="./subtask2_experiment_human_anno/eval_results", help="the directory to save the unified instances.")
-    parser.add_argument("--max_word_len", type=int, default=2800, help="the maximum length of the context to provide to the model. For GPT4-o, default 2800 words, otherwise might exceed the limit.")
-    parser.add_argument("--oracle", action="store_true", help="whether to use the oracle to generate the explanation list.")
-    parser.add_argument("--max_retry", type=int, default=3, help="the maximum number of retries for each instance.")
+    parser.add_argument("--root_dir", type=str, default="./subtask3_review_final_light", help="the directory save the data.")
+    parser.add_argument("--save_dir", type=str, default="./subtask3_review_final_light/eval_results", help="the directory to save the unified instances.")
+    parser.add_argument("--split", action="store_true", help="whether to split the long input context into multiple pieces.")
+    parser.add_argument("--max_word_len", type=int, default=3500, help="if split, this is the max len of each piece; if not split, this is the max cut len of the input.")
+    parser.add_argument("--pick_num", type=int, default=None, help="how many instances to pick for the evaluation. Pick those shorter input paper first. If None, then use all the instances.")
     parser.add_argument("--seed", type=int, default=42, help="random seed for reproducibility")
 
     args, unparsed = parser.parse_known_args()
@@ -77,120 +114,146 @@ def main():
 
     decoding_args = OpenAIDecodingArguments()
     
-    experiment_template = Exp_eval()
-    explanation_template = Exp_explanation_eval()
+    template = Weakness_eval()
     
     random.seed(args.seed)
     
-    # read the eval data
-    print("==> reading the eval data")
-    eval_data = []
-    for subfolder in tqdm(os.listdir(args.root_dir)):
-        if subfolder == "all_paper_ids.txt":
-            continue
-        data_json = os.path.join(args.root_dir, subfolder, "data_text.json")
-        with open(data_json, "r") as f:
-            data_text = json.load(f)
-        # TODO: add image data in the future
-        eval_data.append(data_text)
-    print(f"==> total instances: {len(eval_data)}\n")
-    
-    
-    # sometimes the api_name will be like a path (for the open source LLM), e.g., `mistralai/Mistral-7B-Instruct-v0.1`
-    # replace `/` with `_` to avoid the error of creating a directory with the name of the path
-    api_name_save = args.api_name.replace("/", "_")
-    api_name_save = api_name_save + "-" + str(args.max_word_len)
-    api_name_save = api_name_save + "-oracle" if args.oracle else api_name_save
     current_time = datetime.now().strftime("%Y%m%d%H%M")
-    api_name_save = api_name_save + "---" + current_time 
-    for eval_ins in tqdm(eval_data):
-        paper_id = eval_ins["id"]
-        target_dir = os.path.join(args.save_dir, f"{api_name_save}", paper_id)
-        os.makedirs(target_dir, exist_ok=True)
-        
-        input_text = eval_ins["input"]
-        input_text = "".join(input_text)
-        input_text_cut = cut_word(input_text, args.max_word_len)
-        gt_experiment = eval_ins["output"]["What experiments do you suggest doing?"]
-        gt_explanation = eval_ins["output"]["Why do you suggest these experiments?"]
-        
-        # experiment prediction
-        eval_dict_experiment = {
-            "context_input": input_text_cut,
-        }
-        retry_falg = True
-        retry_cnt = 0
-        while retry_falg:
-            pred_experiment, _ = openai_chat_completion(client, eval_dict_experiment, experiment_template, decoding_args, model_name=args.api_name)
-            if isinstance(pred_experiment, list):
-                retry_falg = False
-            else:
-                print("*** expect got a list, but got: '", pred_experiment, "' retrying...")
-                retry_cnt += 1
-                if retry_cnt > args.max_retry:
-                    print("*** max retry reached, skip this instance.")
-                    pred_experiment = []
-                    retry_falg = False
-        
-        # explanation prediction
-        if args.oracle:
-            eval_dict_explanation = {
-                "context_input": input_text_cut,
-                "experiment_list": "\n".join(gt_experiment)
-            }
-            experiment_list_len = len(gt_experiment)
+    # read the eval data
+    print("\n==> reading the eval data ...")
+    conf_list = ["ICLR_2022", "NeurIPS_2021", "NeurIPS_2022", "ICLR_2023"]
+    all_subfolders = []
+    for conf in conf_list:
+        conf_dir = os.path.join(args.root_dir, conf)
+        all_files_dirs = os.listdir(conf_dir)
+        # make all subfolders the whole path
+        all_files_dirs = [os.path.join(conf_dir, x) for x in all_files_dirs]
+        # del those dir that do not have `data_text.json`
+        all_files_dirs = [x for x in all_files_dirs if os.path.exists(os.path.join(x, "data_text.json"))]
+        all_subfolders.extend(all_files_dirs)
+    print(f"==> {len(all_subfolders)} instances found under {args.root_dir} (should be 1,925)\n")
+    # import pdb; pdb.set_trace()
+    
+    print("==> processing the eval data ...")
+    processed_input_list = []
+    for subfolder_path in tqdm(all_subfolders):  
+        # TODO: also should consider the images in the future
+        text_file = os.path.join(subfolder_path, "data_text.json")
+        with open(text_file, "r") as f:
+            text_data = json.load(f)
+        paper_id = text_data["ID"]
+        input_text = process_input_text(text_data["input"])
+        gt_output = text_data["output"]
+        # if split, then cut the input text into pieces, each pieces should be less than `max_word_len`
+        if args.split:
+            input_text_length = word_num(input_text)
+            num_pieces = input_text_length // args.max_word_len + 1
+            all_pieces = cut_word_by_piece(input_text, num_pieces)
+            for piece in all_pieces:
+                processed_input_list.append({"id": paper_id, "input": piece, "output": gt_output, "whole_input_length": input_text_length})
         else:
-            eval_dict_explanation = {
-                "context_input": input_text_cut,
-                "experiment_list": "\n".join(pred_experiment)
-            }
-            experiment_list_len = len(pred_experiment)
-            
-        if eval_dict_explanation["experiment_list"] == "":
-            pred_explanation = []
-        else:
-            retry_falg = True
-            retry_cnt = 0
-            while retry_falg:
-                pred_explanation, _ = openai_chat_completion(client, eval_dict_explanation, explanation_template, decoding_args, model_name=args.api_name)
-                if isinstance(pred_explanation, list) and len(pred_explanation) == experiment_list_len:  # TODO: note that, for open source LLM, you cannot expect the model will well follow instruction to produce a valid list, then the check should be chill
-                    retry_falg = False
-                else:
-                    if not isinstance(pred_explanation, list):
-                        print("*** expect got a list, but got: '", pred_explanation, "' retrying...")
-                    elif len(pred_explanation) != experiment_list_len:
-                        print(f"*** expect the same length of the experiment list, but got: {len(pred_explanation)} vs {experiment_list_len}")
-                    retry_cnt += 1
-                    if retry_cnt > args.max_retry:
-                        print("*** max retry reached, skip this instance.")
-                        pred_explanation = []
-                        retry_falg = False
-        
-        # save all the prediction list (will calculate metrics later)
-        save_result_dict = {
-            "id": paper_id,
-            "output": eval_ins["output"],
-            "predicton": {
-                "What experiments do you suggest doing?": pred_experiment,
-                "Why do you suggest these experiments?": pred_explanation
-            },
-            "api_name": args.api_name,
-            "max_word_len": args.max_word_len,
-            "oracle": args.oracle,
-            "time": current_time,
-            "input": input_text,
-            "input_cut": input_text_cut,
+            input_text_length = word_num(input_text)
+            input_text_cut = cut_word(input_text, args.max_word_len)
+            processed_input_list.append({"id": paper_id, "input": input_text_cut, "output": gt_output, "whole_input_length": input_text_length})    
+    if args.pick_num is not None:
+        # sort the processed_input_list by the input length, then id
+        # TODO: should select those paper to form a new dataset instead of picking when running the code
+        print(f"==> pick {args.pick_num} instances out of {len(all_subfolders)} for evaluation.")
+        # short go first
+        processed_input_list_sorted = sorted(processed_input_list, key=lambda x: (x["whole_input_length"], x["id"]))
+        picked_piece = []
+        id_set = set()
+        for each_p in processed_input_list_sorted:
+            this_id = each_p["id"]
+            id_set.add(this_id)
+            if len(id_set) > args.pick_num:
+                break
+            picked_piece.append(each_p)
+        processed_input_list = picked_piece
+        # import pdb; pdb.set_trace()
+    print(f"==> {len(processed_input_list)} pieces have to be feed into the model.\n")
+    
+    
+    print("==> start the prediction ...")
+    st_time = datetime.now()
+    res_dict = dict()  # {xxxx-id: [pred_1, pred_2, ...]}
+    for input_piece in tqdm(processed_input_list):
+        fill_in_dict = {
+            "context_input": input_piece["input"]  # either the cutted text (not split) or the piece (split)
         }
-        with open(os.path.join(target_dir, "eval_results.json"), "w") as f:
-            json.dump(save_result_dict, f, indent=4)
+        weakness_list, _ = openai_chat_completion(client, fill_in_dict, template, decoding_args, model_name=args.api_name)
+        if input_piece["id"] not in res_dict:
+            res_dict[input_piece["id"]] = [weakness_list]
+        else:
+            res_dict[input_piece["id"]].append(weakness_list)
+    ed_time = datetime.now()
+    
+    
+    def find_the_gt(id, processed_input_list):
+        for item in processed_input_list:
+            if item["id"] == id:
+                return item["output"]
+    print("==> process the predictions ...")
+    # import pdb; pdb.set_trace()
+    # combine all the pred_list within the same id
+    for id, pred_list in tqdm(res_dict.items()):
+        # each pred_x in the pred_list is a list of weakness
+        combined_list = []
+        for pred in pred_list:
+            combined_list.extend(pred)
+        # make sure the item num is consistent, e.g., 1. XXX, 2. XXX, 3. XXX
+        # use re to replace "xxx. " with "i. "
+        new_combined_list = []
+        for i, item in enumerate(combined_list):
+            new_item = re.sub(r"^\d+\.", f"{i+1}.", item)
+            # import pdb; pdb.set_trace()
+            new_combined_list.append(new_item)
+        res_dict[id] = new_combined_list
+    
+    
+    print("==> save the results ...")
+    api_name_save = args.api_name.replace("/", "_")
+    api_name_save = api_name_save + "-" + f"pick_{str(args.pick_num)}"
+    api_name_save = api_name_save + "-split" if args.split else api_name_save
+    api_name_save = api_name_save + "-" + str(args.max_word_len)
+    save_dir = os.path.join(args.save_dir, api_name_save)
+    os.makedirs(save_dir, exist_ok=True)
+    
+    save_list = []
+    for id, pred_list in tqdm(res_dict.items()):
+        gt_output = find_the_gt(id, processed_input_list)
+        save_list.append({
+            "id": id,
+            "predicton": pred_list,
+            "output": gt_output
+        })
+    with open(os.path.join(save_dir, "eval_results.json"), "w") as f:
+        json.dump(save_list, f, indent=4)
+        
+    state_dict = {
+        "total_instances": len(all_subfolders),
+        "pick_instances": args.pick_num,
+        "total_pieces": len(processed_input_list),
+        "api_name": args.api_name,
+        "start time": current_time,
+        "time cost (in minutes)": (ed_time - st_time).seconds / 60,
+        "split": args.split,
+        "max_word_len": args.max_word_len,
+        "seed": args.seed
+    }
+    with open(os.path.join(save_dir, "stat.json"), "w") as f:
+        json.dump(state_dict, f, indent=4)
     
     
     print("="*20)
     print(f"Model: {args.api_name}")
+    print(f"Total instances: {len(all_subfolders)}")
+    print(f"Pick instances: {args.pick_num}")
+    print(f"Split: {args.split}")
     print(f"Input max word len: {args.max_word_len}")
-    print(f"Oracle: {args.oracle}")
+    print(f"Time cost: {(ed_time - st_time).seconds / 60} minutes")
     print("="*20)
-    print(f"Results saved to: {os.path.join(args.save_dir, api_name_save)}")
+    print(f"Results saved to: {save_dir}")
     
     
 if __name__ == "__main__":

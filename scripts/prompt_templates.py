@@ -345,6 +345,34 @@ class Exp_explanation_eval(ConversationPrompt):
         return content
 
 
+# used for prompting the model to generate weakness list of subtask3
+class Weakness_eval(ConversationPrompt):
+    def __init__(self):
+        super().__init__()
+        self.system = (
+            "You are an expert in Machine Learning and Natural Language Processing (NLP). " +
+            "Your responsibility is to help the user review a paper."
+        )
+        self.query_prompt = (
+            "You are given an NLP paper. Imagine you are a machine learning expert with rich research experience. Please carefully review this paper and identify the weaknesses of this research.\n\n" +
+            "Here is the paper (it might be in partial content):\n" +
+            "```\n" +
+            "{context_input}\n" +
+            "```\n\n" +
+            "Now, based on the provided context, give me a list of weaknesses of this research paper (such as '1. XXX\\n2. XXX', one point per line).\n" +
+            "Note that if the given context is irrelevant to research, such as it is talking about 'acknowledgement', just generate 'No research content'.\n" +
+            "Please either give me the weakness list of this research paper or generate 'No research content' to clarify this is not a research paper, without any other words.\n\n" +
+            "### Your Answer:\n"
+        )
+
+    def extract_content(self, content:str):
+        '''
+        use re to extract the list
+        '''
+        content = content.strip()
+        content = re.findall(r"\d+\..*", content)
+        return content
+
 
 if __name__ == "__main__":
     # test the prompt templates
@@ -386,12 +414,12 @@ if __name__ == "__main__":
     # }
     # print(exp_eval.query_prompt.format(**value_dic))
     
-    exp_explanation_eval = Exp_explanation_eval()
-    value_dic = {
-        "context_input": "The context input.",
-        "experiment_list": "The experiment list."
-    }
-    print(exp_explanation_eval.query_prompt.format(**value_dic))
+    # exp_explanation_eval = Exp_explanation_eval()
+    # value_dic = {
+    #     "context_input": "The context input.",
+    #     "experiment_list": "The experiment list."
+    # }
+    # print(exp_explanation_eval.query_prompt.format(**value_dic))
     # response = '''
     # ### Your Experiment List:
     # ```  
@@ -400,3 +428,16 @@ if __name__ == "__main__":
     # ```
     # '''
     # print(exp_eval.extract_content(response))
+    
+    weakness_eval = Weakness_eval()
+    # value_dic = {
+    #     "context_input": "The context input."
+    # }
+    # print(weakness_eval.query_prompt.format(**value_dic))
+    response = '''1. Lack of comprehensive evaluation – The analysis section provides visualizations and observations but lacks a thorough quantitative analysis to support the claims.
+
+2. Overreliance on qualitative interpretation – The interpretations of attention patterns are largely qualitative and could benefit from more rigorous statistical methods to validate these observations.
+
+3. Insufficient comparison with baselines – While the discussion mentions baseline Transformers, there is no detailed comparative analysis showing how TCF definitively outperforms other models.'''
+    print(weakness_eval.extract_content(response))
+    print(len(weakness_eval.extract_content(response)))

@@ -1,0 +1,401 @@
+[{
+  "caption": "Figure 4: WLF model templates at meta initialization of. Notations: out c: output channels/number of filters, k: size (width and height) of a filter, p: padding and s: stride.",
+  "captionBoundary": {
+    "x1": 108.0,
+    "x2": 504.00445556640625,
+    "y1": 284.7495422363281,
+    "y2": 301.71099853515625
+  },
+  "figType": "Figure",
+  "imageText": ["(c)", "Block", "structure", "of", "Architecture", "B,", "where", "block", "out", "c", "is", "the", "out", "c", "input", "into", "the", "block", "sum,", "relu", "k=1,", "p=0,", "s=1,", "batchnorm", "conv_6:", "out_c=block_out_c,", "k=3,", "p=1,", "s=1,", "batchnorm", "conv_5:", "out_c=block_out_c,", "relu", "k=3,", "p=1,", "s=2,", "batchnorm,", "conv_4:", "out_c=block_out_c,", "sum,", "relu", "k=1,", "p=0,", "s=1,", "batchnorm", "conv_3:", "out_c=block_out_c,", "k=3,", "p=1,", "s=1,", "batchnorm", "conv_2:", "out_c=block_out_c,", "batchnorm,", "relu", "out_c=block_out_c,", "k=3,", "p=1,", "s=3,", "(b)", "Architecture", "B:", "used", "for", "CIFAR-based", "experiments", "conv_1:", "dense_1:", "out=2,", "softmax", "flatten", "avgpool_1:", "k=2,", "p=0,", "s=0,", "block_3:", "out_c=64", "block_2:", "out_c=32", "block_1:", "out_c=16", "batchnorm,", "relu", "out_c=16,", "k=3,", "p=1,", "s=1,", "(a)", "Architecture", "A:", "used", "for", "MNIST", "conv_1:", "dense_3:", "out=2,", "softmax", "dropout_3:", "rate=0.5", "dense_2:", "out=21,", "sigmoid", "dense_1:", "out=45,", "sigmoid", "flatten", "avgpool_2:", "k=2,", "p=0,", "s=2,", "dropout_2:", "rate=0.3", "avgpool_1:", "k=2,", "p=0,", "s=2", "dropout_1:", "rate=0.2", "p=0,", "s=1,", "sigmoid", "conv_2:", "out_c=16,", "k=5,", "p=2,", "s=1,", "sigmoid", "conv_1:", "out_c=6,", "k=5,"],
+  "name": "4",
+  "page": 14,
+  "regionBoundary": {
+    "x1": 113.75999999999999,
+    "x2": 498.24,
+    "y1": 81.6,
+    "y2": 260.64
+  },
+  "renderDpi": 150,
+  "renderURL": "ICLR_2023_pic__o4JUv2lmD-Figure4-1.png"
+}, {
+  "caption": "Figure 5: SSCL performance on different sizes of unlabeled data per task.",
+  "captionBoundary": {
+    "x1": 158.90802001953125,
+    "x2": 453.0936279296875,
+    "y1": 444.6585693359375,
+    "y2": 450.6610412597656
+  },
+  "figType": "Figure",
+  "imageText": ["(d)", "Relative", "Performance", "on", "Binary", "CIFAR-10", "TF", "DF-CNN", "ce", "rm", "an", "Pe", "rfo", "tiv", "e", "Re", "la", "1.00", "0.98", "0.96", "0.94", "0.92", "0.90", "0.88", "0.86", "U", "200", "400", "800", "1200", "n(i)", "(c)", "Relative", "Performance", "on", "Binary", "MNIST", "TF", "DF-CNN", "ce", "rm", "an", "Pe", "rfo", "tiv", "e", "Re", "la", "1.00", "0.98", "0.96", "0.94", "0.92", "0.90", "0.88", "0.86", "U", "30", "60", "120", "240", "360", "n(i)", "(b)", "Peak", "Per-task", "Accuracy", "on", "Binary", "CIFAR-10", "TF", "(DP-SSCL)", "TF", "(True", "Labels)", "DF-CNN", "(DP-SSCL)", "DF-CNN", "(True", "Labels)", "76", "78", "80", "82", "84", "86", "88", "90", "Pe", "ak", "P", "er", "-ta", "sk", "A", "cc", "ur", "ac", "y", "U", "0", "200", "400", "800", "1200", "n(i)", "(a)", "Peak", "Per-task", "Accuracy", "on", "Binary", "MNIST", "TF", "(DP-SSCL)", "TF", "(True", "Labels)", "DF-CNN", "(DP-SSCL)", "DF-CNN", "(True", "Labels)", "y", "ur", "ac", "A", "cc", "-ta", "sk", "P", "er", "Pe", "ak", "100", "98", "96", "94", "92", "90", "U", "0", "30", "60", "120", "240", "360", "n(i)"],
+  "name": "5",
+  "page": 14,
+  "regionBoundary": {
+    "x1": 108.0,
+    "x2": 504.0,
+    "y1": 325.44,
+    "y2": 431.52
+  },
+  "renderDpi": 150,
+  "renderURL": "ICLR_2023_pic__o4JUv2lmD-Figure5-1.png"
+}, {
+  "caption": "Table 11: Class-incremental 5-way CIFAR-100 experimental results with the DEN, broken down by task, showing mean ± standard deviation",
+  "captionBoundary": {
+    "x1": 108.0,
+    "x2": 504.003173828125,
+    "y1": 265.4925231933594,
+    "y2": 282.4539794921875
+  },
+  "figType": "Table",
+  "imageText": ["DEN", "10", "22.7±", "1.8", "−48.3±", "2.3", "23.1±", "3.1", "−50.4±", "2.4", "11", "22.9±", "1.9", "−31.4±", "2.9", "22.8±", "2.5", "−33.3±", "2.3", "12", "21.9±", "2.1", "−38.1±", "2.5", "22.3±", "1.4", "−38.5±", "1.4", "13", "24.4±", "3.0", "−28.8±", "3.1", "24.4±", "3.3", "−31.9±", "3.4", "14", "20.9±", "1.5", "−12.6±", "2.3", "20.2±", "1.1", "−11.7±", "2.0", "15", "22.8±", "3.0", "−26.0±", "2.6", "20.9±", "1.6", "−29.6±", "1.8", "16", "21.2±", "0.8", "−26.3±", "1.6", "21.1±", "2.1", "−27.2±", "2.4", "17", "22.2±", "1.6", "−31.8±", "3.2", "21.6±", "1.7", "−33.6±", "2.2", "18", "23.1±", "2.1", "−38.0±", "2.6", "23.0±", "2.0", "−39.8±", "2.8", "19", "65.2±", "3.5", "0.0±", "0.0", "64.1±", "5.2", "0.0±", "0.0", "0", "21.1±", "2.9", "−28.2±", "3.5", "19.6±", "1.1", "−31.8±", "1.4", "1", "18.6±", "2.4", "−41.6±", "2.3", "22.7±", "2.3", "−38.4±", "2.8", "2", "20.3±", "2.2", "−35.6±", "1.6", "21.0±", "2.4", "−37.7±", "3.5", "3", "20.1±", "1.6", "−40.9±", "2.8", "20.5±", "3.0", "−43.0±", "3.3", "4", "24.5±", "4.7", "−42.3±", "4.8", "20.1±", "1.5", "−47.4±", "3.1", "5", "21.9±", "1.4", "−34.7±", "1.5", "21.8±", "2.5", "−37.4±", "2.3", "6", "19.3±", "1.0", "−38.8±", "1.5", "19.6±", "2.7", "−41.1±", "3.5", "7", "22.4±", "2.5", "−35.7±", "2.2", "21.8±", "2.3", "−39.6±", "2.9", "8", "22.0±", "1.3", "−34.7±", "1.7", "21.8±", "1.3", "−31.0±", "1.6", "9", "24.0±", "2.6", "−42.4±", "2.2", "22.0±", "2.7", "−44.1±", "3.4", "DP-SSCL", "(Semi-supervised)", "Fully-labeled", "(Supervised)", "Approach", "Task", "Final", "Acc.", "Back.", "Transfer", "(%)", "Final", "Acc.", "Back.", "Transfer", "(%)"],
+  "name": "11",
+  "page": 20,
+  "regionBoundary": {
+    "x1": 120.0,
+    "x2": 490.08,
+    "y1": 295.2,
+    "y2": 548.16
+  },
+  "renderDpi": 150,
+  "renderURL": "ICLR_2023_pic__o4JUv2lmD-Table11-1.png"
+}, {
+  "caption": "Table 1: Comparison of different pseudo-labeler ensembling methods.",
+  "captionBoundary": {
+    "x1": 166.21600341796875,
+    "x2": 445.7864074707031,
+    "y1": 83.53055572509766,
+    "y2": 89.53302001953125
+  },
+  "figType": "Table",
+  "imageText": ["Snorkel", "96.5±0.3", "96.4±0.3", "95.2±0.8", "DP-SSCL", "(DF-CNN)", "Majority", "Voting", "96.0±0.3", "95.6±0.3", "93.3±1.0", "Repeated", "Labeling", "91.8±0.5", "86.1±1.0", "77.4±0.6", "Snorkel", "97.0±0.5", "97.0±0.2", "96.5±0.2", "DP-SSCL", "(TF)", "Majority", "Voting", "96.5±0.5", "89.1±12.6", "94.8±0.3", "Repeated", "Labeling", "89.7±1.1", "84.7±0.7", "77.8±0.3", "Continual", "Learner", "Labeling", "Method", "MNIST", "Final", "Accuracy", "n", "(i)", "U", "=", "60", "n", "(i)", "U", "=", "120", "n", "(i)", "U", "=", "240"],
+  "name": "1",
+  "page": 6,
+  "regionBoundary": {
+    "x1": 140.64,
+    "x2": 469.44,
+    "y1": 102.72,
+    "y2": 195.35999999999999
+  },
+  "renderDpi": 150,
+  "renderURL": "ICLR_2023_pic__o4JUv2lmD-Table1-1.png"
+}, {
+  "caption": "Figure 2: SSCL performance when transferring WLFs of earlier tasks.",
+  "captionBoundary": {
+    "x1": 165.9770050048828,
+    "x2": 446.0256652832031,
+    "y1": 357.2345275878906,
+    "y2": 363.23699951171875
+  },
+  "figType": "Figure",
+  "imageText": ["(c)", "Ratio", "of", "Transferred", "WLFs", "%", ")", "LF", "s", "(", "d", "W", "fe", "rre", "ra", "ns", "o", "f", "T", "Ra", "tio", "100", "80", "60", "40", "20", "0", "40", "60", "80", "100", "WLF", "Transfer", "Prob.", "(b)", "Final", "Accuracy", "LEEP", "Threshold", "-0.3", "LEEP", "Threshold", "-0.5", "LEEP", "Threshold", "-0.7", "y", "ur", "ac", "A", "cc", "Fin", "al", "79.0", "78.5", "78.0", "77.5", "77.0", "76.5", "40", "60", "80", "100", "WLF", "Transfer", "Prob.", "(a)", "Peak", "Per-task", "Accuracy", "LEEP", "Threshold", "-0.3", "LEEP", "Threshold", "-0.5", "LEEP", "Threshold", "-0.7", "y", "ur", "ac", "A", "cc", "-ta", "sk", "P", "er", "Pe", "ak", "82.4", "82.2", "82.0", "81.8", "81.6", "81.4", "81.2", "81.0", "40", "60", "80", "100", "WLF", "Transfer", "Prob."],
+  "name": "2",
+  "page": 6,
+  "regionBoundary": {
+    "x1": 108.0,
+    "x2": 504.0,
+    "y1": 219.35999999999999,
+    "y2": 344.15999999999997
+  },
+  "renderDpi": 150,
+  "renderURL": "ICLR_2023_pic__o4JUv2lmD-Figure2-1.png"
+}, {
+  "caption": "Table 5: Task configurations used in the experiments in Section 5 of the main paper, with one additional committed WLF per iteration, 25 committed WLFs in total at maximum. An interval [a, b] means the hyperparameter is searched within this interval. Please refer to Figure 4 for the WLF architectures.",
+  "captionBoundary": {
+    "x1": 108.0,
+    "x2": 504.0032653808594,
+    "y1": 83.53055572509766,
+    "y2": 122.40997314453125
+  },
+  "figType": "Table",
+  "imageText": ["Class-incremental", "Binary", "CIFAR-10", "5", "400/9600/2000", "Arch", "B", "[0.8e-3,", "1e-3]", "30", "[30,", "60]", "350", "5-way", "CIFAR-100", "20", "500/2000/500", "Arch", "B", "(out", "=", "5)", "[0.8e-3,", "1e-2]", "20", "60,", "140", "200", "Instance-incremental", "5-way", "MNIST", "2", "150/29750/5000", "Arch", "A", "(out", "=", "5)", "[0.8e-3,", "1.5e-3]", "10", "[180,", "220]", "50", "10-way", "CIFAR-10", "1", "2000/30000/10000", "Arch", "B", "(out", "=", "10)", "1e-2", "30", "50", "750", "Semi-heterogeneous", "(i.e.", "0", "vs", "1,", "0", "vs", "2,", "...)", "Binary", "MNIST", "45", "120/11880/2000", "Arch", "A", "[1e-4,", "1e-2]", "[5,", "10]", "[30,", "100]", "30", "Binary", "CIFAR-10", "45", "400/9600/2000", "Arch", "B", "[0.8e-3,", "1e-3]", "30", "[30,", "60]", "350", "Weak", "Labeler", "Architecture", "Learning", "rate", "Batches", "Epochs", "Bootstrap", "Size", "Lifelong", "Scenario", "Task", "Sequence", "#", "Tasks", "Data", "Split", "of", "n", "(i)", "L", ",", "n(i)", "U", ",", "n(i)", "T"],
+  "name": "5",
+  "page": 13,
+  "regionBoundary": {
+    "x1": 108.96,
+    "x2": 503.03999999999996,
+    "y1": 135.84,
+    "y2": 208.32
+  },
+  "renderDpi": 150,
+  "renderURL": "ICLR_2023_pic__o4JUv2lmD-Table5-1.png"
+}, {
+  "caption": "Figure 3: Pseudo-labeling accuracies produced by Snorkel-ensembled labeler.",
+  "captionBoundary": {
+    "x1": 150.80799865722656,
+    "x2": 461.1927490234375,
+    "y1": 563.381591796875,
+    "y2": 569.384033203125
+  },
+  "figType": "Figure",
+  "imageText": [],
+  "name": "3",
+  "page": 13,
+  "regionBoundary": {
+    "x1": 186.72,
+    "x2": 425.28,
+    "y1": 393.59999999999997,
+    "y2": 552.0
+  },
+  "renderDpi": 150,
+  "renderURL": "ICLR_2023_pic__o4JUv2lmD-Figure3-1.png"
+}, {
+  "caption": "Table 7: Comparison between pseudo-labeling methods, showing mean final accuracy ± standard deviation. The training set for each task is a combination of the labeled data (120 and 400 images per task for MNIST and CIFAR-10, respectively) and specified quantity of unlabeled data. Models are trained in a continual learning setting with labels for the unlabeled data generated by one of three weak supervision methods.",
+  "captionBoundary": {
+    "x1": 108.0,
+    "x2": 504.0032653808594,
+    "y1": 83.53055572509766,
+    "y2": 133.36895751953125
+  },
+  "figType": "Table",
+  "imageText": ["Snorkel", "79.1±0.9", "78.6±0.7", "78.5±0.8", "DP-SSCL", "(DF-CNN)", "Majority", "Voting", "78.1±0.7", "77.0±1.1", "76.0±0.9", "Repeated", "Labeling", "77.0±0.4", "75.2±0.7", "74.4±0.9", "Snorkel", "77.3±0.6", "76.1±0.8", "75.6±1.1", "DP-SSCL", "(TF)", "Majority", "Voting", "77.4±0.8", "76.0±0.5", "76.5±1.0", "Repeated", "Labeling", "76.3±0.9", "74.9±0.9", "73.9±0.9", "Continual", "Learner", "Labeling", "Method", "CIFAR10", "Final", "Accuracy", "n", "(i)", "U", "=", "400", "n", "(i)", "U", "=", "800", "n", "(i)", "U", "=", "1200", "Snorkel", "96.5±0.3", "96.4±0.3", "95.2±0.8", "DP-SSCL", "(DF-CNN)", "Majority", "Voting", "96.0±0.3", "95.6±0.3", "93.3±1.0", "Repeated", "Labeling", "91.8±0.5", "86.1±1.0", "77.4±0.6", "Snorkel", "97.0±0.5", "97.0±0.2", "96.5±0.2", "DP-SSCL", "(TF)", "Majority", "Voting", "96.5±0.5", "89.1±12.6", "94.8±0.3", "Repeated", "Labeling", "89.7±1.1", "84.7±0.7", "77.8±0.3", "Continual", "Learner", "Labeling", "Method", "MNIST", "Final", "Accuracy", "n", "(i)", "U", "=", "60", "n", "(i)", "U", "=", "120", "n", "(i)", "U", "=", "240"],
+  "name": "7",
+  "page": 17,
+  "regionBoundary": {
+    "x1": 139.68,
+    "x2": 470.4,
+    "y1": 146.4,
+    "y2": 352.32
+  },
+  "renderDpi": 150,
+  "renderURL": "ICLR_2023_pic__o4JUv2lmD-Table7-1.png"
+}, {
+  "caption": "Figure 8: Instance-incremental semi-supervised vs fully supervised learning curve comparisons",
+  "captionBoundary": {
+    "x1": 115.83000183105469,
+    "x2": 496.172119140625,
+    "y1": 575.8435668945312,
+    "y2": 581.8460083007812
+  },
+  "figType": "Figure",
+  "imageText": ["(a)", "5-way", "MNIST", "Experiment", "(b)", "10-way", "CIFAR-10", "Experiment"],
+  "name": "8",
+  "page": 17,
+  "regionBoundary": {
+    "x1": 110.88,
+    "x2": 501.12,
+    "y1": 427.68,
+    "y2": 563.04
+  },
+  "renderDpi": 150,
+  "renderURL": "ICLR_2023_pic__o4JUv2lmD-Figure8-1.png"
+}, {
+  "caption": "Table 2: Instance-incremental SSCL results.",
+  "captionBoundary": {
+    "x1": 217.9709930419922,
+    "x2": 394.0300598144531,
+    "y1": 83.53055572509766,
+    "y2": 89.53302001953125
+  },
+  "figType": "Table",
+  "imageText": ["Accuracy", "Saturation", "Accuracy", "Saturation", "CNNL", "90.0", "26", "45.7", "25", "MNIST", "CIFAR-10", "Approach", "Final", "Batches", "to", "Final", "Batches", "to"],
+  "name": "2",
+  "page": 7,
+  "regionBoundary": {
+    "x1": 180.95999999999998,
+    "x2": 428.15999999999997,
+    "y1": 102.72,
+    "y2": 144.48
+  },
+  "renderDpi": 150,
+  "renderURL": "ICLR_2023_pic__o4JUv2lmD-Table2-1.png"
+}, {
+  "caption": "Table 3: Class-incremental SSCL results.",
+  "captionBoundary": {
+    "x1": 223.77403259277344,
+    "x2": 388.2266845703125,
+    "y1": 187.31454467773438,
+    "y2": 193.3170166015625
+  },
+  "figType": "Table",
+  "imageText": ["Fully", "Labeled", "99.0±", "0.1", "17.0±", "4.0", "57.6±", "0.5", "27.1±", "1.7", "DP-SSCL", "Labeled", "90.0±0.4", "3.3±1.6", "54.2±0.5", "26.5±1.1"],
+  "name": "3",
+  "page": 7,
+  "regionBoundary": {
+    "x1": 180.95999999999998,
+    "x2": 428.15999999999997,
+    "y1": 148.32,
+    "y2": 169.92
+  },
+  "renderDpi": 150,
+  "renderURL": "ICLR_2023_pic__o4JUv2lmD-Table3-1.png"
+}, {
+  "caption": "Figure 1: The DP-SSCL framework, our contribution marked as red and adopted modules blue.",
+  "captionBoundary": {
+    "x1": 116.06900024414062,
+    "x2": 495.9328918457031,
+    "y1": 720.5715942382812,
+    "y2": 726.5740356445312
+  },
+  "figType": "Figure",
+  "imageText": [],
+  "name": "1",
+  "page": 3,
+  "regionBoundary": {
+    "x1": 108.0,
+    "x2": 505.44,
+    "y1": 612.48,
+    "y2": 709.92
+  },
+  "renderDpi": 150,
+  "renderURL": "ICLR_2023_pic__o4JUv2lmD-Figure1-1.png"
+}, {
+  "caption": "Table 8: Class-incremental Binary CIFAR-10 experiment results broken down by task, showing mean ± standard deviation",
+  "captionBoundary": {
+    "x1": 108.0,
+    "x2": 504.003173828125,
+    "y1": 466.75653076171875,
+    "y2": 483.718017578125
+  },
+  "figType": "Table",
+  "imageText": ["DEN", "2", "58.1±", "9.7", "−23.7±", "9.5", "54.5±", "8.7", "−27.6±", "8.6", "3", "60.7±", "7.5", "−29.8±", "7.5", "59.9±", "5.4", "−30.7±", "5.7", "4", "87.4±", "3.9", "0.0±", "0.0", "90.0±", "0.6", "0.0±", "0.0", "0", "50.4±", "0.7", "−40.1±", "0.9", "51.7±", "4.3", "−38.2±", "4.5", "1", "50.2±", "3.3", "−26.1±", "3.4", "50.8±", "9.4", "−24.9±", "9.2", "TF", "2", "78.1±", "8.8", "−6.7±", "9.1", "77.4±", "9.4", "−8.0±", "9.7", "3", "91.3±", "3.5", "−2.7±", "3.9", "92.4±", "1.4", "−1.8±", "1.2", "4", "92.9±", "0.5", "0.0±", "0.0", "92.8±", "1.0", "0.0±", "0.0", "0", "80.5±", "7.2", "−11.7±", "7.0", "79.0±", "11.2", "−13.5±", "11.1", "1", "67.8±", "6.7", "−12.5±", "6.7", "71.0±", "5.0", "−9.1±", "5.2", "DF-CNN", "2", "84.4±", "2.0", "−1.3±", "1.8", "84.7±", "1.1", "−1.1±", "1.2", "3", "93.2±", "0.5", "−0.2±", "0.7", "93.5±", "0.7", "−0.1±", "0.5", "4", "92.5±", "1.1", "0.0±", "0.0", "92.6±", "0.6", "0.0±", "0.0", "0", "88.1±", "1.4", "−4.3±", "1.2", "86.7±", "5.3", "−5.1±", "5.2", "1", "75.9±", "4.8", "−4.6±", "5.2", "76.6±", "1.7", "−4.4±", "1.9", "DP-SSCL", "(Semi-supervised)", "Fully-labeled", "(Supervised)", "Approach", "Task", "Final", "Acc.", "Back.", "Transfer", "(%)", "Final", "Acc.", "Back.", "Transfer", "(%)"],
+  "name": "8",
+  "page": 18,
+  "regionBoundary": {
+    "x1": 116.64,
+    "x2": 492.0,
+    "y1": 496.79999999999995,
+    "y2": 705.12
+  },
+  "renderDpi": 150,
+  "renderURL": "ICLR_2023_pic__o4JUv2lmD-Table8-1.png"
+}, {
+  "caption": "Figure 9: Class-incremental semi-supervised (blue) vs fully supervised (orange) learning curve comparisons, showing standard deviation with shaded regions.",
+  "captionBoundary": {
+    "x1": 108.0,
+    "x2": 504.003173828125,
+    "y1": 385.8925476074219,
+    "y2": 402.85400390625
+  },
+  "figType": "Figure",
+  "imageText": ["ur", "ac", "y", "(f)", "DEN/5-way", "CIFAR-100", "l", "A", "cc", "Fi", "na", "0.7", "0.6", "0.5", "0.4", "0.3", "0.2", "0.1", "0", "5", "10", "15", "20", "Task", "(e)", "TF/5-way", "CIFAR-100", "0.6", "0.7", "Fi", "na", "l", "A", "cc", "ur", "ac", "y", "0.5", "0.4", "0.3", "0.2", "0.1", "0", "5", "10", "15", "20", "Task", "(d)", "DF-CNN/5-way", "CIFAR-100", "y", "ur", "ac", "l", "A", "cc", "Fi", "na", "0.7", "0.6", "0.5", "0.4", "0.3", "0.2", "0.1", "0", "5", "10", "15", "20", "Task", "(c)", "DEN/Binary", "CIFAR-10", "y", "ur", "ac", "l", "A", "cc", "Fi", "na", "1.0", "0.9", "0.8", "0.7", "0.6", "0.5", "0.4", "0.3", "0", "1", "2", "3", "4", "5", "Task", "ur", "ac", "y", "(b)", "TF/Binary", "CIFAR-10", "l", "A", "cc", "Fi", "na", "1.0", "0.9", "0.8", "0.7", "0.6", "0.5", "0.4", "0.3", "0", "1", "2", "3", "4", "5", "Task", "(a)", "DF-CNN/Binary", "CIFAR-10", "0.9", "1.0", "Fi", "na", "l", "A", "cc", "ur", "ac", "y", "0.8", "0.7", "0.6", "0.5", "0.4", "0.3", "0", "1", "2", "3", "4", "5", "Task"],
+  "name": "9",
+  "page": 18,
+  "regionBoundary": {
+    "x1": 112.8,
+    "x2": 503.03999999999996,
+    "y1": 108.0,
+    "y2": 372.96
+  },
+  "renderDpi": 150,
+  "renderURL": "ICLR_2023_pic__o4JUv2lmD-Figure9-1.png"
+}, {
+  "caption": "Table 6: Supervised continual learning on binary MNIST (top) and CIFAR-10 (bottom), showing mean ± standard deviation. Performance is assessed using three metrics, along with accuracy metrics relative to continual models trained on the same data with ground-truth labels instead. ∗ Note: here, backward transfer is depicted as a percentage, and so is scaled by a factor of 100 to lie in range [−100, 100] as compared to the definition in Section 5.2.",
+  "captionBoundary": {
+    "x1": 108.0,
+    "x2": 504.0032958984375,
+    "y1": 83.53055572509766,
+    "y2": 133.36895751953125
+  },
+  "figType": "Table",
+  "imageText": ["N", "0", "80.7±0.3", "80.4±0.7", "0.2±0.7", "-", "-", "200", "82.7±0.3", "80.0±0.5", "−2.0±0.6", "0.99", "0.99", "400", "84.0±0.3", "80.0±0.4", "−2.7±0.4", "0.99", "0.99", "800", "85.3±0.1", "80.5±0.4", "−3.3±0.5", "0.98", "0.98", "1200", "85.9±0.1", "80.1±0.4", "−4.3±0.4", "0.98", "0.98", "C", "N", "D", "F-", "T", "F", "0", "81.5±0.2", "76.8±0.6", "−4.8±0.6", "-", "-", "200", "83.4±0.3", "76.8±1.4", "−5.9±1.4", "0.99", "1.00", "400", "84.3±0.2", "76.7±1.3", "−6.6±1.0", "0.98", "0.99", "800", "85.7±0.1", "78.4±0.6", "−5.7±0.6", "0.98", "1.00", "1200", "86.1±0.2", "77.5±1.3", "−7.0±1.4", "0.97", "0.98", "Backward", "Transfer∗", "Per-", "Task", "Final", "Acc.", "Per-Task", "Acc.", "Final", "Acc.", "CIFAR-10", "Performance", "Relative", "to", "True", "Labels", "n", "(i)", "U", "N", "0", "93.8±0.4", "95.4±0.3", "1.8±0.1", "-", "-", "30", "94.6±0.3", "96.2±0.4", "1.5±0.2", "0.98", "1.00", "60", "94.9±0.2", "96.1±0.7", "1.2±0.3", "0.98", "0.99", "120", "95.2±0.3", "95.8±0.9", "0.8±0.4", "0.98", "0.99", "240", "95.9±0.2", "94.5±1.3", "−0.3±0.6", "0.98", "0.97", "360", "96.1±0.1", "92.7±0.7", "−2.0±0.7", "0.97", "0.96", "C", "N", "D", "F-", "T", "F", "0", "95.6±0.4", "96.8±0.6", "1.9±0.1", "-", "-", "30", "95.9±0.4", "97.0±0.4", "1.9±0.1", "0.99", "1.00", "60", "96.1±0.3", "96.8±0.5", "1.8±0.1", "0.99", "0.99", "120", "96.2±0.2", "96.9±0.2", "1.8±0.1", "0.99", "0.99", "240", "96.5±0.2", "96.4±0.2", "1.7±0.1", "0.98", "0.98", "360", "96.4±0.1", "96.4±0.1", "1.8±0.1", "0.98", "0.97", "Backward", "Transfer∗", "Per-", "Task", "Final", "Acc.", "Per-Task", "Acc.", "Final", "Acc.", "MNIST", "Performance", "Relative", "to", "True", "Labels", "n", "(i)", "U"],
+  "name": "6",
+  "page": 16,
+  "regionBoundary": {
+    "x1": 175.68,
+    "x2": 416.15999999999997,
+    "y1": 146.4,
+    "y2": 509.28
+  },
+  "renderDpi": 150,
+  "renderURL": "ICLR_2023_pic__o4JUv2lmD-Table6-1.png"
+}, {
+  "caption": "Table 4: Memory and time overhead to process unlabeled data in different SSCL methods.",
+  "captionBoundary": {
+    "x1": 125.967041015625,
+    "x2": 486.0353088378906,
+    "y1": 342.2203063964844,
+    "y2": 348.2227783203125
+  },
+  "figType": "Table",
+  "imageText": ["Time", "complexity", "O(b)", "O(b×", "r)", "O(b)", "O(b)", "Source", "of", "time", "overhead", "training", "GAN", "repeatedly", "training", "training", "labeling", "queue", "OoD", "detector", "WLFs", "Mem", "overhead", "(CIFAR-10)", "∼100MB", "3.07MB", "not", "reported", "2.75MB", "Mem", "overhead", "(CIFAR-100)", "not", "reported", "3.07MB", "254MB", "2.75MB", "Mem", "complexity", "O(1)", "O(m)", "O(1)", "O(1)", "Mem", "overhead", "(MNIST)", "not", "reported", "0.78MB", "not", "reported", "2.7MB", "ORDisCo", "CNNL", "DistillMatch", "DP-SSCL", "Source", "of", "mem", "overhead", "G", "and", "D", "in", "GAN", "data", "queue", "OoD", "detector", "WLFs"],
+  "name": "4",
+  "page": 8,
+  "regionBoundary": {
+    "x1": 108.0,
+    "x2": 504.0,
+    "y1": 360.47999999999996,
+    "y2": 462.24
+  },
+  "renderDpi": 150,
+  "renderURL": "ICLR_2023_pic__o4JUv2lmD-Table4-1.png"
+}, {
+  "caption": "Table 9: Class-incremental 5-way CIFAR-100 experimental results with the DF-CNN, broken down by task, showing mean ± standard deviation",
+  "captionBoundary": {
+    "x1": 108.0,
+    "x2": 504.0032653808594,
+    "y1": 101.50052642822266,
+    "y2": 118.46099853515625
+  },
+  "figType": "Table",
+  "imageText": ["DF-CNN", "9", "64.2±", "2.7", "−4.9±", "2.4", "65.9±", "2.3", "−5.5±", "3.2", "10", "70.1±", "3.1", "−4.0±", "4.1", "71.1±", "3.0", "−5.2±", "2.0", "11", "53.0±", "3.5", "−3.7±", "3.7", "57.7±", "2.5", "−2.4±", "2.3", "12", "61.7±", "1.7", "−2.9±", "1.8", "64.2±", "1.7", "−2.4±", "2.5", "13", "54.1±", "1.8", "−1.7±", "2.1", "55.4±", "1.8", "−4.9±", "2.7", "14", "33.0±", "1.7", "−1.2±", "1.1", "36.7±", "1.9", "−1.2±", "2.1", "15", "50.0±", "1.3", "0.0±", "1.6", "52.7±", "2.5", "−1.4±", "2.5", "16", "48.1±", "2.2", "−0.2±", "2.5", "50.0±", "2.3", "−1.0±", "2.4", "17", "53.1±", "1.2", "0.1±", "1.6", "56.1±", "1.6", "0.5±", "2.8", "18", "62.7±", "2.1", "0.1±", "2.3", "67.7±", "1.8", "0.0±", "1.3", "19", "70.5±", "1.8", "0.0±", "0.0", "77.3±", "1.9", "0.0±", "0.0", "0", "33.9±", "5.4", "−17.0±", "4.5", "31.8±", "6.0", "−21.6±", "6.4", "1", "35.1±", "6.5", "−29.4±", "6.5", "33.8±", "6.3", "−35.8±", "6.5", "2", "32.8±", "4.0", "−27.6±", "4.6", "32.8±", "5.7", "−32.5±", "6.1", "3", "41.6±", "6.6", "−23.4±", "6.4", "38.8±", "5.9", "−30.2±", "6.5", "4", "37.5±", "7.5", "−33.5±", "7.7", "42.0±", "7.2", "−31.9±", "7.0", "5", "45.8±", "5.4", "−13.9±", "5.6", "50.7±", "7.6", "−13.7±", "7.2", "6", "49.3±", "5.1", "−10.3±", "5.4", "51.5±", "4.5", "−12.7±", "4.3", "7", "46.7±", "3.5", "−14.3±", "3.2", "53.6±", "3.7", "−14.3±", "2.9", "8", "57.2±", "3.1", "−6.0±", "2.9", "58.2±", "5.1", "−8.3±", "4.8", "DP-SSCL", "(Semi-supervised)", "Fully-labeled", "(Supervised)", "Approach", "Task", "Final", "Acc.", "Back.", "Transfer", "(%)", "Final", "Acc.", "Back.", "Transfer", "(%)"],
+  "name": "9",
+  "page": 19,
+  "regionBoundary": {
+    "x1": 120.0,
+    "x2": 490.08,
+    "y1": 131.51999999999998,
+    "y2": 384.0
+  },
+  "renderDpi": 150,
+  "renderURL": "ICLR_2023_pic__o4JUv2lmD-Table9-1.png"
+}, {
+  "caption": "Table 10: Class-incremental 5-way CIFAR-100 experimental results with TF, broken down by task, showing mean ± standard deviation",
+  "captionBoundary": {
+    "x1": 108.0,
+    "x2": 504.00323486328125,
+    "y1": 429.48553466796875,
+    "y2": 446.4460144042969
+  },
+  "figType": "Table",
+  "imageText": ["TF", "10", "57.5±", "11.4", "−16.8±", "11.8", "56.9±", "14.0", "−21.3±", "12.9", "11", "48.3±", "8.3", "−8.8±", "7.5", "46.9±", "6.0", "−12.7±", "6.9", "12", "53.6±", "5.2", "−7.3±", "5.2", "57.6±", "3.8", "−6.3±", "4.5", "13", "48.4±", "5.5", "−6.4±", "5.9", "52.9±", "8.2", "−9.8±", "9.0", "14", "31.0±", "2.0", "−2.9±", "2.0", "31.6±", "2.9", "−2.4±", "2.4", "15", "41.5±", "6.0", "−8.0±", "6.1", "48.1±", "2.8", "−3.7±", "2.4", "16", "45.1±", "3.0", "−2.1±", "2.7", "45.2±", "5.2", "−3.3±", "4.3", "17", "50.0±", "4.3", "−2.5±", "5.2", "54.5±", "2.4", "−1.2±", "2.2", "18", "62.8±", "2.7", "−1.7±", "2.6", "67.8±", "2.2", "−3.1±", "2.7", "19", "69.6±", "2.2", "0.0±", "0.0", "76.4±", "2.7", "0.0±", "0.0", "0", "36.9±", "6.7", "−13.5±", "7.5", "38.8±", "9.1", "−13.2±", "9.2", "1", "43.4±", "4.8", "−19.8±", "5.6", "49.9±", "9.9", "−16.5±", "9.8", "2", "36.2±", "7.0", "−20.5±", "6.8", "37.5±", "7.0", "−23.9±", "7.6", "3", "56.4±", "5.2", "−8.7±", "5.2", "54.0±", "5.5", "−15.0±", "4.9", "4", "40.6±", "13.2", "−29.4±", "13.4", "42.4±", "10.7", "−29.3±", "11.7", "5", "51.0±", "7.4", "−9.3±", "7.5", "50.9±", "13.6", "−16.1±", "13.5", "6", "46.3±", "7.1", "−14.4±", "7.6", "52.6±", "5.0", "−10.0±", "5.8", "7", "48.8±", "9.3", "−11.1±", "8.7", "50.8±", "7.4", "−13.2±", "5.9", "8", "49.6±", "8.7", "−14.4±", "7.3", "47.0±", "8.5", "−17.3±", "8.0", "9", "60.4±", "7.1", "−7.9±", "7.0", "58.5±", "6.0", "−12.1±", "6.3", "DP-SSCL", "(Semi-supervised)", "Fully-labeled", "(Supervised)", "Approach", "Task", "Final", "Acc.", "Back.", "Transfer", "(%)", "Final", "Acc.", "Back.", "Transfer", "(%)"],
+  "name": "10",
+  "page": 19,
+  "regionBoundary": {
+    "x1": 114.72,
+    "x2": 495.35999999999996,
+    "y1": 459.35999999999996,
+    "y2": 712.3199999999999
+  },
+  "renderDpi": 150,
+  "renderURL": "ICLR_2023_pic__o4JUv2lmD-Table10-1.png"
+}, {
+  "caption": "Figure 6: Learning Curve Comparisons. Dotted lines display accuracy of continual learning models trained on unlabeled data XU with true labels (TrueL).",
+  "captionBoundary": {
+    "x1": 108.0,
+    "x2": 504.0032043457031,
+    "y1": 334.0265197753906,
+    "y2": 352.4819641113281
+  },
+  "figType": "Figure",
+  "imageText": ["(d)", "DF-CNN", "on", "Binary", "CIFAR-10", "U", "=", "1200", "on", "TrueL", "n(i)", "U", "=", "200", "on", "TrueL", "n(i)", "U", "=", "400", "on", "TrueL", "n(i)", "U", "=", "800", "on", "TrueL", "n(i)", "n(i)", "U", "=", "0", "n(i)", "U", "=", "200", "n(i)", "U", "=", "400", "n(i)", "U", "=", "800", "n(i)", "U", "=", "1200", "0.45", "0.50", "0.55", "0.60", "0.65", "0.70", "0.75", "0.80", "0.85", "0.90", "Ac", "cu", "ra", "cy", "0", "5", "10", "15", "20", "25", "30", "35", "40", "45", "Task", "(c)", "TF", "on", "Binary", "CIFAR-10", "U", "=", "1200", "on", "TrueL", "n(i)", "U", "=", "200", "on", "TrueL", "n(i)", "U", "=", "400", "on", "TrueL", "n(i)", "U", "=", "800", "on", "TrueL", "n(i)", "n(i)", "U", "=", "0", "n(i)", "U", "=", "200", "n(i)", "U", "=", "400", "n(i)", "U", "=", "800", "n(i)", "U", "=", "1200", "0.45", "0.50", "0.55", "0.60", "0.65", "0.70", "0.75", "0.80", "0.85", "0.90", "Ac", "cu", "ra", "cy", "0", "5", "10", "15", "20", "25", "30", "35", "40", "45", "Task", "(b)", "DF-CNN", "on", "Binary", "MNIST", "U", "=", "360", "on", "TrueL", "n(i)", "U", "=", "30", "on", "TrueL", "n(i)", "U", "=", "60", "on", "TrueL", "n(i)", "U", "=", "120", "on", "TrueL", "n(i)", "U", "=", "240", "on", "TrueL", "n(i)", "n(i)", "U", "=", "0", "n(i)", "U", "=", "30", "n(i)", "U", "=", "60", "n(i)", "U", "=", "120", "n(i)", "U", "=", "240", "n(i)", "U", "=", "360", "0.800", "0.825", "0.850", "0.875", "0.900", "0.925", "0.950", "0.975", "1.000", "Ac", "cu", "ra", "cy", "5", "10", "15", "20", "25", "30", "35", "40", "45", "Task", "(a)", "TF", "on", "Binary", "MNIST", "U", "=", "360", "on", "TrueL", "n(i)", "U", "=", "30", "on", "TrueL", "n(i)", "U", "=", "60", "on", "TrueL", "n(i)", "U", "=", "120", "on", "TrueL", "n(i)", "U", "=", "240", "on", "TrueL", "n(i)", "n(i)", "U", "=", "0", "n(i)", "U", "=", "30", "n(i)", "U", "=", "60", "n(i)", "U", "=", "120", "n(i)", "U", "=", "240", "n(i)", "U", "=", "360", "0.91", "0.92", "0.93", "0.94", "0.95", "0.96", "0.97", "0.98", "0.99", "1.00", "Ac", "cu", "ra", "cy", "5", "10", "15", "20", "25", "30", "35", "40", "45", "Task"],
+  "name": "6",
+  "page": 15,
+  "regionBoundary": {
+    "x1": 108.0,
+    "x2": 504.0,
+    "y1": 81.11999999999999,
+    "y2": 321.12
+  },
+  "renderDpi": 150,
+  "renderURL": "ICLR_2023_pic__o4JUv2lmD-Figure6-1.png"
+}, {
+  "caption": "Figure 7: Semi-supervised DF-CNN with three levels of DP-SSCL label noise, showing mean final accuracy.",
+  "captionBoundary": {
+    "x1": 108.0,
+    "x2": 504.00335693359375,
+    "y1": 702.41259765625,
+    "y2": 719.3740234375
+  },
+  "figType": "Figure",
+  "imageText": ["(b)", "Binary", "CIFAR10", "0%", "Noise", "20%", "Noise", "50%", "Noise", "45", "50", "55", "60", "65", "70", "75", "80", "85", "Fi", "na", "l", "A", "cc", "ur", "ac", "y", "U", "200", "400", "800", "1200", "n(i)", "(a)", "Binary", "MNIST", "0%", "Noise", "20%", "Noise", "50%", "Noise", "y", "ur", "ac", "l", "A", "cc", "Fi", "na", "98", "96", "94", "92", "90", "88", "86", "U", "30", "60", "120", "240", "n(i)"],
+  "name": "7",
+  "page": 15,
+  "regionBoundary": {
+    "x1": 108.0,
+    "x2": 504.0,
+    "y1": 508.32,
+    "y2": 689.28
+  },
+  "renderDpi": 150,
+  "renderURL": "ICLR_2023_pic__o4JUv2lmD-Figure7-1.png"
+}]

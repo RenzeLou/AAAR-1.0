@@ -1,0 +1,81 @@
+[{
+  "caption": "Table 1: Average PSNR and SSIM (with their standard deviations) for different reconstruction methods. The reconstruction times and the number of learnable parameters are also indicated. Without any refinement, UAR outperforms AR and ACR in reconstruction quality and reduces the reconstruction time by a couple of orders of magnitude. With the refinement, UAR becomes on par with supervised post-processing, but the reconstruction time is still four times smaller than AR.",
+  "captionBoundary": {
+    "x1": 107.53199768066406,
+    "x2": 505.7453308105469,
+    "y1": 274.154541015625,
+    "y2": 323.79400634765625
+  },
+  "figType": "Table",
+  "imageText": ["UAR", "with", "λ", "=", "λ′", "=", "0.1", "34.55±", "0.67", "0.89±", "0.01", "–", "5863.3±", "106.1", "reﬁnement", "20477186", "252.7±", "13.3λ", "=", "0.01", "25.25±", "0.08", "0.37±", "0.01", "λ", "=", "0.1", "34.11±", "0.66", "0.87±", "0.01", "λ", "=", "1.0", "33.27±", "0.76", "0.87±", "0.01", "Unsupervised", "methods", "AR", "33.82±", "0.61", "0.86±", "0.01", "19338465", "22567.1±", "309.7", "ACR", "31.55±", "0.54", "0.85±", "0.01", "606610", "109952.4±", "497.8", "UAR", "λ", "=", "0.001", "21.59±", "0.11", "0.22±", "0.02", "Supervised", "methods", "U-Net", "34.50±", "0.65", "0.90±", "0.01", "7215233", "44.4±", "12.5", "LPD", "35.69±", "0.60", "0.91±", "0.01", "1138720", "279.8±", "12.8", "FBP", "21.28±", "0.13", "0.20±", "0.02", "1", "37.0±", "4.6", "TV", "30.31±", "0.52", "0.78±", "0.01", "1", "28371.4±", "1281.5", "method", "PSNR", "(dB)", "SSIM", "#", "param.", "reconstruction", "time", "(ms)"],
+  "name": "1",
+  "page": 6,
+  "regionBoundary": {
+    "x1": 108.96,
+    "x2": 503.03999999999996,
+    "y1": 72.48,
+    "y2": 264.0
+  },
+  "renderDpi": 150,
+  "renderURL": "NeurIPS_2021_pic__0kknjKJ6BH-Table1-1.png"
+}, {
+  "caption": "Figure 2: Reconstruction of UAR for different λ. For λ→ 0, the unrolled generator seeks to find the minimizer of the expected data-fidelity loss, hence the reconstruction looks similar to FBP.",
+  "captionBoundary": {
+    "x1": 108.0,
+    "x2": 503.99603271484375,
+    "y1": 483.3335266113281,
+    "y2": 500.2449951171875
+  },
+  "figType": "Figure",
+  "imageText": ["(a)", "λ", "=", "0.001:", "21.60,", "0.21", "(b)", "λ", "=", "0.01:", "25.33,", "0.37", "(c)", "λ", "=", "0.1:", "34.65,", "0.88", "(d)", "λ", "=", "1.0:", "33.96,", "0.88"],
+  "name": "2",
+  "page": 7,
+  "regionBoundary": {
+    "x1": 108.47999999999999,
+    "x2": 501.12,
+    "y1": 362.88,
+    "y2": 468.96
+  },
+  "renderDpi": 150,
+  "renderURL": "NeurIPS_2021_pic__0kknjKJ6BH-Figure2-1.png"
+}, {
+  "caption": "Figure 1: Reconstruction on Mayo clinic data. UAR achieves better reconstruction quality than AR and ACR, while significantly reducing the reconstruction time (c.f. Table 1). The reduction in reconstruction time comes at the expense of higher training complexity as compared to AR.",
+  "captionBoundary": {
+    "x1": 107.64099884033203,
+    "x2": 504.0017395019531,
+    "y1": 314.5465393066406,
+    "y2": 342.36700439453125
+  },
+  "figType": "Figure",
+  "imageText": ["(e)", "LPD:", "35.76", "dB,", "0.92", "(f)", "ACR:", "31.24", "dB,", "0.86", "(g)", "AR:", "33.52", "dB,", "0.86", "(h)", "UAR:", "33.85", "dB,", "0.87", "(a)", "ground-truth", "(b)", "FBP:", "21.19", "dB,", "0.22", "(c)", "TV:", "29.85", "dB,", "0.79", "(d)", "U-net:", "34.42", "dB,", "0.90"],
+  "name": "1",
+  "page": 7,
+  "regionBoundary": {
+    "x1": 109.92,
+    "x2": 500.15999999999997,
+    "y1": 75.84,
+    "y2": 300.47999999999996
+  },
+  "renderDpi": 150,
+  "renderURL": "NeurIPS_2021_pic__0kknjKJ6BH-Figure1-1.png"
+}, {
+  "caption": "Figure 3: Effect of refinement: (b) and (e): end-to-end reconstruction Gφ∗(yδ); (c) and (f): the respective refined reconstructions. The PSNR (dB) and SSIM scores are indicated below.",
+  "captionBoundary": {
+    "x1": 108.0,
+    "x2": 504.00274658203125,
+    "y1": 164.99850463867188,
+    "y2": 181.9110107421875
+  },
+  "figType": "Figure",
+  "imageText": ["(a)", "ground-truth", "(b)", "34.94,", "0.88", "(c)", "35.46,", "0.90", "(d)", "ground-truth", "(e)", "33.84,", "0.87", "(f)", "34.24,", "0.89"],
+  "name": "3",
+  "page": 8,
+  "regionBoundary": {
+    "x1": 113.28,
+    "x2": 498.24,
+    "y1": 75.84,
+    "y2": 149.28
+  },
+  "renderDpi": 150,
+  "renderURL": "NeurIPS_2021_pic__0kknjKJ6BH-Figure3-1.png"
+}]
