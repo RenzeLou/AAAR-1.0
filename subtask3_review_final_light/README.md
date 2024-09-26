@@ -15,4 +15,7 @@ subtask3_review_final_light
 
 ## run experiment
 
-TODO
+I used the following cmd to run the OpenAI GPT model:
+```bash
+python scripts/subtask3_review_model_prediction.close_source.py --api_name 'gpt-4o' --root_dir './subtask3_review_final_light' --save_dir './subtask3_review_final_light/eval_results' --split --max_word_len 3500 --pick_num 1000
+```

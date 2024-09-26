@@ -358,3 +358,14 @@ run `python subtask3_review_final_light/calculate_statistics.py`
 ```
 
 ### 4. run experiment
+
+- close source model (e.g., Openai GPT)
+
+```bash
+python scripts/subtask3_review_model_prediction.close_source.py --api_name 'gpt-4o' --root_dir './subtask3_review_final_light' --save_dir './subtask3_review_final_light/eval_results' --split --max_word_len 3500 --pick_num 1000
+```
+
+- open source model (e.g., Llama-3)
+
+```bash
+```
