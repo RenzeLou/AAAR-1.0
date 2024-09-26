@@ -318,3 +318,43 @@ I run the pdffigures on my local machine.
 after run `python subtask3_review/process_final_data.py`, get the finald data under `subtask3_review_final_light` (simply combine the `data_text.json` and `images`, del useless files such as arxiv source)
 
 ### 3. statistics
+
+run `python subtask3_review_final_light/calculate_statistics.py`
+
+
+```
+==> total instances (papers): 1925
+
+==================================================
+==> Input statistics
+==> AVG length of the input (words num): 9152.732467532467
+====> MAX length of the input (words num): 36776
+====> MIN length of the input (words num): 23
+==> AVG length of the input (sentence num): 339.24363636363637
+====> MAX length of the input (sentence num): 1635
+====> MIN length of the input (sentence num): 3
+==================================================
+==> Image statistics
+==> AVG number of figures per paper: 5.484675324675325
+====> MAX number of figures per paper: 45
+====> MIN number of figures per paper: 0
+==> AVG number of tables per paper: 3.2306493506493505
+====> MAX number of tables per paper: 53
+====> MIN number of tables per paper: 0
+==================================================
+==> Output statistics
+==> AVG number of reviews per paper: 3.802077922077922
+====> MAX number of reviews per paper: 7
+====> MIN number of reviews per paper: 2
+==> AVG number of items per review: 5.313567427244159
+====> MAX number of items per review: 54
+====> MIN number of items per review: 0
+==> AVG number of words per item: 40.06847518642324
+====> MAX number of words per item: 372
+====> MIN number of words per item: 1
+==> AVG number of sentences per item: 2.89154024170738
+====> MAX number of sentences per item: 18
+====> MIN number of sentences per item: 1
+```
+
+### 4. run experiment
