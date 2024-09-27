@@ -1,5 +1,5 @@
 '''
-let the models (close_source) predict the experiments and explanations for the subtask3
+let the models (close_source) predict the weaknesses for the subtask3
 '''
 import copy
 import random
