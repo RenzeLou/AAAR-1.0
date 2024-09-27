@@ -270,6 +270,67 @@ def rouge_score(prediction, reference):
     rouge1 = np.mean(r1_list)
     rougeL = np.mean(rl_list)
     return rouge1, rougeL
+
+
+def soft_accumulate(prediction, reference, model):
+    '''
+    used for weaknesss list, that one prediction list compares with multiple reference lists.
+    
+    prediction: list of strings [x,x,x, ...]
+    reference: list of list of strings [[y,y,y], [z,z,z], ...]
+    
+    return f1, precision, recall
+    '''
+    import torch
+    from sentence_transformers import SentenceTransformer, util
+    if len(prediction) == 0:
+        return 0.0, 0.0, 0.0
+
+    pred_vec = []
+    ref_vec_nested = []
+    for pred in prediction:
+        embed_pred= model.encode(pred, convert_to_tensor=True)
+        pred_vec.append(embed_pred)
+    for ref_list in reference:
+        ref_vec = []
+        if len(ref_list) == 0:
+            continue
+        for ref in ref_list:   
+            embed_ref = model.encode(ref, convert_to_tensor=True)  # TODO: make batch encoding in the future
+            ref_vec.append(embed_ref)
+        ref_vec = torch.stack(ref_vec)
+        ref_vec_nested.append(ref_vec)
+    
+    # calculate the similarity matrix
+    pred_vec = torch.stack(pred_vec)
+    sim_matrix_list = []
+    for ref_vec in ref_vec_nested:
+        sim_matrix = util.pytorch_cos_sim(pred_vec, ref_vec)  # tensor with shape of (len(pred_vec), len(ref_vec))
+        sim_matrix_list.append(sim_matrix)
+
+    # calculate recall, for each ref_vec, still find the max similarity for each pred_vec
+    recall_list = []
+    for sim_matrix in sim_matrix_list:
+        recall = sim_matrix.max(dim=0)[0].mean().item()
+        recall_list.append(recall)
+    avg_recall = np.mean(recall_list)
+    
+    # calculate precision, for each pred_vec, find max similarity for each ref_vec, then avg them.
+    precision_score_list = []
+    for sim_matrix in sim_matrix_list:
+        # get a (len(pred_vec), 1) tensor
+        max_match_score_matrix = sim_matrix.max(dim=1)[0].unsqueeze(1)
+        precision_score_list.append(max_match_score_matrix)
+    precision_matrix = torch.cat(precision_score_list, dim=1)  # tensor with shape of (len(pred_vec), len(ref_vec_nested))
+
+    # dim=1 take avg
+    all_precision = precision_matrix.mean(dim=1)  # tensor with shape of (len(pred_vec),)
+    # then take avg of the final tensor
+    avg_precision = all_precision.mean().item()
+
+    f1 = 2 * avg_precision * avg_recall / (avg_precision + avg_recall + 1e-10)
+    
+    return f1, avg_precision, avg_recall
     
 
 def soft_score(prediction, reference, model):
@@ -380,8 +441,17 @@ def SentenceSemanticMetric(predictions, references):
 
 
 if __name__ == "__main__":
-    predictions = [["hello world", "this is my world", "I wanna get you back my home"],["I am a student", "I am a teacher"]]
-    references = [["take you back home", "oops, I am sorry"],["you are my baby", "I am a good teacher", "how old are you"]]
-    f1, precision, recall = SentenceSemanticMetric(predictions, references)
+    # predictions = [["hello world", "this is my world", "I wanna get you back my home"],["I am a student", "I am a teacher"]]
+    # references = [["take you back home", "oops, I am sorry"],["you are my baby", "I am a good teacher", "how old are you"]]
+    # f1, precision, recall = SentenceSemanticMetric(predictions, references)
+    from sentence_transformers import SentenceTransformer, util
+    model = SentenceTransformer('sentence-transformers/all-mpnet-base-v2')
+    predictions_1 = ["I am a student", "godish I wanna french fries" ]
+    predictions_2 = ["you love me pls", "trump knows China really well", "....."]
+    references = [["I am a teacher", "I am a good teacher", "1,2,3,4"], ["I wanna be a really good teacher", "4,3,2,1"]]
+    f1, precision, recall = soft_accumulate(predictions_1, references, model)
+    print(f1, precision, recall)
+    f1, precision, recall = soft_accumulate(predictions_2, references, model)
+    print(f1, precision, recall)
      
         
