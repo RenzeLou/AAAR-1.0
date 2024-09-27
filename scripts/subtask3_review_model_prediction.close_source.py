@@ -215,8 +215,8 @@ def main():
     api_name_save = args.api_name.replace("/", "_")
     api_name_save = api_name_save + "-" + f"pick_{str(args.pick_num)}"
     api_name_save = api_name_save + "-split" if args.split else api_name_save
-    api_name_save = api_name_save + "-" + str(args.max_word_len)
-    save_dir = os.path.join(args.save_dir, api_name_save)
+    # api_name_save = api_name_save + "-" + str(args.max_word_len)
+    save_dir = os.path.join(args.save_dir, api_name_save, f"{str(args.max_word_len)}")
     os.makedirs(save_dir, exist_ok=True)
     
     save_list = []

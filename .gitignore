@@ -25,6 +25,7 @@ subtask3_review_final_light/NeurIPS_2022/
 subtask3_review_final_light/NeurIPS_2021/
 review_data.tar.gz
 review_data_light.tar.gz
+subtask3_review_final_light/eval_results/
 subtask3_review_final_demo/eval_results/
 !subtask2_experiment_human_anno/README.md
 !subtask2_experiment_human_anno/prompt_experiment.txt
