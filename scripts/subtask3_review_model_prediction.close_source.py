@@ -177,7 +177,9 @@ def main():
     print("==> start the prediction ...")
     st_time = datetime.now()
     res_dict = dict()  # {xxxx-id: [pred_1, pred_2, ...]}
+    all_paper_ids = set()
     for input_piece in tqdm(processed_input_list):
+        all_paper_ids.add(input_piece["id"])
         fill_in_dict = {
             "context_input": input_piece["input"]  # either the cutted text (not split) or the piece (split)
         }
@@ -243,6 +245,12 @@ def main():
     }
     with open(os.path.join(save_dir, "stat.json"), "w") as f:
         json.dump(state_dict, f, indent=4)
+        
+    # save all the paper ids
+    all_paper_ids = list(all_paper_ids)
+    with open(os.path.join(save_dir, "all_paper_ids.txt"), "w") as f:
+        for item in all_paper_ids:
+            f.write(f"{item}\n")
     
     
     print("="*20)
