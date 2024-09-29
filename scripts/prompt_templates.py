@@ -345,6 +345,54 @@ class Exp_explanation_eval(ConversationPrompt):
         return content
 
 
+# used for prompting the model to generate explanation list in subtask2
+class Exp_explanation_eval_v2(ConversationPrompt):
+    def __init__(self):
+        super().__init__()
+        self.system = (
+            "You are an expert in Machine Learning and Natural Language Processing (NLP). " +
+            "Your responsibility is to help the user undertand a paper."
+        )
+        self.query_prompt = (
+            "You are partially given an NLP paper (in latex), including some useful sections (e.g., 'abstract' and 'introduction') having some basic introductions to this research, where all the 'experiment' related sections are deleted.\n\n" +
+            "Meanwhile, you are also given an experiment idea that tries to predict one of the missed experiments in this paper.\n\n" +
+            "Now, imagine the experiment idea you created; you have to explain **why you suggested this experiment**.\n\n" +
+            "Here is an example experiment idea:\n" +
+            "```\n" +
+            "Cross-label generalisation comparison with the previous works. Since this work proposes a new method for open-domain relation type discovery, the authors should test this idea on some widely used benchmark, such as FewRel.\n" +
+            "```\n" +
+            "Here is the example corresponding explanation:\n" +
+            "```\n" +
+            "To support the effectiveness of deep metric learning compared with the unsupervised algorithm.\n\n" +
+            "Here is another example experiment idea:\n" +
+            "```\n" +
+            "Semantic representation visualisation on the test set. The authors should conduct further visualisation by using some dimension-reduce methods (e.g., t-SNE) on the widely adopted cross-label test set (e.g., FewRel).\n" +
+            "```\n" +
+            "And the corresponding explanation:\n" +
+            "```\n" +
+            "To demonstrate the explainability and robustness of the proposed semi-supervised algorithm.\n" +
+            "```\n\n" +
+            "Now, help me look at the following paper:\n" +
+            "### Paper:\n" +
+            "```\n" +
+            "{context_input}\n" +
+            "```\n\n" +
+            "### Experiment Idea:\n" +
+            "```\n" +
+            "{experiment_list}\n" +
+            "```\n\n" +
+            "Please give me your explanation w.r.t. this suggested experiment. Only give me the explanation without any other useless words.\n" +
+            "### Explanation:\n"
+        )
+
+    def extract_content(self, content:str):
+        '''
+        just return the content
+        '''
+        content = content.strip()
+        return content
+
+
 # used for prompting the model to generate weakness list of subtask3
 class Weakness_eval(ConversationPrompt):
     def __init__(self):

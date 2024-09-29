@@ -237,7 +237,14 @@ use following command to get the eval prediction of close source model:
 ```bash
 conda activate litellm
 
-python scripts/subtask2_experiment_model_prediction.close_source.py --api_name "gpt-4" --root_dir "./subtask2_experiment_human_anno/final_data" --save_dir "./subtask2_experiment_human_anno/eval_results" --max_word_len 5000 --oracle
+# v1 is deprecated, use v2 instead
+# python scripts/subtask2_experiment_model_prediction.close_source.py --api_name "gpt-4" --root_dir "./subtask2_experiment_human_anno/final_data" --save_dir "./subtask2_experiment_human_anno/eval_results" --max_word_len 5000 --oracle
+
+python scripts/subtask2_experiment_model_prediction.close_source.v2.py --api_name "gpt-4o" --root_dir "./subtask2_experiment_human_anno/final_data" --save_dir "./subtask2_experiment_human_anno/eval_results" --max_word_len 3000 --oracle
+
+python scripts/subtask2_experiment_model_prediction.close_source.v2.py --api_name "gpt-4" --root_dir "./subtask2_experiment_human_anno/final_data" --save_dir "./subtask2_experiment_human_anno/eval_results" --max_word_len 3000 --oracle
+
+python scripts/subtask2_experiment_model_prediction.close_source.v2.py --api_name "o1-preview" --root_dir "./subtask2_experiment_human_anno/final_data" --save_dir "./subtask2_experiment_human_anno/eval_results" --max_word_len 3000 --oracle
 ```
 
 - open source model (e.g., Llama-3)

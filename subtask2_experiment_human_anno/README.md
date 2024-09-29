@@ -11,7 +11,17 @@ Each foler within this zip package is the data of a paper (totally 100 papers). 
 - XXX.tar.gz: the source Latex package of this paper 
 ```
 
-## input for the model
+## run experiment
+now we switch the script from `subtask2_experiment_model_prediction.close_source.py` to `subtask2_experiment_model_prediction.close_source.v2.py` (v2 version do one-by-one forward to generate a output list, so it might take longer time and more tokens)
+
+I used the following args:
+
+```bash
+python scripts/subtask2_experiment_model_prediction.close_source.v2.py --api_name "gpt-4o" --root_dir "./subtask2_experiment_human_anno/final_data" --save_dir "./subtask2_experiment_human_anno/eval_results" --max_word_len 3000 --oracle
+```
+
+
+<!-- ## input for the model
 
 Now we are only using the `data_text.json`, where there are two filed you will use:
 ```
@@ -148,4 +158,4 @@ For example, here is your final saving structure:
         - ...
 ```
 
-namely, each paper's prediction json file are saved under the subfolder named by the paper id.
+namely, each paper's prediction json file are saved under the subfolder named by the paper id. -->
