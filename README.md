@@ -237,8 +237,11 @@ use following command to get the eval prediction of close source model:
 ```bash
 conda activate litellm
 
+sh scripts/run_subtask2.sh [GPUs] [model_name] [max_word_len for input] [max_model_len]
+
 # v1 is deprecated, use v2 instead
 # python scripts/subtask2_experiment_model_prediction.close_source.py --api_name "gpt-4" --root_dir "./subtask2_experiment_human_anno/final_data" --save_dir "./subtask2_experiment_human_anno/eval_results" --max_word_len 5000 --oracle
+# 2024/09/29: but found the v1 for openai gpt performance is better, v2 is better for open source models
 
 python scripts/subtask2_experiment_model_prediction.close_source.v2.py --api_name "gpt-4o" --root_dir "./subtask2_experiment_human_anno/final_data" --save_dir "./subtask2_experiment_human_anno/eval_results" --max_word_len 3000 --oracle
 
@@ -254,9 +257,13 @@ use following command to get the eval prediction of open source model:
 ```bash
 conda activate vllm
 
-sh scripts/run_subtask2.sh [GPUs] [model_name] [max_word_len for input] [max_model_len]
-sh scripts/run_subtask2.sh 4,5 meta-llama/Meta-Llama-3.1-70B-Instruct 2000 10000
-sh scripts/run_subtask2.sh 6,7 tiiuae/falcon-40b 2000 8192
+sh scripts/run_subtask2.v2.sh 2,3,4,5 Qwen/Qwen2.5-72B-Instruct 3000 8192
+sh scripts/run_subtask2.v2.sh 2,3,4,5 meta-llama/Meta-Llama-3.1-70B-Instruct 3000 10000
+sh scripts/run_subtask2.v2.sh 2,3,4,5 mistralai/Mixtral-8x22B-Instruct-v0.1 3000 8192
+sh scripts/run_subtask2.v2.sh 2,3,4,5 mistralai/Mistral-7B-Instruct-v0.3 3000 8192
+sh scripts/run_subtask2.v2.sh 2,3,4,5 google/gemma-2-27b 3000 8192 
+sh scripts/run_subtask2.v2.sh 2,3,4,5 tiiuae/falcon-40b 2000 8192
+sh scripts/run_subtask2.v2.sh 2,3,4,5 allenai/OLMo-7B-0724-Instruct-hf 2000 4096
 ```
 
 ### 6. metrics calculation
