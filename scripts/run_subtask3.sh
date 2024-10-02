@@ -2,8 +2,8 @@ gpu=$1  # e.g., 4,5,6
 model=$2
 max_word_len=$3
 max_model_len=$4
-pick_num=$5  # 1000
-split=$6
+# pick_num=$5  # 1000
+split=$5
 
 gpu_num=$(echo $gpu | tr -cd ',' | wc -c)
 gpu_num=$((gpu_num + 1))
@@ -29,9 +29,8 @@ if [ $split -eq 0 ]; then
         --seed 42 \
         --gpu_num ${gpu_num} \
         --max_model_len ${max_model_len} \
-        --pick_num ${pick_num} \
-        --root_dir './subtask3_review_final_light' \
-        --save_dir './subtask3_review_final_light/eval_results'
+        --root_dir './subtask3_review_final_v2' \
+        --save_dir './subtask3_review_final_v2/eval_results'
 else
     python scripts/subtask3_review_model_prediction.open_source.py \
         --api_name ${model} \
@@ -41,9 +40,8 @@ else
         --seed 42 \
         --gpu_num ${gpu_num} \
         --max_model_len ${max_model_len} \
-        --pick_num ${pick_num} \
-        --root_dir './subtask3_review_final_light' \
-        --save_dir './subtask3_review_final_light/eval_results' \
+        --root_dir './subtask3_review_final_v2' \
+        --save_dir './subtask3_review_final_v2/eval_results' \
         --split
 fi
     

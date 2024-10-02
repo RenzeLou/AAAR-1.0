@@ -112,8 +112,8 @@ def main():
     parser.add_argument("--api_key", type=str, 
                         default=None, help="not recommended; better to set env varaible.")
     parser.add_argument("--api_name", type=str, default="gpt-4-1106-preview", help="the name of the openai model to use.")
-    parser.add_argument("--root_dir", type=str, default="./subtask3_review_final_light", help="the directory save the data.")
-    parser.add_argument("--save_dir", type=str, default="./subtask3_review_final_light/eval_results", help="the directory to save the unified instances.")
+    parser.add_argument("--root_dir", type=str, default="./subtask3_review_final_v2", help="the directory save the data.")
+    parser.add_argument("--save_dir", type=str, default="./subtask3_review_final_v2/eval_results", help="the directory to save the unified instances.")
     parser.add_argument("--split", action="store_true", help="whether to split the long input context into multiple pieces.")
     parser.add_argument("--max_word_len", type=int, default=3500, help="if split, this is the max len of each piece; if not split, this is the max cut len of the input.")
     parser.add_argument("--temperature", type=float, default=0.8, help="temperature for sampling")
@@ -137,7 +137,7 @@ def main():
     current_time = datetime.now().strftime("%Y%m%d%H%M")
     # read the eval data
     print("\n==> reading the eval data ...")
-    conf_list = ["ICLR_2022", "NeurIPS_2021", "NeurIPS_2022", "ICLR_2023"]
+    conf_list = ["ICLR_2023"]  # "ICLR_2022", "NeurIPS_2021", "NeurIPS_2022", 
     all_subfolders = []
     for conf in conf_list:
         conf_dir = os.path.join(args.root_dir, conf)
@@ -173,7 +173,7 @@ def main():
             processed_input_list.append({"id": paper_id, "input": input_text_cut, "output": gt_output, "whole_input_length": input_text_length})    
     if args.pick_num is not None:
         # sort the processed_input_list by the input length, then id
-        # TODO: should select those paper to form a new dataset instead of picking when running the code
+        raise ValueError("Don not use this feature, we dont pick up during inference.")
         print(f"==> pick {args.pick_num} instances out of {len(all_subfolders)} for evaluation.")
         # short go first
         processed_input_list_sorted = sorted(processed_input_list, key=lambda x: (x["whole_input_length"], x["id"]))
