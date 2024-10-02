@@ -1,0 +1,33 @@
+{
+    "total_instances": 993,
+    "input": {
+        "avg_word_num": 9811.710976837865,
+        "max_word_num": 49195,
+        "min_word_num": 24,
+        "avg_sentence_num": 368.58710976837864,
+        "max_sentence_num": 2635,
+        "min_sentence_num": 3
+    },
+    "image": {
+        "avg_figures_num": 6.997985901309164,
+        "max_figures_num": 37,
+        "min_figures_num": 0,
+        "avg_tables_num": 4.295065458207453,
+        "max_tables_num": 53,
+        "min_tables_num": 0
+    },
+    "output": {
+        "avg_reviews_num": 3.785498489425982,
+        "max_reviews_num": 9,
+        "min_reviews_num": 3,
+        "avg_items_num": 4.84463953179037,
+        "max_items_num": 39,
+        "min_items_num": 0,
+        "avg_words_num_per_item": 39.08956125418703,
+        "max_words_num_per_item": 371,
+        "min_words_num_per_item": 1,
+        "avg_sentences_num_per_item": 2.8793586293998135,
+        "max_sentences_num_per_item": 16,
+        "min_sentences_num_per_item": 1
+    }
+}

@@ -338,7 +338,9 @@ since the arxiv table and images might not be under-review version, we use the `
 
 I run the pdffigures on my local machine.
 
-after run `python subtask3_review/process_final_data.py`, get the finald data under `subtask3_review_final_light` (simply combine the `data_text.json` and `images`, del useless files such as arxiv source)
+for v1, after run `python subtask3_review/process_final_data.py`, get the finald data under `subtask3_review_final_light` (simply combine the `data_text.json` and `images`, del useless files such as arxiv source)
+
+for v2, after run `python subtask3_review_v2/process_final_data.py`. get final data at `./subtask3_review_final_v2/ICLR_2023`, totally 995 subfolders (papers).
 
 ### 3. statistics
 
@@ -377,6 +379,45 @@ run `python subtask3_review_final_light/calculate_statistics.py`
 ====> MIN number of words per item: 1
 ==> AVG number of sentences per item: 2.89154024170738
 ====> MAX number of sentences per item: 18
+====> MIN number of sentences per item: 1
+```
+
+`python subtask3_review_final_v2/calculate_statistics.py`
+
+I mannualy deleted two papaers without any input text extracted by hanzi. Finally 993 papers are left.
+
+```
+==> total instances (papers): 993
+
+==================================================
+==> Input statistics
+==> AVG length of the input (words num): 9811.710976837865
+====> MAX length of the input (words num): 49195
+====> MIN length of the input (words num): 24
+==> AVG length of the input (sentence num): 368.58710976837864
+====> MAX length of the input (sentence num): 2635
+====> MIN length of the input (sentence num): 3
+==================================================
+==> Image statistics
+==> AVG number of figures per paper: 6.997985901309164
+====> MAX number of figures per paper: 37
+====> MIN number of figures per paper: 0
+==> AVG number of tables per paper: 4.295065458207453
+====> MAX number of tables per paper: 53
+====> MIN number of tables per paper: 0
+==================================================
+==> Output statistics
+==> AVG number of reviews per paper: 3.785498489425982
+====> MAX number of reviews per paper: 9
+====> MIN number of reviews per paper: 3
+==> AVG number of items per review: 4.84463953179037
+====> MAX number of items per review: 39
+====> MIN number of items per review: 0
+==> AVG number of words per item: 39.08956125418703
+====> MAX number of words per item: 371
+====> MIN number of words per item: 1
+==> AVG number of sentences per item: 2.8793586293998135
+====> MAX number of sentences per item: 16
 ====> MIN number of sentences per item: 1
 ```
 
