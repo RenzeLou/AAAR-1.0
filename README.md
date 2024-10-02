@@ -426,7 +426,13 @@ I mannualy deleted two papaers without any input text extracted by hanzi. Finall
 - close source model (e.g., Openai GPT)
 
 ```bash
+# v1
 python scripts/subtask3_review_model_prediction.close_source.py --api_name 'gpt-4o' --root_dir './subtask3_review_final_light' --save_dir './subtask3_review_final_light/eval_results' --split --max_word_len 3500 --pick_num 1000
+
+# v2
+python scripts/subtask3_review_model_prediction.close_source.py --api_name 'gpt-4o' --root_dir './subtask3_review_final_v2' --save_dir './subtask3_review_final_v2/eval_results' --split --max_word_len 3000 
+python scripts/subtask3_review_model_prediction.close_source.py --api_name 'o1-preview' --root_dir './subtask3_review_final_v2' --save_dir './subtask3_review_final_v2/eval_results' --split --max_word_len 3000
+python scripts/subtask3_review_model_prediction.close_source.py --api_name 'gpt-4-turbo' --root_dir './subtask3_review_final_v2' --save_dir './subtask3_review_final_v2/eval_results' --split --max_word_len 3000
 ```
 
 - open source model (e.g., Llama-3)
