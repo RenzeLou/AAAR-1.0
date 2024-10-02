@@ -297,12 +297,19 @@ the eval performance will be saved in `--root_dir` folder.
 Download the raw data from [google drive](https://drive.google.com/drive/folders/1KKpMFj3S5CLUWF_vIo7vaBpXnAYrIxtv)
 
 ```bash
+# for v1
 cd subtask3_review
 
 python step3.5_weakness_extraction.py --csv '/data/rml6079/projects/scientific_doc/subtask3_review/our_dataset/ICLR_2022/ICLR_2022_draft_comment.csv'
 python step3.5_weakness_extraction.py --csv '/data/rml6079/projects/scientific_doc/subtask3_review/our_dataset/ICLR_2023/ICLR_2023_draft_comment.csv'
 python step3.5_weakness_extraction.py --csv '/data/rml6079/projects/scientific_doc/subtask3_review/our_dataset/NeurIPS_2021/NeurIPS_2021_draft_comment.csv'
 python step3.5_weakness_extraction.py --csv '/data/rml6079/projects/scientific_doc/subtask3_review/our_dataset/NeurIPS_2022/NeurIPS_2022_draft_comment.csv'
+
+# for v2, only use ICLR 2023
+cd subtask3_review_v2 
+python extract_weakness_list.py --csv './ICLR_2023_draft_comment_meta.csv'
+# use the following script to select 1000 paper, and plot the track and score distribution
+python score_distribution.py
 ```
 
 The above commands will process all the csv files to json files, by **using GPT4 to extract the weakness list** from the raw review comments. The extracted weakess list for each paper are saved at `./subtask3_review/all_weakness.json`, such as `./subtask3_review/ICLR_2023_all_weakness.json`
@@ -312,11 +319,13 @@ Then use the following command to combine all the output (weakness list) with th
 ```bash
 conda activate papermage
 
-# v1, that download the source package and extract all the source pic, tables (really time-consuming)
+# v1.1 that download the source package and extract all the source pic, tables (really time-consuming)
 python ./subtask3_review/data_process.py --root_dir "./subtask3_review" --target_dir "./subtask3_review_processed"
-
-# v2, that don't download the source package, will use pdffigures to extract the figures and tables from the draft later (really fast)
+# v1.2 that don't download the source package, will use pdffigures to extract the figures and tables from the draft later (really fast)
 python ./subtask3_review/data_process.v2.py --root_dir "./subtask3_review" --target_dir "./subtask3_review_processed_v2" --blacklist 'NeurIPS_2021_all_weakness.json' --num_per_conf 500
+
+# v2
+python subtask3_review_v2/data_process.py
 ```
 
 the processed data will be saved in `./subtask3_review_processed` folder, where each paper is the subfolder, and there are three type of files under each paper folder: 1. `data_text.json`, 2. `images`, 3. `tables`

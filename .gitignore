@@ -27,6 +27,10 @@ review_data.tar.gz
 review_data_light.tar.gz
 subtask3_review_final_light/eval_results/
 subtask3_review_final_demo/eval_results/
+subtask3_review.v2.tar.gz
+subtask3_review_v2/processed/
+subtask3_review_v2/ICLR_*.csv
+subtask3_review_v2/ICLR_*.json
 !subtask2_experiment_human_anno/README.md
 !subtask2_experiment_human_anno/prompt_experiment.txt
 !subtask2_experiment_human_anno/prompt_explanation.txt
