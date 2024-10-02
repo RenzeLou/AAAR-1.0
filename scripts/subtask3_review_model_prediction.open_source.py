@@ -147,7 +147,7 @@ def main():
         # del those dir that do not have `data_text.json`
         all_files_dirs = [x for x in all_files_dirs if os.path.exists(os.path.join(x, "data_text.json"))]
         all_subfolders.extend(all_files_dirs)
-    print(f"==> {len(all_subfolders)} instances found under {args.root_dir} (should be 1,925)\n")
+    print(f"==> {len(all_subfolders)} instances found under {args.root_dir} (should be 993)\n")
     # import pdb; pdb.set_trace()
     
     print("==> processing the eval data ...")
