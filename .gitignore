@@ -32,6 +32,7 @@ subtask3_review_v2/processed/
 subtask3_review_v2/ICLR_*.csv
 subtask3_review_v2/ICLR_*.json
 subtask3_review_final_v2/ICLR_2023/
+subtask3_review_final_v2/eval_results/
 !subtask2_experiment_human_anno/README.md
 !subtask2_experiment_human_anno/prompt_experiment.txt
 !subtask2_experiment_human_anno/prompt_explanation.txt
