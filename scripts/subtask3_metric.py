@@ -11,6 +11,7 @@ import argparse
 from tqdm import tqdm
 import os
 os.environ["TRANSFORMERS_CACHE"] = "/scratch/rml6079/.cache/huggingface"
+os.environ["HF_HOME"] = "/scratch/rml6079/.cache/huggingface"
 
 import torch
 from sentence_transformers import SentenceTransformer, util
@@ -35,7 +36,7 @@ def sentence_num(input_text):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--root_dir", type=str, default="./subtask3_review_final_light/eval_results", help="the directory save the prediction results.")
+    parser.add_argument("--root_dir", type=str, default="./subtask3_review_final_v2/eval_results", help="the directory save the prediction results.")
     parser.add_argument("--overwrite", action="store_true", help="overwrite the existing performance.json")
     parser.add_argument("--seed", type=int, default=42, help="random seed for reproducibility")
 

@@ -462,5 +462,9 @@ sh scripts/run_subtask3.sh 4,5,6,7 tiiuae/falcon-40b 1000 8192 1
 ```bash
 conda activate crawl_arxiv
 
+# soft score
 python scripts/subtask3_metric.py
+# cross diversity
+python scripts/subtask3_metric_cross_diversity.py --batch_size 512 --papaer_top_k 2 --track_top_k 20 --threshold 0.5
+python scripts/subtask3_metric_cross_diversity.py --batch_size 512 --papaer_top_k 2 --track_top_k 20 --only_human_score --threshold 0.5 --pick_choice 3 # human's weakness list score
 ```

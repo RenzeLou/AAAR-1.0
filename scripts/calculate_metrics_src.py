@@ -5,7 +5,7 @@ import sys
 import os
 import argparse
 import logging
-from collections import Counter
+from collections import Counter,defaultdict
 from tqdm import tqdm
 import os
 os.environ["TRANSFORMERS_CACHE"] = "/scratch/rml6079/.cache/huggingface"
@@ -13,6 +13,7 @@ os.environ["TRANSFORMERS_CACHE"] = "/scratch/rml6079/.cache/huggingface"
 sys.path.append("/scratch/rml6079/project/Instruct_dataset_training_code/src")
 
 import numpy as np
+import torch
 from rouge import rouge_scorer
 
 
@@ -438,6 +439,129 @@ def SentenceSemanticMetric(predictions, references):
     precision = np.mean(precision_list)
     recall = np.mean(recall_list)
     return f1, precision, recall
+
+
+def cross_focus_diversity(all_papers_weakness_list:list, model=None, threshold=0.5, inverse_tf=True, batch_size=512):
+    '''
+    all_papers_weakness_list: a list, each item is a tuple of (paper_id, weakness_list) or (track_name, weakness_list)
+    
+    return a score reflecting the paper specific focus of the generated weakness list.
+    
+    a higher score means a generated weakness list is more specifc the corresponding paper.
+    
+    return:
+        1. idf_score
+        2. id2score: a dict, like {paper_id: [score1, score2, ...], ...}, each paper id and its corresponding segment's idf score.
+    '''
+    from sentence_transformers import SentenceTransformer, util
+    THRESHOLD = threshold
+    if model is None:
+        model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+
+    # remove the line that contains the word "clarity" and "quality" and "novelty"
+    # new_all_papers_weakness_list = []
+    # for idx, (paper_id, weakness_list) in enumerate(all_papers_weakness_list):
+    #     new_weakness_list = []
+    #     for line in weakness_list:
+    #         # some templates lines
+    #         if not ("clarity" in line.lower() and "quality" in line.lower() and "novelty" in line.lower() and "reproducibility" in line.lower()):
+    #             new_weakness_list.append(line)
+    #     new_all_papers_weakness_list.append((paper_id, new_weakness_list))
+    # all_review_text_list = new_all_papers_weakness_list
+    all_review_text_list = all_papers_weakness_list
+
+    all_review_embedding_dict = dict()
+    for idx, (paper_name, text) in enumerate(tqdm(all_review_text_list)):
+        # batch forward the text
+        # embeddings = model.encode(text)
+        # make the embeddings a float numpy array
+        embeddings = []
+        for i in range(0, len(text), batch_size):
+            batch_text = text[i:i+batch_size]
+            batch_embeddings = model.encode(batch_text, convert_to_tensor=True)
+            embeddings.extend(batch_embeddings)
+            # import pdb; pdb.set_trace()
+        embeddings = torch.stack(embeddings)  # tensor with shape of (len(text), 384)
+        assert embeddings.shape[0] == len(text)
+        key = f"{paper_name}"
+        all_review_embedding_dict[key] = embeddings
+        # print("done")
+
+    all_review_similarity_dict = dict()
+    for key1, embeddings1 in tqdm(all_review_embedding_dict.items()):
+        all_review_similarity_dict[key1] = dict()
+        for key2, embeddings2 in all_review_embedding_dict.items():
+            similarity = model.similarity(embeddings1, embeddings2)
+            all_review_similarity_dict[key1][key2] = similarity
+            # print("done")
+    # TODO: optimize the above code by using util.pytorch_cos_sim
+    # all_review_similarity = util.pytorch_cos_sim(torch.stack(list(all_review_embedding_dict.values())), torch.stack(list(all_review_embedding_dict.values())))  # shape of (len(all_review_embedding_dict), len(all_review_embedding_dict)), 993 * 993
+    # import pdb; pdb.set_trace()
+    # all_review_similarity_dict = dict()
+    # # just assign the value of all_review_similarity to all_review_similarity_dict
+    # for idx, (key1, _) in enumerate(all_review_embedding_dict.items()):
+    #     all_review_similarity_dict[key1] = dict()
+    #     for idx2, (key2, _) in enumerate(all_review_embedding_dict.keys()):
+    #         all_review_similarity_dict[key1][key2] = all_review_similarity[idx][idx2]
+    
+    # import pdb; pdb.set_trace()
+    all_review_max_sim_per_seg = dict()
+    for key1, similarity_dict in tqdm(all_review_similarity_dict.items()):
+        all_review_max_sim_per_seg[key1] = defaultdict(list)
+        # print(key1)
+        for key2, similarity in similarity_dict.items():
+            # NEED TO REMOVE LATER
+            if key1 == key2:
+                continue
+            # print(key2, similarity)
+            max_similarity = torch.max(similarity, dim=1)
+            for i in range(len(max_similarity.values)):
+                all_review_max_sim_per_seg[key1][i].append(round(max_similarity.values[i].item(), 2))
+        # print("done")
+
+    # our custom itf-idf score
+    total_number_of_paper = len(all_review_max_sim_per_seg)  # !! variable in the formula !!
+
+    # import pdb; pdb.set_trace()
+    all_idf_scores_per_seg = defaultdict(list)
+    for target_paper_key in tqdm(all_review_similarity_dict.keys()):
+        total_number_of_segments_in_current_review = len(all_review_similarity_dict[target_paper_key][target_paper_key])  # !! variable in the formula !!
+        # import pdb; pdb.set_trace()
+
+        for seg_idx, sim_with_other_segs in enumerate(all_review_similarity_dict[target_paper_key][target_paper_key]):
+            # ===== START: compute this segment's occurence in current review === #
+            # set all elements in the sim_with_other_segs less than the THRESHOLD to 0
+            sim_with_other_segs[sim_with_other_segs < THRESHOLD] = 0
+            # sum up the number of segments that have similarity greater than THRESHOLD
+            # a variable in the formula
+            this_seg_occurence_in_current_review = torch.sum(sim_with_other_segs).item() # !! variable in the formula !!
+            # ===== END: compute this segment's occurence in current review === #
+
+            # ===== START: compute the number of papers containing the segment === #
+            this_seg_max_similarity_in_other_papers = all_review_max_sim_per_seg[target_paper_key][seg_idx]
+            # set all elements in the this_seg_max_similarity_in_other_papers less than the THRESHOLD to 0
+            this_seg_max_similarity_in_other_papers = torch.tensor(this_seg_max_similarity_in_other_papers)
+            this_seg_max_similarity_in_other_papers[this_seg_max_similarity_in_other_papers < THRESHOLD] = 0
+            number_of_papers_containing_the_segment = 1 + torch.sum(this_seg_max_similarity_in_other_papers).item() # !! variable in the formula !!
+            # ===== END: compute the number of papers containing the segment === #
+            if inverse_tf:
+                # itf-idf
+                # log(total number of segments in current review / this seg occurence in current review) * log(total number of papers / number of papers containing the segment)
+                idf_score_this_seg = np.log(total_number_of_segments_in_current_review / this_seg_occurence_in_current_review) * np.log(total_number_of_paper / number_of_papers_containing_the_segment)  # [0, +inf)]
+            else:
+                # tf-idf
+                # (this seg occurence in current review / total number of segments in current review) * log(total number of papers / number of papers containing the segment)
+                idf_score_this_seg = (this_seg_occurence_in_current_review / total_number_of_segments_in_current_review) * np.log(total_number_of_paper / number_of_papers_containing_the_segment)  # [0, +inf)]
+            all_idf_scores_per_seg[target_paper_key].append(idf_score_this_seg)
+
+
+    all_idf_scores_per_paper_review = dict()
+    for target_paper_key, idf_scores in all_idf_scores_per_seg.items():
+        all_idf_scores_per_paper_review[target_paper_key] = np.mean(idf_scores)
+    
+    average_idf_score = np.mean(list(all_idf_scores_per_paper_review.values()))
+
+    return average_idf_score, all_idf_scores_per_seg
 
 
 if __name__ == "__main__":
