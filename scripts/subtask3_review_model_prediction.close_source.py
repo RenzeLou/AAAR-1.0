@@ -183,7 +183,12 @@ def main():
         fill_in_dict = {
             "context_input": input_piece["input"]  # either the cutted text (not split) or the piece (split)
         }
-        weakness_list, _ = openai_chat_completion(client, fill_in_dict, template, decoding_args, model_name=args.api_name)
+        try:
+            weakness_list, _ = openai_chat_completion(client, fill_in_dict, template, decoding_args, model_name=args.api_name)
+        except Exception as e:  # o1 always trigger this
+            # if "tenacity.RetryError" in str(e):
+            print(f"==> RetryError: {str(e)} for {input_piece['id']}")
+            weakness_list = []
         if input_piece["id"] not in res_dict:
             res_dict[input_piece["id"]] = [weakness_list]
         else:
