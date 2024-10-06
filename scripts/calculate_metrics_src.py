@@ -13,7 +13,6 @@ os.environ["TRANSFORMERS_CACHE"] = "/scratch/rml6079/.cache/huggingface"
 sys.path.append("/scratch/rml6079/project/Instruct_dataset_training_code/src")
 
 import numpy as np
-import torch
 from rouge import rouge_scorer
 
 
@@ -453,6 +452,7 @@ def cross_focus_diversity(all_papers_weakness_list:list, model=None, threshold=0
         1. idf_score
         2. id2score: a dict, like {paper_id: [score1, score2, ...], ...}, each paper id and its corresponding segment's idf score.
     '''
+    import torch
     from sentence_transformers import SentenceTransformer, util
     THRESHOLD = threshold
     if model is None:
