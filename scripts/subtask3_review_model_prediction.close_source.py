@@ -139,7 +139,7 @@ def main():
     for subfolder_path in tqdm(all_subfolders):  
         # TODO: also should consider the images in the future
         text_file = os.path.join(subfolder_path, "data_text.json")
-        with open(text_file, "r") as f:
+        with open(text_file, "r", encoding="utf-8") as f:
             text_data = json.load(f)
         paper_id = text_data["ID"]
         input_text = process_input_text(text_data["input"])
