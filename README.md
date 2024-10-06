@@ -228,6 +228,27 @@ Number of words per item (why): AVG: 27.145614035087718, MAX: 89, MIN: 9
 Number of images per paper: AVG: 16.01, MAX: 91, MIN: 0
 ```
 
+while for the images, since all the image files under the `images` are from the arxiv source pakcage, not all of them are used in the paper. I used the following cmd to i. keep only those images used in the input context; ii. unified all the images format into `png`:
+
+```bash
+conda activate crawl_arxiv
+cd subtask2_experiment_human_anno
+python process_all_images.py
+```
+
+After processing, there is a new subfolder `images/used`, contains all the used figures in this paper (used in the input context, remember that we only provide model with the context before the experiment section as the input). That's why, the final used images number is much less than the total image number in the source package.
+
+```
+==> total instances: 100
+==> AVG images (in latex source):  16.01
+==> MAX images (in latex source):  91
+==> MIN images (in latex source):  0
+==> AVG used images (used in the input context):  2.57  # much lower than the # of images in the source package
+==> MAX used images (used in the input context):  16
+==> MIN used images (used in the input context):  0
+```
+
+
 ### 5. run experiment
 
 - close source model (e.g., Openai GPT)
