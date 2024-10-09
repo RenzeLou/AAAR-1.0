@@ -507,12 +507,20 @@ sh scripts/run_subtask3.sh 4,5,6,7 allenai/OLMo-7B-0724-Instruct-hf 1000 8192 1
 sh scripts/run_subtask3.sh 4,5,6,7 tiiuae/falcon-40b 1000 8192 1
 ```
 
-- multi-modal (using the images)
+run multi-modal (using the images)
 
 ```bash
 sh scripts/run_subtask3.multi_modal.sh 4,5,6,7 OpenGVLab/InternVL2-26B 2000 12000 2
 sh scripts/run_subtask3.multi_modal.sh 4,5,6,7 OpenGVLab/InternVL2-26B 2000 12000 1
 sh scripts/run_subtask3.multi_modal.sh 4,5,6,7 OpenGVLab/InternVL2-26B 2000 12000 0
+```
+
+- Agent Framework (AI-Scientist)
+
+```bash
+conda activate ai_scientist
+
+python scripts/subtask3_review_model_prediction.agent.py --api_name 'gpt-4o-2024-05-13' --root_dir './subtask3_review_final_v2' --save_dir './subtask3_review_final_v2/eval_results' --max_word_len 3000 --split
 ```
 
 ### 5. metrics calculation
