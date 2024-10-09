@@ -29,7 +29,7 @@ def darken_color(hex_color, factor=0.7):
 plt.rcParams["font.family"] = "Times New Roman"
 
 # Define scales and performances
-x_scales = ["100", "300", "500", "700", "900", "1100", "1300", "1500"]
+x_scales = ["100", "300", "500", "700", "900", "1,100", "1,300", "1,500"]
 # Adjust space by slightly reducing the last number
 x_scales_numbers = np.array([100, 300, 500, 700, 900, 1100, 1300, 1500])
 gpt4_turbo = [24.88, 34.89, 39.37, 39.08, 40.89, 41.27, 41.56, 41.37]
