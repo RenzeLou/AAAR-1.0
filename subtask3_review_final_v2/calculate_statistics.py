@@ -169,6 +169,16 @@ def main():
     print(f"====> MAX number of sentences per item: {max(all_item_sentence_num)}")
     print(f"====> MIN number of sentences per item: {min(all_item_sentence_num)}")
     
+    # also to see, the 90% word lengths are below which number
+    all_word_num.sort()
+    nine_percentile_idx = int(len(all_word_num) * 0.9)
+    nine_five_percentile_idx = int(len(all_word_num) * 0.95)
+    eight_percentile_idx = int(len(all_word_num) * 0.8)
+    print("="*50)
+    print(f"==> 95% of the papers have word length below: {all_word_num[nine_five_percentile_idx]}")
+    print(f"==> 90% of the papers have word length below: {all_word_num[nine_percentile_idx]}")
+    print(f"==> 80% of the papers have word length below: {all_word_num[eight_percentile_idx]}")
+    
     with open(os.path.join(args.target_dir, "statistics.json"), "w") as f:
         json.dump({
             "total_instances": cnt,

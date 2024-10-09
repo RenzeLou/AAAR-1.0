@@ -251,7 +251,9 @@ After processing, there is a new subfolder `images/used`, contains all the used 
 
 ### 5. run experiment
 
-- close source model (e.g., Openai GPT)
+#### 5.1 close source model (e.g., Openai GPT)
+
+- pure text
 
 use following command to get the eval prediction of close source model:
 
@@ -271,7 +273,13 @@ python scripts/subtask2_experiment_model_prediction.close_source.v2.py --api_nam
 python scripts/subtask2_experiment_model_prediction.close_source.v2.py --api_name "o1-preview" --root_dir "./subtask2_experiment_human_anno/final_data" --save_dir "./subtask2_experiment_human_anno/eval_results" --max_word_len 3000 --oracle
 ```
 
-- open source model (e.g., Llama-3)
+- multi-modal (using the images in the input context)
+
+```bash
+python scripts/subtask2_experiment_model_prediction.close_source.py --api_name "gpt-4o" --root_dir "./subtask2_experiment_human_anno/final_data" --save_dir "./subtask2_experiment_human_anno/eval_results" --max_word_len 3000 --oracle --images
+```
+
+#### 5.2 open source model (e.g., Llama-3)
 
 use following command to get the eval prediction of open source model:
 
@@ -285,6 +293,14 @@ sh scripts/run_subtask2.v2.sh 2,3,4,5 mistralai/Mistral-7B-Instruct-v0.3 3000 81
 sh scripts/run_subtask2.v2.sh 2,3,4,5 google/gemma-2-27b 3000 8192 
 sh scripts/run_subtask2.v2.sh 2,3,4,5 tiiuae/falcon-40b 2000 8192
 sh scripts/run_subtask2.v2.sh 2,3,4,5 allenai/OLMo-7B-0724-Instruct-hf 2000 4096
+```
+
+- multi-modal (using the images in the input context)
+
+```bash
+conda activate vllm_mm
+sh scripts/run_subtask2.multi_modal.v2.sh 4,5,6,7 OpenGVLab/InternVL2-26B 2000 12000 1  # 1 images
+sh scripts/run_subtask2.multi_modal.v2.sh 4,5,6,7 OpenGVLab/InternVL2-26B 2000 12000 0  # 0 images for comparison
 ```
 
 ### 6. metrics calculation
@@ -440,6 +456,10 @@ I mannualy deleted two papaers without any input text extracted by hanzi. Finall
 ==> AVG number of sentences per item: 2.8793586293998135
 ====> MAX number of sentences per item: 16
 ====> MIN number of sentences per item: 1
+==================================================
+==> 95% of the papers have word length below: 20943
+==> 90% of the papers have word length below: 16532
+==> 80% of the papers have word length below: 12367
 ```
 
 ### 4. run experiment
@@ -454,6 +474,15 @@ python scripts/subtask3_review_model_prediction.close_source.py --api_name 'gpt-
 python scripts/subtask3_review_model_prediction.close_source.py --api_name 'gpt-4o' --root_dir './subtask3_review_final_v2' --save_dir './subtask3_review_final_v2/eval_results' --split --max_word_len 3000 
 python scripts/subtask3_review_model_prediction.close_source.py --api_name 'o1-preview' --root_dir './subtask3_review_final_v2' --save_dir './subtask3_review_final_v2/eval_results' --split --max_word_len 3000
 python scripts/subtask3_review_model_prediction.close_source.py --api_name 'gpt-4-turbo' --root_dir './subtask3_review_final_v2' --save_dir './subtask3_review_final_v2/eval_results' --split --max_word_len 3000
+```
+
+run multi-modal (using the images):
+```bash
+python scripts/subtask3_review_model_prediction.close_source.py --api_name 'gpt-4o' --root_dir './subtask3_review_final_v2' --save_dir './subtask3_review_final_v2/eval_results' --max_word_len 3000 --split --tables --figures
+
+python scripts/subtask3_review_model_prediction.close_source.py --api_name 'gpt-4o' --root_dir './subtask3_review_final_v2' --save_dir './subtask3_review_final_v2/eval_results' --max_word_len 3000 --split --figures
+
+python scripts/subtask3_review_model_prediction.close_source.py --api_name 'gpt-4o' --root_dir './subtask3_review_final_v2' --save_dir './subtask3_review_final_v2/eval_results' --max_word_len 3000 --split --tables
 ```
 
 - open source model (e.g., Llama-3)
@@ -476,6 +505,14 @@ sh scripts/run_subtask3.sh 4,5,6,7 mistralai/Mistral-7B-Instruct-v0.3 3000 8192 
 sh scripts/run_subtask3.sh 4,5,6,7 google/gemma-2-27b 2500 8192 1
 sh scripts/run_subtask3.sh 4,5,6,7 allenai/OLMo-7B-0724-Instruct-hf 1000 8192 1
 sh scripts/run_subtask3.sh 4,5,6,7 tiiuae/falcon-40b 1000 8192 1
+```
+
+- multi-modal (using the images)
+
+```bash
+sh scripts/run_subtask3.multi_modal.sh 4,5,6,7 OpenGVLab/InternVL2-26B 2000 12000 2
+sh scripts/run_subtask3.multi_modal.sh 4,5,6,7 OpenGVLab/InternVL2-26B 2000 12000 1
+sh scripts/run_subtask3.multi_modal.sh 4,5,6,7 OpenGVLab/InternVL2-26B 2000 12000 0
 ```
 
 ### 5. metrics calculation

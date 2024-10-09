@@ -1,6 +1,7 @@
 '''
 let the models (close_source) predict the experiments and explanations for the subtask2
 '''
+import base64
 import copy
 import random
 import re
@@ -92,7 +93,29 @@ def save_intermediate_results(all_items, save_file, save_path, message):
     with open(os.path.join(terminate_save_path, file_name), "w") as f:
         json.dump(all_items, f, indent=2)
 
+# Function to encode the image
+def encode_image(image_path):
+  with open(image_path, "rb") as image_file:
+    return base64.b64encode(image_file.read()).decode('utf-8')
 
+
+def get_all_used_images(path):
+    '''
+    read all the images under the path (these are all the images used in the input context, according to the tex file)
+    assume that all the images are processed as png files!!!
+    '''
+    # get all the png files under the path
+    all_png_files = []
+    for f in os.listdir(path):
+        if f.endswith(".png"):  # TODO: only consider the png files!!! all images should already be processed to png files
+            all_png_files.append(os.path.join(path, f))
+
+    # encode all the png files into base64
+    all_images_str = []
+    for png_file in all_png_files:
+        all_images_str.append(encode_image(png_file))
+    
+    return all_images_str
 
 def main():
     parser = argparse.ArgumentParser()
@@ -105,6 +128,7 @@ def main():
     parser.add_argument("--oracle", action="store_true", help="whether to use the oracle to generate the explanation list.")
     parser.add_argument("--max_retry", type=int, default=3, help="the maximum number of retries for each instance.")
     parser.add_argument("--seed", type=int, default=42, help="random seed for reproducibility")
+    parser.add_argument("--images", action="store_true", help="whether to use the images in the data")
 
     args, unparsed = parser.parse_known_args()
     if unparsed:
@@ -133,21 +157,34 @@ def main():
         data_json = os.path.join(args.root_dir, subfolder, "data_text.json")
         with open(data_json, "r") as f:
             data_text = json.load(f)
-        # TODO: add image data in the future
-        eval_data.append(data_text)
+        if args.images:
+            # get all the images base64 strings
+            used_img_path = os.path.join(args.root_dir, subfolder, "images", "used")
+            if not os.path.exists(used_img_path):
+                raise ValueError(f"==> the used images path does not exist: {used_img_path}, pls check if your dataset is correct.")
+            all_images_str = get_all_used_images(used_img_path)
+            eval_data.append((data_text, all_images_str))
+        else:
+            # pure text data
+            eval_data.append(data_text)
     print(f"==> total instances: {len(eval_data)}\n")
     
     
     # sometimes the api_name will be like a path (for the open source LLM), e.g., `mistralai/Mistral-7B-Instruct-v0.1`
     # replace `/` with `_` to avoid the error of creating a directory with the name of the path
     api_name_save = args.api_name.replace("/", "_")
-    api_name_save = api_name_save + "-" + str(args.max_word_len)
+    # api_name_save = api_name_save + "-" + str(args.max_word_len)
     api_name_save = api_name_save + "-oracle" if args.oracle else api_name_save
+    api_name_save = api_name_save + "-images" if args.images else api_name_save
     current_time = datetime.now().strftime("%Y%m%d%H%M")
-    api_name_save = api_name_save + "---" + current_time 
-    for eval_ins in tqdm(eval_data):
+    # api_name_save = api_name_save + "---" + current_time 
+    for instance in tqdm(eval_data):
+        if args.images:
+            eval_ins, all_images_str = instance
+        else:
+            eval_ins, all_images_str = instance, None
         paper_id = eval_ins["id"]
-        target_dir = os.path.join(args.save_dir, f"{api_name_save}", paper_id)
+        target_dir = os.path.join(args.save_dir, f"{api_name_save}", str(args.max_word_len), paper_id)
         os.makedirs(target_dir, exist_ok=True)
         
         input_text = eval_ins["input"]
@@ -163,7 +200,8 @@ def main():
         retry_falg = True
         retry_cnt = 0
         while retry_falg:
-            pred_experiment, _ = openai_chat_completion(client, eval_dict_experiment, experiment_template, decoding_args, model_name=args.api_name)
+            pred_experiment, _ = openai_chat_completion(client, eval_dict_experiment, experiment_template, decoding_args, model_name=args.api_name, images=all_images_str)
+            # import pdb; pdb.set_trace()
             if isinstance(pred_experiment, list):
                 retry_falg = False
             else:
@@ -194,7 +232,8 @@ def main():
             retry_falg = True
             retry_cnt = 0
             while retry_falg:
-                pred_explanation, _ = openai_chat_completion(client, eval_dict_explanation, explanation_template, decoding_args, model_name=args.api_name)
+                pred_explanation, _ = openai_chat_completion(client, eval_dict_explanation, explanation_template, decoding_args, model_name=args.api_name, images=all_images_str)
+                # import pdb; pdb.set_trace()
                 if isinstance(pred_explanation, list) and len(pred_explanation) == experiment_list_len:  # TODO: note that, for open source LLM, you cannot expect the model will well follow instruction to produce a valid list, then the check should be chill
                     retry_falg = False
                 else:
@@ -219,6 +258,7 @@ def main():
             "api_name": args.api_name,
             "max_word_len": args.max_word_len,
             "oracle": args.oracle,
+            "images": args.images,
             "time": current_time,
             "input": input_text,
             "input_cut": input_text_cut,
@@ -231,6 +271,7 @@ def main():
     print(f"Model: {args.api_name}")
     print(f"Input max word len: {args.max_word_len}")
     print(f"Oracle: {args.oracle}")
+    print(f"Images: {args.images}")
     print("="*20)
     print(f"Results saved to: {os.path.join(args.save_dir, api_name_save)}")
     

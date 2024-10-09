@@ -1,5 +1,6 @@
 
 import argparse
+import base64
 import copy
 import json
 import os
@@ -196,6 +197,8 @@ def openai_chat_completion(
     template: ConversationPrompt,
     decoding_args,
     model_name="gpt-3.5-turbo-0301",  # TODO: 0301 will be deprecated in the future
+    images: Optional[list[base64.b64encode]] = None,
+    image_reso: Optional[str] = "low",
     **decoding_kwargs,
 ):
     '''
@@ -204,14 +207,32 @@ def openai_chat_completion(
     args:
         - input_dic: a dictionary of the input.
         - template: a string template that is waiting for filling in the values in the input_dic.
+        - images: a list of base64 encoded images. If the model supports images, the images will be used as the input.
     return:
         - content: the content of the response
         - cost: the number of tokens used by this completion
         
     return (None, None) if the input is too long (exceeds the max length of ChatGPT)
     '''
-    
-    user_content = template.query_prompt.format_map(input_dic)
+    if images is None:
+        # simply text-based completion
+        user_content = template.query_prompt.format_map(input_dic)
+    else:
+        # multi-modal completion
+        user_content = []
+        for image in images:
+            # each image is a base64 encoded string
+            user_content.append({
+                "type": "image_url",
+                "image_url": {
+                    "url": f"data:image/png;base64,{image}",
+                    "detail": image_reso
+                }
+            })
+        user_content.append({
+            "type": "text",
+            "text": template.query_prompt.format_map(input_dic)
+        })
     
     if "o1" in model_name:
         # TODO: currently, o1 doesn't support the system message

@@ -402,7 +402,7 @@ class Weakness_eval(ConversationPrompt):
             "Your responsibility is to help the user review a paper."
         )
         self.query_prompt = (
-            "You are given an NLP paper. Imagine you are a machine learning expert with rich research experience. Please carefully review this paper and identify the weaknesses of this research.\n\n" +
+            "You are given an NLP paper, along with its figure illustrations. Imagine you are a machine learning expert with rich research experience. Please carefully review this paper and identify the weaknesses of this research.\n\n" +
             "Here is the paper (it might be in partial content):\n" +
             "```\n" +
             "{context_input}\n" +
