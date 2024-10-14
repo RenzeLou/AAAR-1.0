@@ -80,6 +80,7 @@ def main():
     cnt = 0
     all_sentence_num, all_word_num, all_image_num, all_table_num = [], [], [], []
     all_review_num, all_weakness_len, all_item_word_num, all_item_sentence_num = [], [], [], []
+    all_table_mentions, all_figure_mentions = [], []  # count how many tables, figures-related weaknesses are mentioned for each paper
     for subfolder_path in tqdm(all_subfolders):
         if not os.path.isdir(subfolder_path):
             continue  
@@ -113,6 +114,17 @@ def main():
             this_item_sentence_num = sentence_num(item)
             all_item_word_num.append(this_item_word_num)
             all_item_sentence_num.append(this_item_sentence_num)
+        
+        tb_cnt, fg_cnt = 0, 0
+        for o in out:
+            for item in o:
+                if "table" in item.lower():
+                    tb_cnt += 1
+                if "figure" in item.lower():
+                    fg_cnt += 1
+        all_table_mentions.append(tb_cnt)
+        all_figure_mentions.append(fg_cnt)
+                    
         
         # count the statistics for input figures and tables
         image_dir = os.path.join(subfolder_path, "images")
@@ -178,6 +190,15 @@ def main():
     print(f"==> 95% of the papers have word length below: {all_word_num[nine_five_percentile_idx]}")
     print(f"==> 90% of the papers have word length below: {all_word_num[nine_percentile_idx]}")
     print(f"==> 80% of the papers have word length below: {all_word_num[eight_percentile_idx]}")
+    
+    # how many tables, figures-related weaknesses are mentioned for each paper
+    print("="*50)
+    print(f"==> AVG number of tables-related weaknesses per paper: {sum(all_table_mentions)/len(all_table_mentions)}")
+    print(f"====> MAX number of tables-related weaknesses per paper: {max(all_table_mentions)}")
+    print(f"====> MIN number of tables-related weaknesses per paper: {min(all_table_mentions)}")
+    print(f"==> AVG number of figures-related weaknesses per paper: {sum(all_figure_mentions)/len(all_figure_mentions)}")
+    print(f"====> MAX number of figures-related weaknesses per paper: {max(all_figure_mentions)}")
+    print(f"====> MIN number of figures-related weaknesses per paper: {min(all_figure_mentions)}")
     
     with open(os.path.join(args.target_dir, "statistics.json"), "w") as f:
         json.dump({

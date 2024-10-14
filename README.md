@@ -460,6 +460,13 @@ I mannualy deleted two papaers without any input text extracted by hanzi. Finall
 ==> 95% of the papers have word length below: 20943
 ==> 90% of the papers have word length below: 16532
 ==> 80% of the papers have word length below: 12367
+==================================================
+==> AVG number of tables-related weaknesses per paper: 0.9295065458207452
+====> MAX number of tables-related weaknesses per paper: 9
+====> MIN number of tables-related weaknesses per paper: 0
+==> AVG number of figures-related weaknesses per paper: 0.7532729103726082
+====> MAX number of figures-related weaknesses per paper: 6
+====> MIN number of figures-related weaknesses per paper: 0
 ```
 
 ### 4. run experiment
