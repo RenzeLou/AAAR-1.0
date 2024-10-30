@@ -186,9 +186,12 @@
               <sup>1</sup> <img src="static/images/penn-state-shield.jpg" alt="PennState Logo" width="23" height="23"> Pennsylvania State University;
               <sup>2</sup><img src="static/images/netflix.png" alt="PennState Logo" width="30" height="30">Netflix;
               <sup>3</sup> <img src="static/images/ucd.png" alt="PennState Logo" width="20" height="20"> University of California, Davis;
+              <!-- line break -->
+               <br>
               <sup>4</sup> <img src="static/images/uic.jpg" alt="PennState Logo" width="20" height="20"> University of Illinois Chicago;
               <sup>5</sup> <img src="static/images/fudan.png" alt="PennState Logo" width="25" height="25"> Fudan University;
               <sup>6</sup> <img src="static/images/Zhejiang_University_Logo.svg.png" alt="PennState Logo" width="25" height="25"> Zhejiang University;
+              <br>
               <sup>7</sup> <img src="static/images/uab.png" alt="PennState Logo" width="30" height="30"> University of Alabama at Birmingham;
               <sup>8</sup> <img src="static/images/osu.jpg" alt="PennState Logo" width="20" height="20"> Ohio State University;
               <sup>9</sup> <img src="static/images/salesforce.png" alt="PennState Logo" width="25" height="25"> Salesforce Research
@@ -307,8 +310,8 @@
                                             type="video/mp4">
                                   </video> -->
                                   <img src="static/images/task_illustration.png" alt="data_statistics" width="650" height="800" />
-                                  <h2 class="subtitle"  style="text-align:center;">
-                                      Figure 1: The input-output illustration of four tasks in the proposed AAAR-1.0 benchmark.
+                                  <h2 class="subtitle"  style="text-align:center; font-size: 16px;">
+                                  <u>Figure 1</u>: The input-output illustration of four tasks in the proposed <span class="muffin-font">AAAR-1.0</span> benchmark.
                                   </h2>
                               </div>
                           </div>
@@ -425,8 +428,8 @@ identifying each segment in human reviews is deficient or not.
                               </video> -->
                               <img src="static/images/data_construction.png" alt="data_statistics" width="780" height="620" />
                               <!-- <img src="static/images/data_collection.png" alt="DataCollection" /> -->
-                              <h2 class="subtitle"  style="text-align:center;">
-                                  Figure 2: Data construction workflows of the three tasks in <span class="muffin-font">AAAR-1.0</span>.
+                              <h2 class="subtitle"  style="text-align:center; font-size: 16px;">
+                              <u>Figure 2</u>: Data construction workflows of the three tasks in <span class="muffin-font">AAAR-1.0</span>.
                               </h2>
                           </div>
                       </div>
@@ -559,9 +562,9 @@ identifying each segment in human reviews is deficient or not.
                     <div class="column is-full">
                         <div class="item">
                             <!-- Your image here -->
-                            <img src="static/images/performance_task1.png" alt="MainTable_task1" width="750" height="700" />
-                            <h2 class="subtitle"  style="text-align:center;">
-                                
+                            <img src="static/images/performance_task1.png" alt="MainTable_task1" width="450" height="400" />
+                            <h2 class="subtitle"  style="text-align:center; font-size: 16px;">
+                            <u>Table 1</u>: Various LLMs' performances on the 1,049 instances of <span style="background-color: #cff0da;"><b>EquationInference</b></span>.
                             </h2>
                         </div>
                     </div>
@@ -588,8 +591,10 @@ identifying each segment in human reviews is deficient or not.
                   <div class="item">
                       <!-- Your image here -->
                       <img src="static/images/performance_task2.png" alt="MainTable_task2" width="700" height="600" />
-                      <h2 class="subtitle"  style="text-align:center;">
-                          
+                      <h2 class="subtitle"  style="text-align:center; font-size: 16px;">
+                      <u>Table 2</u>: Various LLMs' performances on the 100 instances of <span style="background-color: #fadfdc;"><b>ExperiementDesign</b></span>. The explanation
+                          generation is based on the oracle experiments to prevent error propagation. 
+                          <!-- "Copy Input" is a random baseline: for experiment design, randomly select 5 sentences from the input paper; for experiment explanation, directly copy each experiment idea. -->
                       </h2>
                   </div>
               </div>
@@ -617,9 +622,9 @@ Additionally, we add results based on Llama2 to further enhance the aforemention
                   <div class="item">
                       <!-- Your image here -->
                       <img src="static/images/performance_task3.png" alt="MainTable_task3" width="700" height="600" />
-                      <h3 class="subtitle" style="text-align:center; font-size: 16px;">
-                          Table
-                      </h3>
+                      <h2 class="subtitle" style="text-align:center; font-size: 16px;">
+                      <u>Table 3</u>: Various LLMs' performances on the 993 instances of <span style="background-color: #ddf2ff;"><b>PaperWeakness</b></span>.
+                      </h2>
                   </div>
               </div>
           </div>
@@ -645,9 +650,11 @@ Additionally, we add results based on Llama2 to further enhance the aforemention
                       <div class="item">
                           <!-- Your image here -->
                           <img src="static/images/performance_task4.png" alt="MainTable_task4" width="700" height="600" />
-                          <h3 class="subtitle" style="text-align:center; font-size: 16px;">
-                              Table 
-                          </h3>
+                          <h2 class="subtitle" style="text-align:center; font-size: 16px;">
+                              <u>Table 4</u>: From (<a href="https://arxiv.org/pdf/2406.16253" target="_blank">Du et al., 2024</a>), various LLMs' performances on the 11,376 instances of
+                              <span style="background-color: #fff1b9;"><b>ReviewCritique</b></span>. The best F1 score among different prompt methods for a single model is
+                              underlined. The best F1 score across all models is also bold.
+                          </h2>
                       </div>
                   </div>
               </div>
@@ -681,7 +688,7 @@ Additionally, we add results based on Llama2 to further enhance the aforemention
 <section class="section" id="BibTeX">
 <div class="container is-max-desktop content">
 <h2 class="title">Reference</h2>
-Please kindly cite our paper if you use our code, data, models or results:
+Please kindly cite our paper if you use our code, data, or results:
 <br><br>
 <!-- TOOD: update after arxiv is out -->
 <pre><code>
