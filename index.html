@@ -575,10 +575,20 @@ identifying each segment in human reviews is deficient or not.
 
 <div class="content has-text-justified">
   <p>
-    We evaluate models (T5-3B & T5-11B) trained with <span class="printerFont">MUFFIN</span> on four widely adopted zero-shot benchmarks, including <i><a href="https://instructions.apps.allenai.org/">SuperNI-Test</a></i>, <i><a href="https://github.com/hendrycks/test">MMLU</a></i>, <i><a href="https://huggingface.co/datasets/bigscience/P3">T0-Eval</a></i> and <i><a href="https://github.com/suzgunmirac/BIG-Bench-Hard">BBH</a></i>. 
-    Compared with the previous LLM-generated datasets, <u>the models tuned on our <span class="printerFont">MUFFIN</span> consistently achieve
-    better performance across 3 out of 4 benchmarks, under various metrics</u>. We also find that the larger model benefits more from tuning on <span class="printerFont">MUFFIN</span> (4.42 ave. performance improvement of T5-3B ⇒
-    8.03 ave. performance improvement of T5-11B, compared with the strongest baseline). Notably, <span class="printerFont">MUFFIN</span> can gain the comparable or even better performances, compared with the models trained on huam-crafted datasets (e.g., SuperNI-Train, T0, T0++).
+    Table 1 shows the main results on <span style="background-color: #cff0da;">EquationInference</span>.
+Firstly, the open-source LLMs, especially the
+Falcon and Gemma, perform unexpectedly disappointing (even worse than random guesses).
+These screwed scores are mainly due to the poor
+long-context instruction following ability, where
+we find some open-source LLMs are confused
+with the massive input and often copy the LaTeX code from the input. In contrast, closed-source
+LLMs generally achieve superior accuracy, probably owing to the richer scientific knowledge from
+the larger model parameters.
+</p>
+<p>
+However, considering the conventional multi-choice QA formulation
+of <span style="background-color: #cff0da;">EquationInference</span>, the recently-released GPT-4o solely gets 43.18, implying the unique challenge of
+<span style="background-color: #cff0da;">EquationInference</span> compared with other scientific QA benchmarks. Notably, with the help of internal CoT, o1 gains stronger performances than GPT-4/GPT-4o, indicating the potential benefits of adopting reasoning for this task.
   </p>
 </div>
 
@@ -605,7 +615,23 @@ identifying each segment in human reviews is deficient or not.
 
 <div class="content has-text-justified">
 <p>
-Additionally, we add results based on Llama2 to further enhance the aforementioned conclusion, where we fine-tune Llama2 with LoRA (low-rank adaption) on various datasets. We can find that our performances are consistent across different models (i.e., encoder-decoder and decoder-only).
+  Table 2 shows the main results on <span style="background-color: #fadfdc;">ExperiementDesign</span>. For the experiment design, the closed-source LLMs
+  generally outperform open-source LLMs, and both closed-/open-source LLMs are superior to the
+  “Copy Input” baseline (except the Falcon). Despite the higher S-Precision, the open-source LLMs
+  are seriously deficient in S-Recall compared with closed-source LLMs (~10%↓). We find that
+  <b>closed-source LLMs are more creative in experiment design and tend to generate more experiment
+  ideas than open-source LLMs (though most of the experiment ideas are trivial), leading to excellent
+  S-Recall</b>. 
+</p>
+
+<p>
+  As for the experiment explanation, the S-Match scores of closed-source LLMs still surpass
+  the open-source LLMs, while the score difference is not significant. Furthermore, we find the negative
+  correlation between S-Match and the ROUGE, where the ROUGE scores of closed-source LLMs are
+  broadly inferior. We find that the open-source LLMs often try to copy the terms or phrases from the
+  given experiment, or even simply paraphrase the experiment instead of explaining, which results in a
+  high superficial overlap with the ground-truth explanation. This observation highlights the importance
+  of adopting the proposed S-Match to avoid evaluation bias of traditional generation metrics.
 </p>
 </div>
 
@@ -635,9 +661,14 @@ Additionally, we add results based on Llama2 to further enhance the aforemention
 
     <div class="content has-text-justified">
       <p>
-        Table 4 shows the human evaluation results (acceptance ratios). Compared with the strongest results among all the 8 baselines, <span class="printerFont">MUFFIN</span> mostly
-        results in better human acceptance ratios with large margins (except for the tiny lower result on
-        T0-Eval).
+        Table 3 shows the main results on <span style="background-color: #ddf2ff;">PaperWeakness</span>, where the closed-source LLMs' overall performances
+are generally superior to the results of open-source LLMs. Similarly, closed-source LLMs are
+particularly excellent in SN-Recall because of more generated weaknesses. However, there is still
+a considerable gap in the weakness diversity between the LLMs and human experts. <b>Compared
+with human review, most LLM-generated weaknesses are vague and lack the necessary knowledge
+about some frontier research works</b>. Surprisingly, AI-scientist performs worse than backbone GPT-4o,
+especially on ITF-IDF, which suggests the challenge of <span style="background-color: #ddf2ff;">PaperWeakness</span>, i.e., simply adopting popular
+prompting techniques cannot well address this task.
       </p>
     </div>
 
@@ -665,8 +696,15 @@ Additionally, we add results based on Llama2 to further enhance the aforemention
 
   <div class="content has-text-justified">
     <p>
-      Table 5 shows the pair-wise comparison results between <span class="printerFont">MUFFIN</span> and other three baselines. Compared with the LLM-generated datasets (<a href="https://github.com/yizhongw/self-instruct/tree/main">Self-Instruction</a> and <a href="https://github.com/orhonovich/unnatural-instructions">Unnatural Instruction</a>), our <span class="printerFont">MUFFIN</span>
-      consistently gains higher human preferences across four benchmarks, aligning with the previous conclusion. Notebly, owing to the diverse tasks and our novel paradigm, <span class="printerFont">MUFFIN</span> can even surpass the high-quality human-crafted SuperNI on three out of four benchmarks.
+      We put the results of <span style="background-color: #fff1b9;">ReviewCritique</span> in Table 4. Closed-source models (GPT-4,
+Claude Opus, and Gemini 1.5) generally outperform open-source models (Llama3-8B and 70B,
+Qwen2-72B) in F1 score. Claude Opus achieves the highest F1 scores, with GPT-4 and Gemini 1.5
+performing slightly worse. Notably, recall scores are consistently higher than precision scores across
+all LLMs and prompting strategies, suggesting that LLMs tend to incorrectly identify segments as
+deficient. Despite the superior performance of the closed-source models, their F1 scores remain
+relatively low even with different prompt strategies, highlighting the challenges LLMs face in such
+expertise-intensive tasks and emphasizing the importance of human expertise in the meta-reviewing
+process.
     </p>
   </div>
 
