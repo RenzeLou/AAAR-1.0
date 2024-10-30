@@ -495,17 +495,17 @@ identifying each segment in human reviews is deficient or not.
 <!-- data analysis. -->
 <div class="columns is-centered has-text-centered">
   <div class="column is-four-fifths">
-    <h2 class="title is-3">Data Analysis</h2>
+    <h2 class="title is-3">Automatic Metrics</h2>
 
 <!-- data statistics -->
-<section class="hero">
+<!-- <section class="hero">
   <div class="hero-body">
       <div class="container is-max-desktop">
           <div class="columns is-centered">
               <div class="column is-full">
                   <div class="item">
-                      <!-- Your image here -->
-                      <img src="static/images/data_statistics.png" alt="data_statistics" width="450" height="300" />
+                       Your image here -->
+                      <!-- <img src="static/images/data_statistics.png" alt="data_statistics" width="450" height="300" />
                       <h3 class="subtitle" style="text-align:center; font-size: 16px;">
                           Table 1: Statistics of <span class="printerFont">MUFFIN</span>.
                       </h3>
@@ -514,52 +514,38 @@ identifying each segment in human reviews is deficient or not.
           </div>
       </div>
   </div>
-</section>
+</section> --> 
 
 
 <div class="content has-text-justified">
 <p>
-  Table 1 lists the detailed statistics of the 68K (instruction, input, output) instances of <span class="printerFont">MUFFIN</span>. It is worth mentioning that some inputs will share the same instructions because of our "instruction rematching" mechanism.  
+  Since AAAR-1.0 introduces high-level research tasks with language outputs, semantic-based metrics are necessary. We propose several task-specific metrics for quantitatively assessing LLM research outputs.
 </p>
-</div>
+<!-- <p id="indented"> -->
+  <ul>
+    <li><b>S-F1</b>: similarity-based F1 for assessing the experiment design quality. It measures how well each model-generated experiment aligns with the human experiments.</li>
+  <li><b>S-Match</b>: "soft" match score for evaluating the explanation. It calculates the similarity between human and model-generated explanations.</li>
+<li><b>SN-F1</b>: updated version of S-F1 to deal with the “nested” review weaknesses</li>
+<li><b>ITF-IDF</b>: inspired by the classic TF-IDF; measures the inter- and intra-paper diversity of model-generated weaknesses.</li>
+</ul>
 
-<!-- data quality -->
-<section class="hero">
-<div class="hero-body">
-    <div class="container is-max-desktop">
-        <div class="columns is-centered">
-            <div class="column is-full">
-                <div class="item">
-                    <!-- Your image here -->
-                    <img src="static/images/data_quality.png" alt="data_quality" width="450" height="300" />
-                    <h3 class="subtitle" style="text-align:center; font-size: 16px;">
-                        Figure 3: Human evaluation on the data quality. 
-                    </h3>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-</section>
-
-
-<div class="content has-text-justified">
 <p>
-  To assess data quality, we randomly selected 200 instances from our dataset (200 random inputs, 1 random instruction per input). Two NLP graduate students were involved in the evaluation. Following previous works, each annotator answered three questions for each instance: i) determining if the instruction describes a valid task (A1) when only the instruction is provided, ii) assessing if the instruction appropriately matches the input when only the instruction-input pair is presented (A2), and iii) evaluating if the output correctly responds to the instruction and input (A3). We also recorded instances where all three fields were correct (A4). Figure 3 shows the correct ratio for each question.
+  Please refer to our paper for the formal mathematical definitions of these metrics.
 </p>
-</div>
-
-</div>
-</div>
+<!-- </div> -->
 
 
 
 
 
-<!-- Main Results. -->
+
+
+
+
+<!-- Task 1. -->
 <div class="columns is-centered has-text-centered">
   <div class="column is-four-fifths">
-    <h2 class="title is-3">Automatic Evaluation Results</h2>
+    <h2 class="title is-3">Main Experiments</h2>
 
       <!-- Main Table Overview -->
       <section class="hero">
@@ -569,9 +555,9 @@ identifying each segment in human reviews is deficient or not.
                     <div class="column is-full">
                         <div class="item">
                             <!-- Your image here -->
-                            <img src="static/images/main_table.png" alt="MainTable" width="750" height="700" />
+                            <img src="static/images/performance_task1.png" alt="MainTable_task1" width="750" height="700" />
                             <h2 class="subtitle"  style="text-align:center;">
-                                Table 2: Main results.
+                                
                             </h2>
                         </div>
                     </div>
@@ -589,7 +575,7 @@ identifying each segment in human reviews is deficient or not.
   </p>
 </div>
 
-<!-- Main Table Overview -->
+<!-- Task 2-->
 <section class="hero">
   <div class="hero-body">
       <div class="container is-max-desktop">
@@ -597,9 +583,9 @@ identifying each segment in human reviews is deficient or not.
               <div class="column is-full">
                   <div class="item">
                       <!-- Your image here -->
-                      <img src="static/images/main_table_llama.png" alt="MainTable_llama" width="700" height="600" />
+                      <img src="static/images/performance_task2.png" alt="MainTable_task2" width="700" height="600" />
                       <h2 class="subtitle"  style="text-align:center;">
-                          Table 3: Results based on Llama2-13B.
+                          
                       </h2>
                   </div>
               </div>
@@ -619,12 +605,7 @@ Additionally, we add results based on Llama2 to further enhance the aforemention
 
 
 
-<!-- Human Eval. -->
-<div class="columns is-centered has-text-centered">
-  <div class="column is-four-fifths">
-    <h2 class="title is-3">Human Evaluation Results</h2>
-
-      <!-- Human Eval Table 1 Overview -->
+<!-- Task 3 -->
       <section class="hero">
         <div class="hero-body">
             <div class="container is-max-desktop">
@@ -632,10 +613,9 @@ Additionally, we add results based on Llama2 to further enhance the aforemention
                     <div class="column is-full">
                         <div class="item">
                             <!-- Your image here -->
-                            <img src="static/images/human_eval_1.jpg" alt="Human_eval_1" width="700" height="600" />
+                            <img src="static/images/performance_task3.png" alt="MainTable_task3" width="700" height="600" />
                             <h3 class="subtitle" style="text-align:center; font-size: 16px;">
-                                Table 4: Human evaluation acceptance ratio. We randomly sample 200 instances from each benchmark
-                                and let workers evaluate different systems’ outputs.
+                                Table
                             </h3>
                         </div>
                     </div>
@@ -653,7 +633,7 @@ Additionally, we add results based on Llama2 to further enhance the aforemention
       </p>
     </div>
 
-    <!-- Human Eval Table 2 Overview -->
+    <!-- Task 4 -->
     <section class="hero">
       <div class="hero-body">
           <div class="container is-max-desktop">
@@ -661,9 +641,9 @@ Additionally, we add results based on Llama2 to further enhance the aforemention
                   <div class="column is-full">
                       <div class="item">
                           <!-- Your image here -->
-                          <img src="static/images/human_eval_2.jpg" alt="Human_eval_2" width="700" height="600" />
+                          <img src="static/images/performance_task4.png" alt="MainTable_task4" width="700" height="600" />
                           <h3 class="subtitle" style="text-align:center; font-size: 16px;">
-                              Table 5: Pair-wise comparison between <span class="printerFont">MUFFIN</span> (Ours) and three strong baselines, namely Self-Instruction (Self-Inst.), Unnatural Instruction (Unnatural), and SuperNI, across four benchmarks.
+                              Table 
                           </h3>
                       </div>
                   </div>
@@ -684,71 +664,10 @@ Additionally, we add results based on Llama2 to further enhance the aforemention
 </div>
 
 
-<!-- further analysis. -->
-<div class="columns is-centered has-text-centered">
-  <div class="column is-four-fifths">
-    <h2 class="title is-3">Further Analysis</h2>
-
-      <!-- Scaling trends -->
-      <section class="hero">
-        <div class="hero-body">
-            <div class="container is-max-desktop">
-                <div class="columns is-centered">
-                    <div class="column is-full">
-                        <div class="item">
-                            <!-- Your image here -->
-                            <img src="static/images/scale_trends.png" alt="scale_trend" width="450" height="300" />
-                            <h3 class="subtitle" style="text-align:center; font-size: 16px;">
-                                Figure 4: The scaling trends comparison between
-                                <span class="printerFont">MUFFIN</span> and the previous baseline datasets (average performances on all four benchmarks).
-                            </h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
 
-    <div class="content has-text-justified">
-      <p>
-        For all those baseline datasets from the "direct comparison" in Table 2, we randomly sample subsets from them and train T5-3B on the subsets to show the performance trends (10%, 30%, 50%, 80%, 100%). As shown in Figure 4, <span class="printerFont">MUFFIN</span> exceeds the baselines by a noteworthy margin (average scores on four evaluation benchmarks). Other baselines may only be comparable to our data results when they continue to be scaled to several times the size of our data. Therefore, we conjecture that our paradigm is more efficient than simply collecting more data from the other paradigms.
-      </p>
-    </div>
-
-    <!-- mix superni -->
-    <section class="hero">
-      <div class="hero-body">
-          <div class="container is-max-desktop">
-              <div class="columns is-centered">
-                  <div class="column is-full">
-                      <div class="item">
-                          <!-- Your image here -->
-                          <img src="static/images/mix_superni_muffin.png" alt="mix_human" width="450" height="350" />
-                          <h3 class="subtitle" style="text-align:center; font-size: 16px;">
-                              Figure 5: The performance of the mixture of <span class="printerFont">MUFFIN</span> and SuperNI (human-craft data). 
-                          </h3>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </section>
-
-
-  <div class="content has-text-justified">
-    <p>
-      We mix <span class="printerFont">MUFFIN</span> with the training set of SuperNI, w.r.t. various proportions, where the proportion means how many instances are from <span class="printerFont">MUFFIN</span>. Then, we train T5-3B on these mixtures and report the average performances on the four benchmarks. As illustrated in Figure 5, interestingly, after mixing <span class="printerFont">MUFFIN</span> and the human-annotated SuperNI, the performance drops even worse than only using <span class="printerFont">MUFFIN</span> for training. We conjecture possible reasons for this phenomenon: <strong>the dataset paradigm does affect the learning efficiency</strong> --- different dataset paradigms do obviously have various impacts on the model's performance. Therefore, combining two paradigms can even hurt the model's instruction-following performance, meaning the paradigm is critical.
-    </p>
-  </div>
-
-</div>
-</div>
-
-
-
-<section class="section">
-  <div class="container is-max-desktop">
+<!-- <section class="section">
+  <div class="container is-max-desktop"> -->
 
 
     
@@ -762,12 +681,11 @@ Please kindly cite our paper if you use our code, data, models or results:
 <br><br>
 <!-- TOOD: update after arxiv is out -->
 <pre><code>
-@inproceedings{Lou2023MUFFIN,
-  title={{MUFFIN}: Curating Multi-Faceted Instructions for Improving Instruction Following},
-  author={Renze Lou and Kai Zhang and Jian Xie and Yuxuan Sun and Janice Ahn and Hanzi Xu and Yu su and Wenpeng Yin},
-  booktitle={The Twelfth International Conference on Learning Representations},
-  year={2024},
-  url={https://openreview.net/forum?id=1vrS1zwekw}
+@article{Lou2024AAAR,
+  title={{AAAR-1.0}: Assessing AI's Potential to Assist Research},
+  author={Renze Lou and Hanzi Xu and Sijia Wang and Jiangshu Du and Ryo Kamoi and Xiaoxin Lu and Jian Xie and Yuxuan Sun and Yusen Zhang and Jihyun Janice Ahn and Hongchao Fang and Zhuoyang Zou and Wenchao Ma and Xi Li and Kai Zhang and Congying Xia and Lifu Huang and Wenpeng Yin},
+  journal={arXiv preprint arXiv},
+  year={2024}
 }
 </code></pre>
       </div>
