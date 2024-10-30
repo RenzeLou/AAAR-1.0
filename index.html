@@ -82,7 +82,7 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
-          <h3 class="title is-1 publication-title"><span class="muffin-font">AAAR-1.0</span>: Assessing  AI's Potential to Assist Research</h3>
+          <h3 class="title is-1 publication-title"> <img src="static/images/robot_expert.png" alt="robot_expert" width="68" height="68"> <span class="muffin-font">AAAR-1.0</span>: Assessing  AI's Potential to Assist Research</h3>
           <div class="is-size-5 publication-authors">
             <!-- Paper authors -->
             <span class="author-block">
@@ -216,12 +216,12 @@
               </span>
               <!-- Dataset Link. -->
               <span class="link-block">
-                <a href="https://huggingface.co/datasets"
+                <a href="https://huggingface.co/datasets/Reza8848/AAAR-1.0"
                    class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
                     🤗
                   </span>
-                  <span>Data</span>
+                  <span>Benchmark Dataset</span>
                   </a>
               <!-- Model Link. -->
               <!-- <span class="link-block">
@@ -254,7 +254,7 @@
               
               <!--  Link. -->
               <span class="link-block">
-                <a href="https://twitter.com/Reza20000722"
+                <a href="https://x.com/Reza0843"
                    class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
                     <i class="fab fa-twitter"></i>
@@ -426,7 +426,7 @@ identifying each segment in human reviews is deficient or not.
                                 <source src="./static/videos/data_collection.mov"
                                         type="video/mp4">
                               </video> -->
-                              <img src="static/images/data_construction.png" alt="data_statistics" width="780" height="620" />
+                              <img src="static/images/data_construction.png" alt="data_statistics" width="900" height="750" />
                               <!-- <img src="static/images/data_collection.png" alt="DataCollection" /> -->
                               <h2 class="subtitle"  style="text-align:center; font-size: 16px;">
                               <u>Figure 2</u>: Data construction workflows of the three tasks in <span class="muffin-font">AAAR-1.0</span>.
@@ -524,13 +524,13 @@ identifying each segment in human reviews is deficient or not.
 
 <div class="content has-text-justified">
 <p>
-  Since AAAR-1.0 introduces high-level research tasks with language outputs, semantic-based metrics are necessary. We propose several task-specific metrics for quantitatively assessing LLM research outputs.
+  Since <span class="muffin-font">AAAR-1.0</span> introduces high-level research tasks with language outputs, semantic-based metrics are necessary. We propose several task-specific metrics for quantitatively assessing LLM research outputs.
 </p>
 <!-- <p id="indented"> -->
   <ul>
     <li><b>S-F1</b>: similarity-based F1 for assessing the experiment design quality. It measures how well each model-generated experiment aligns with the human experiments.</li>
   <li><b>S-Match</b>: "soft" match score for evaluating the explanation. It calculates the similarity between human and model-generated explanations.</li>
-<li><b>SN-F1</b>: updated version of S-F1 to deal with the “nested” review weaknesses</li>
+<li><b>SN-F1</b>: updated version of S-F1 to deal with the “nested” review weaknesses.</li>
 <li><b>ITF-IDF</b>: inspired by the classic TF-IDF; measures the inter- and intra-paper diversity of model-generated weaknesses.</li>
 </ul>
 
