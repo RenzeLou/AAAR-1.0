@@ -53,14 +53,15 @@ conda activate vllm
 
 ## API Tokens
 
-When running commercial LLMs, you can set the API tokens in the environment variables, for example: 
+When running closed-source commercial LLMs, you can set the API tokens in the environment variables, for example: 
 ```bash
-export OPENAI_API_KEY="your_api_key_here"
+export OPENAI_API_KEY='your-api-key-here'
+export ANTHROPIC_API_KEY='your-api-key-here'
 ```
 
 or write them in the `~/.bashrc` or `~/.zshrc` file.
 
-While for running open-source LLMs from HuggingFace, you should write a `huggingface_key.txt` file in the root directory, and put your Huggingface Access Token in it.
+While for running open-source LLMs from HuggingFace, you have to write a `huggingface_key.txt` file in this project root directory, and put your Huggingface Access Token in it.
 
 ## Running the Benchmark
 
