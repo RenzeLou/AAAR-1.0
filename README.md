@@ -163,7 +163,7 @@ Please refer to [this repository](https://github.com/jiangshdd/ReviewCritique) f
 
 ## 🥳 Citation
 
-Please kindly cite our paper if you use any resources in this repository:
+Please kindly cite our paper if you use any resources of AAAR-1.0:
 
 
 ```bibtex
@@ -173,15 +173,18 @@ Please kindly cite our paper if you use any resources in this repository:
   journal={arXiv preprint arXiv:2410.22394},
   year={2024}
 }
+```
 
+<!-- As well as the following paper:
+
+```bibtex
 @inproceedings{du2024llms,
   title={Llms assist nlp researchers: Critique paper (meta-) reviewing},
   author={Du, Jiangshu and Wang, Yibo and Zhao, Wenting and Deng, Zhongfen and Liu, Shuaiqi and Lou, Renze and Zou, Henry Peng and Venkit, Pranav Narayanan and Zhang, Nan and Srinath, Mukund and others},
   journal={Proceedings of {EMNLP} },
   year={2024}
 }
-```
-
+``` -->
 
 ---
 
