@@ -171,6 +171,13 @@ Please kindly cite our paper if you use any resources in this repository:
   journal={arXiv preprint arXiv:2410.22394},
   year={2024}
 }
+
+@inproceedings{du2024llms,
+  title={Llms assist nlp researchers: Critique paper (meta-) reviewing},
+  author={Du, Jiangshu and Wang, Yibo and Zhao, Wenting and Deng, Zhongfen and Liu, Shuaiqi and Lou, Renze and Zou, Henry Peng and Venkit, Pranav Narayanan and Zhang, Nan and Srinath, Mukund and others},
+  journal={Proceedings of {EMNLP} },
+  year={2024}
+}
 ```
 
 
