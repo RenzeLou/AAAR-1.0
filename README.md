@@ -8,7 +8,7 @@
   <!-- <a href="https://github.com/RenzeLou/Muffin"><img src="https://img.shields.io/badge/Python-3.8-green" alt="python" /></a> -->
 </p>
 
-This repository contains the source code for running the LLMs' performance on the AAAR-1.0 benchmark.
+This repository contains the source code for running the LLMs' performance on the [AAAR-1.0 benchmark](https://renzelou.github.io/AAAR-1.0/).
 
 <p align="center" width="100%">
 <a ><img src="./figures/2.png" alt="paradigm" style="width: 90%; min-width: 300px; display: block; margin: auto;"></a>
