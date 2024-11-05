@@ -1,7 +1,0 @@
-{
-    "EM": 34.31839847473785,
-    "total_instances": 1049,
-    "model_name": "gemini-pro",
-    "eval_data_file": "1049.human_filter.json",
-    "context_max_len": 1000
-}

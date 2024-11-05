@@ -48,6 +48,7 @@ papermage/
 subtask1_equation/
 subtask1_equation_unified/*
 huggingface_key.txt
+temp/
 
 # data
 beaker_configs/ni_*.yaml
