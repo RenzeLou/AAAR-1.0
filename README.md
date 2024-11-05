@@ -1,5 +1,5 @@
 
-<h1 align="center"> <img src="./figures/robot_expert_2.png" width="32" height="32">AAAR-1.0: Assessing AI's Potential to Assist Research </h1>
+<h1 align="center"> <img src="./figures/robot_expert_2.png" width="45" height="45">AAAR-1.0: Assessing AI's Potential to Assist Research </h1>
 
 <p align="center">
 <a href="https://renzelou.github.io/AAAR-1.0/"><img src="https://img.shields.io/badge/Website-red" alt="website" /></a>
@@ -50,6 +50,17 @@ conda activate vllm
 
 ** If you wanna run open-source LLMs with multi-modal inputs, please use `environment.vllm_mm.yml`
 
+
+## API Tokens
+
+When running commercial LLMs, you can set the API tokens in the environment variables, for example: 
+```bash
+export OPENAI_API_KEY="your_api_key_here"
+```
+
+or write them in the `~/.bashrc` or `~/.zshrc` file.
+
+While for running open-source LLMs from HuggingFace, you should write a `huggingface_key.txt` file in the root directory, and put your Huggingface Access Token in it.
 
 ## Running the Benchmark
 
@@ -146,6 +157,7 @@ python scripts/subtask3_metric_cross_diversity.py --batch_size 512 --papaer_top_
 
 Please refer to [this repository](https://github.com/jiangshdd/ReviewCritique) for more details on running the review critique task.
 
+---
 
 ## 🥳 Citation
 
