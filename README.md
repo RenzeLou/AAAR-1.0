@@ -153,6 +153,7 @@ python scripts/subtask3_metric.py  # soft score
 python scripts/subtask3_metric_cross_diversity.py --batch_size 512 --papaer_top_k 2 --track_top_k 20 --threshold 0.5 # weakness diversity
 ```
 
+It will calculate the metrics for all the model's results in the `./subtask3_review_final_v2/eval_results` directory.
 
 ### 4. Review Critique ✍️:
 
