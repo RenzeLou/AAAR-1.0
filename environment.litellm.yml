@@ -1,0 +1,4 @@
+name: litellm
+channels:
+  - defaults
+prefix: /scratch/rml6079/anaconda3/envs/litellm
