@@ -71,8 +71,8 @@ def process_text_to_list(response:str):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--api_name", type=str, default="meta-llama/Meta-Llama-3.1-8B", help="the name of the model to use.")
-    parser.add_argument("--root_dir", type=str, default="./subtask2_experiment_human_anno/final_data", help="the directory save the data.")
-    parser.add_argument("--save_dir", type=str, default="./subtask2_experiment_human_anno/eval_results", help="the directory to save the unified instances.")
+    parser.add_argument("--root_dir", type=str, default="./Experiment_Design", help="the directory save the data.")
+    parser.add_argument("--save_dir", type=str, default="./Experiment_Design/eval_results", help="the directory to save the unified instances.")
     parser.add_argument("--max_word_len", type=int, default=3000, help="the maximum length of the context to provide to the model. For GPT4-o, default 2800 words, otherwise might exceed the limit.")
     parser.add_argument("--temperature", type=float, default=0.8, help="temperature for sampling")
     parser.add_argument("--top_p", type=float, default=0.95, help="top_p for sampling")

@@ -29,8 +29,8 @@ if [ $split -eq 0 ]; then
         --seed 42 \
         --gpu_num ${gpu_num} \
         --max_model_len ${max_model_len} \
-        --root_dir './subtask3_review_final_v2' \
-        --save_dir './subtask3_review_final_v2/eval_results'
+        --root_dir './Paper_Weakness' \
+        --save_dir './Paper_Weakness/eval_results'
 else
     python scripts/subtask3_review_model_prediction.open_source.py \
         --api_name ${model} \
@@ -40,8 +40,8 @@ else
         --seed 42 \
         --gpu_num ${gpu_num} \
         --max_model_len ${max_model_len} \
-        --root_dir './subtask3_review_final_v2' \
-        --save_dir './subtask3_review_final_v2/eval_results' \
+        --root_dir './Paper_Weakness' \
+        --save_dir './Paper_Weakness/eval_results' \
         --split
 fi
     

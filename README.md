@@ -31,6 +31,16 @@ We dfined four tasks in the AAAR-1.0 benchmark:
 
 Please download AAAR-1.0 from 🤗 HuggingFace: [https://huggingface.co/datasets/Reza8848/AAAR-1.0](https://huggingface.co/datasets/Reza8848/AAAR-1.0)
 
+You can use the following command:
+```bash
+git lfs install  # make sure you have git-lfs installed (https://git-lfs.com)
+git clone git@hf.co:datasets/Reza8848/AAAR-1.0  # clone all the large data files
+
+mv AAAR-1.0/Equation_Inference ./ 
+mv AAAR-1.0/Experiment_Design ./
+mv AAAR-1.0/Paper_Weakness ./
+```
+
 
 ## Environment Setup
 
@@ -71,10 +81,10 @@ While for running open-source LLMs from HuggingFace, you have to write a `huggin
 
 ```bash
 conda activate litellm
-python scripts/subtask1_equation_model_eval.py --root_dir './subtask1_equation_unified' --eval_data_file '1049.human_filter.json' --save_dir './subtask1_equation_unified/eval_results' --context_max_len [max_context_len] --api_name [model_name]
+python scripts/subtask1_equation_model_eval.py --root_dir './Equation_Inference' --eval_data_file 'equation.1049.json' --save_dir './Equation_Inference/eval_results' --context_max_len [max_context_len] --api_name [model_name]
 
 # for example
-python scripts/subtask1_equation_model_eval.py --root_dir './subtask1_equation_unified' --eval_data_file '1049.human_filter.json' --save_dir './subtask1_equation_unified/eval_results' --context_max_len 1000 --api_name 'o1-preview'
+python scripts/subtask1_equation_model_eval.py --root_dir './Equation_Inference' --eval_data_file 'equation.1049.json' --save_dir './Equation_Inference/eval_results' --context_max_len 1000 --api_name 'o1-preview'
 ```
 
 - For **open-source** LLMs (such as Llama), please using the following command:
@@ -87,7 +97,7 @@ sh scripts/run_subtask1.sh [GPU_IDs] [model_name] [max_context_len] [max_model_l
 sh scripts/run_subtask1.sh 6,7 meta-llama/Meta-Llama-3.1-70B-Instruct 1000 10000
 ```
 
-All the evaluation results are saved to `./subtask1_equation_unified/eval_results` directory.
+All the evaluation results are saved to `./Equation_Inference/eval_results` directory.
 
 
 ### 2. Experiment Design 🧪:
@@ -95,11 +105,11 @@ All the evaluation results are saved to `./subtask1_equation_unified/eval_result
 - For **closed-source** LLMs, please using the following command:
 
 ```bash
- conda activate litellm
-python scripts/subtask2_experiment_model_prediction.close_source.v2.py --root_dir "./subtask2_experiment_human_anno/final_data" --save_dir "./subtask2_experiment_human_anno/eval_results" --oracle --max_word_len [max_context_len] --api_name [model_name]
+conda activate litellm
+python scripts/subtask2_experiment_model_prediction.close_source.v2.py --root_dir "./Experiment_Design" --save_dir "./Experiment_Design/eval_results" --oracle --max_word_len [max_context_len] --api_name [model_name]
 
 # for example
-python scripts/subtask2_experiment_model_prediction.close_source.v2.py --root_dir "./subtask2_experiment_human_anno/final_data" --save_dir "./subtask2_experiment_human_anno/eval_results" --max_word_len 3000 --api_name "gpt-4o" --oracle
+python scripts/subtask2_experiment_model_prediction.close_source.v2.py --root_dir "./Experiment_Design" --save_dir "./Experiment_Design/eval_results" --max_word_len 3000 --api_name "gpt-4o" --oracle
 ```
 
 - For **open-source** LLMs, please using the following command:
@@ -130,10 +140,10 @@ python scripts/subtask2_metric.py --root_dir './subtask2_experiment_human_anno/e
 
 ```bash
 conda activate litellm
-python scripts/subtask3_review_model_prediction.close_source.py --root_dir './subtask3_review_final_v2' --save_dir './subtask3_review_final_v2/eval_results' --split --max_word_len [max_context_len] --api_name [model_name]
+python scripts/subtask3_review_model_prediction.close_source.py --root_dir './Paper_Weakness' --save_dir './Paper_Weakness/eval_results' --split --max_word_len [max_context_len] --api_name [model_name]
 
 # for example
-python scripts/subtask3_review_model_prediction.close_source.py --api_name 'gpt-4o' --root_dir './subtask3_review_final_v2' --save_dir './subtask3_review_final_v2/eval_results' --split --max_word_len 3000
+python scripts/subtask3_review_model_prediction.close_source.py --api_name 'gpt-4o' --root_dir './Paper_Weakness' --save_dir './Paper_Weakness/eval_results' --split --max_word_len 3000
 ```
 
 - For **open-source** LLMs, please using the following command:
@@ -153,7 +163,7 @@ python scripts/subtask3_metric.py  # soft score
 python scripts/subtask3_metric_cross_diversity.py --batch_size 512 --papaer_top_k 2 --track_top_k 20 --threshold 0.5 # weakness diversity
 ```
 
-It will calculate the metrics for all the model's results in the `./subtask3_review_final_v2/eval_results` directory.
+It will calculate the metrics for all the model's results in the `./Paper_Weakness/eval_results` directory.
 
 ### 4. Review Critique ✍️:
 

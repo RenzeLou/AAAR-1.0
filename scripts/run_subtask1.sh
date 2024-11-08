@@ -18,9 +18,9 @@ export VLLM_ALLOW_LONG_MAX_MODEL_LEN=1
 python scripts/subtask1_equation_model_eval.open_source.py \
     --api_name ${model} \
     --template 1 \
-    --root_dir './subtask1_equation_unified' \
-    --eval_data_file '1049.human_filter.json' \
-    --save_dir './subtask1_equation_unified/eval_results' \
+    --root_dir './Equation_Inference' \
+    --eval_data_file 'equation.1049.json' \
+    --save_dir './Equation_Inference/eval_results' \
     --context_max_len ${max_context_len} \
     --temperature 0.8 \
     --top_p 0.95 \
