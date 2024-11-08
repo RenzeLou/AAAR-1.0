@@ -122,7 +122,7 @@ sh scripts/run_subtask2.v2.sh [GPU_IDs] [model_name] [max_context_len] [max_mode
 sh scripts/run_subtask2.v2.sh 2,3,4,5 Qwen/Qwen2.5-72B-Instruct 3000 8192
 ```
 
-All the evaluation results are saved to `./subtask2_experiment_human_anno/eval_results` directory.
+All the evaluation results are saved to `./Experiment_Design/eval_results` directory.
 
 
 - **Evaluation Metrics**:
@@ -130,7 +130,7 @@ All the evaluation results are saved to `./subtask2_experiment_human_anno/eval_r
 Use the following command to run SentenceBERT to evaluate the model performance:
 
 ```bash
-python scripts/subtask2_metric.py --root_dir './subtask2_experiment_human_anno/eval_results/xxx'  ## use the specific model results directory
+python scripts/subtask2_metric.py --root_dir './Experiment_Design/eval_results/xxx'  ## use the specific model results directory
 ```
 
 
