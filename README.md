@@ -46,19 +46,29 @@ mv AAAR-1.0/Paper_Weakness ./
 
 For running closed-source LLMs (e.g., OpenAI GPT), we use [litellm](https://github.com/BerriAI/litellm) to unify various model calling APIs, please setup the following environment:
 
-```bash
+<!-- ```bash
 conda env create -f environment.litellm.yml
 conda activate litellm
+``` -->
+```bash
+conda create -n litellm python=3.9
+conda activate litellm
+pip install -r env_source/requirements.litellm.txt
 ```
 
 while for running open-source LLMs (e.g., Llama), we mainly use [vllm](https://github.com/vllm-project/vllm), please setup the following environment:
 
-```bash
+<!-- ```bash
 conda env create -f environment.vllm.yml
 conda activate vllm
+``` -->
+```bash
+conda create -n vllm python=3.10
+conda activate vllm
+pip install -r env_source/requirements.vllm.txt
 ```
 
-** If you wanna run open-source LLMs with multi-modal inputs, please use `environment.vllm_mm.yml`
+** If you wanna run open-source LLMs with multi-modal inputs, please use `requirements.vllm_mm.txt`
 
 
 ## API Tokens
