@@ -215,6 +215,41 @@ class Equation_eval_none(ConversationPrompt):
         return content    
 
 
+# used for testing model's performance on subtask1, ask model to decide whether each option is correct or not (binary)
+class Equation_eval_binary(ConversationPrompt):
+    def __init__(self):
+        super().__init__()
+        self.system = (
+            "You are an expert in Machine Learning and Natural Language Processing (NLP)." + 
+            "Your responsibility is to help the user discover the correct latex equations."
+        )
+        self.query_prompt = (
+            "### Task:\n" +
+            "You are given the latex source code of the context before and after an equation in an NLP paper, while this equation is unknown. Now, given a candidate equation, you have to decide whether this candidate equation is correct or not (based on the surrounding context).\n\n" +
+            "### Requirements:\n" +
+            "Only respond with either 0 (wrong equation) or 1 (correct equation). Avoid any explanations.\n\n" +
+            "### Context Before:\n" +
+            "```\n" +
+            "{context_before}\n" +
+            "```\n\n" +
+            "### Context After:\n" +
+            "```\n" +
+            "{context_after}\n" +
+            "```\n\n" +
+            "### Candidate Equation:\n" +
+            "{candidate}\n\n" +
+            "### Your Answer:\n"
+        )
+
+    def extract_content(self, content:str):
+        '''
+        simply remove the empty space at the begining and end of the content
+        '''
+        content = content.strip()
+        return content
+
+
+
 # used for prompting the LLM delete the sentence leaking the experiment ideas.
 class Experiment_leak(ConversationPrompt):
     def __init__(self):
