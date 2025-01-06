@@ -173,13 +173,15 @@ def main():
     outputs = process_output(outputs)
     invalid_cnt = 0
     new_outputs = []
-    for output in tqdm(outputs):
+    assert len(outputs) == len(answer_list), f"len(outputs): {len(outputs)}, len(answer_list): {len(answer_list)}"
+    for idx, output in tqdm(enumerate(outputs)):
         output = output.strip()
         if output in ["1", "0"]:
             output = int(output)
         else:
             # not follow the format requirement
-            output = 1
+            # output = 1
+            output = 1 if answer_list[idx] == 0 else 0  # reverse the true answer
             invalid_cnt += 1
         new_outputs.append(output)
     end_time = time.time()
@@ -210,6 +212,7 @@ def main():
         "f1": f1,
         "precision": precision,
         "recall": recall,
+        "invalid_response": invalid_cnt,
         "total_instances": len(results_list),
         "model_name": args.api_name,
         "eval_data_file": args.eval_data_file,
