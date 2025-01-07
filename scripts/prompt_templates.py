@@ -386,7 +386,7 @@ class Exp_explanation_eval_v2(ConversationPrompt):
         super().__init__()
         self.system = (
             "You are an expert in Machine Learning and Natural Language Processing (NLP). " +
-            "Your responsibility is to help the user undertand a paper."
+            "Your responsibility is to help the user understand a paper."
         )
         self.query_prompt = (
             "You are partially given an NLP paper (in latex), including some useful sections (e.g., 'abstract' and 'introduction') having some basic introductions to this research, where all the 'experiment' related sections are deleted.\n\n" +
@@ -426,6 +426,58 @@ class Exp_explanation_eval_v2(ConversationPrompt):
         '''
         content = content.strip()
         return content
+
+
+# given the two experiment, decide whether they are the same experiment
+# TODO: current the prompt don't allow model generate explanation on the decision (due to the limited budget)
+class Exp_entailment(ConversationPrompt):
+    def __init__(self):
+        super().__init__()
+        self.system = (
+            "You are an expert in Machine Learning and Natural Language Processing (NLP). " +
+            "Your responsibility is to help the user check some ML experiments."
+        )
+        self.examples = (
+            "### Example 1:\n" +
+            "## P1: 'Parameter/Performance trade-off: The authors should consider different adapter sizes and compare to two baselines: (i) Fine-tuning of only the top k layers of the base model. (ii) Tuning only the layer normalization parameters.'\n" +
+            "## P2: 'Efficiency tests: The authors have to evaluate the efficiency of the model in terms of the number of parameters increased per task and its correlation with performance degradation.'\n" +
+            "## Decision: 1\n" +
+            "## Explanation: P1 and P2 are the same experiments, as both of them mention the key idea --- 'correlation between model parameter and performance'. Although P1 are more detailed.\n\n" +
+            "### Example 2:\n" +
+            "## P1: 'Evaluating adapters on more types of tasks: The authors should evaluate adapters on more types of tasks. For example, if previous tasks are text classification tasks, the authors should also evaluate adapters on another type of task such as question answering.'\n" +
+            "## P2: 'Evaluate model on continual learning scenario: The authors should evaluate the model's capability in a continual learning setup to ensure that the model is actually capable of handling an endless stream of tasks without forgetting the previous ones.'\n" +
+            "## Decision: 1\n" +
+            "## Explanation: Though P1  doesn't explicitly mention 'continual learning', its underlying target is the continual learning scenario, which is exactly the same as P2.\n\n" +
+            "### Example 3:\n" +
+            "## P1: 'Effect of initialization scale: The authors should report the performance of the model using adapters with different initial weight magnitudes. For example, test standard deviations in a certain interval such as [10^-7, 1]'\n" +
+            "## P2: 'Perform ablation study: The authors need to perform an ablation study to understand the contribution of each component in the architecture (e.g., bottleneck architecture, initialization to identity function, etc.) to the final performance.'\n" +
+            "## Decision: 0\n" +
+            "## Explanation: Though both P1 and P2 mention the ablation on 'initialization', P1 focuses on 'initial weight magnitudes', while P2 only mentions 'initialization to identity function'. Essentially, they didn't share the same experiment ideas.\n\n"
+        )
+        self.query_prompt = (
+            "You are given two paragraphs (P1 and P2), both of which describe a specific ML experiment. Please help me decide whether they are describing a similar experiment.\n\n" +
+            "Let's say if two paragraphs mention similar experiment ideas; no matter the differences in details, you can regard them as similar experiments.\n\n" +
+            "Please give me '1' if you think they are similar experiments, give me '0' otherwise.\n\n" +
+            self.examples +
+            "Now, look at the following case, and give me only the decision without any explanation:\n" +
+            "## P1: {EXP1}\n" +
+            "## P2: {EXP2}\n" +
+            "## Decision: "           
+        )
+
+    def extract_content(self, content:str):
+        '''
+        use re to find the first "0" ir "1" in the content
+        for example, "0, because the test is bad" -> "0"; "1, 000.1 is a good number" -> "1"; "### test: 1\n" -> "1"
+        '''
+        content = content.strip()
+        match = re.search(r'[01]', content)
+        if match:
+            content = match.group(0)
+        else:
+            content = None
+        return content
+
 
 
 # used for prompting the model to generate weakness list of subtask3
@@ -512,15 +564,25 @@ if __name__ == "__main__":
     # '''
     # print(exp_eval.extract_content(response))
     
-    weakness_eval = Weakness_eval()
+#     weakness_eval = Weakness_eval()
+#     # value_dic = {
+#     #     "context_input": "The context input."
+#     # }
+#     # print(weakness_eval.query_prompt.format(**value_dic))
+#     response = '''1. Lack of comprehensive evaluation – The analysis section provides visualizations and observations but lacks a thorough quantitative analysis to support the claims.
+
+# 2. Overreliance on qualitative interpretation – The interpretations of attention patterns are largely qualitative and could benefit from more rigorous statistical methods to validate these observations.
+
+# 3. Insufficient comparison with baselines – While the discussion mentions baseline Transformers, there is no detailed comparative analysis showing how TCF definitively outperforms other models.'''
+#     print(weakness_eval.extract_content(response))
+    # print(len(weakness_eval.extract_content(response)))
+    
+    
+    exp_ential = Exp_entailment()
     # value_dic = {
-    #     "context_input": "The context input."
+    #     "EXP1": "The first experiment.",
+    #     "EXP2": "The second experiment."
     # }
-    # print(weakness_eval.query_prompt.format(**value_dic))
-    response = '''1. Lack of comprehensive evaluation – The analysis section provides visualizations and observations but lacks a thorough quantitative analysis to support the claims.
-
-2. Overreliance on qualitative interpretation – The interpretations of attention patterns are largely qualitative and could benefit from more rigorous statistical methods to validate these observations.
-
-3. Insufficient comparison with baselines – While the discussion mentions baseline Transformers, there is no detailed comparative analysis showing how TCF definitively outperforms other models.'''
-    print(weakness_eval.extract_content(response))
-    print(len(weakness_eval.extract_content(response)))
+    # print(exp_ential.query_prompt.format(**value_dic))
+    response = "## Decision: 0.001, 01, 0, 111, because the test is bad"
+    print(int(exp_ential.extract_content(response)))
