@@ -14,6 +14,7 @@ from typing import Optional, Sequence, Union, List
 import google.generativeai as genai
 
 import litellm
+import anthropic
 litellm.drop_params=True  # allow litellm to drop the parameters that are not supported by the model
 # litellm.set_verbose=True  # for debugging
 
@@ -185,10 +186,41 @@ def completion_with_backoff_gemini(model_name,messages,decoding_args):
     
     result = convo.last.text
     
-    print(result)
+    # print(result)
     # exit()
     time.sleep(5)
     return result
+
+def completion_with_backoff_claude(messages, model_name="claude-3-5-sonnet-20240620", sys_msg='', decoding_args={}):
+    '''
+    # Retry with exponential backoff
+    # See https://github.com/openai/openai-cookbook/blob/main/examples/How_to_handle_rate_limits.ipynb
+    '''
+    # result = litellm.completion(model=model_name, messages=messages, **decoding_args)
+    # Set up the model
+    time.sleep(1)
+
+    client = anthropic.Anthropic()
+
+    message = client.messages.create(
+        model=model_name, #"claude-3-5-sonnet-20240620"
+        temperature=decoding_args['temperature'],
+        system=sys_msg,
+        max_tokens=decoding_args['max_tokens'],
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text":  messages[0]["content"]
+                    }
+                ]
+            }
+        ]
+    )
+    # print(message.content[0].text)
+    return message.content[0].text
 
 
 def openai_chat_completion(
@@ -234,7 +266,7 @@ def openai_chat_completion(
             "text": template.query_prompt.format_map(input_dic)
         })
     
-    if "o1" in model_name:
+    if "o1" in model_name or "claude" in model_name:
         # TODO: currently, o1 doesn't support the system message
         messages = [
             {"role": "user", "content": user_content}
@@ -259,7 +291,13 @@ def openai_chat_completion(
         response = completion_with_backoff_gemini(model_name=model_name,messages=messages,decoding_args=decoding_args)
         # extract the contents from the response
         content = template.extract_content(response)
-        cost = -1  # just a placeholder 
+        cost = -1  # just a placeholder
+    # translate decoding_args
+    elif "claude" in model_name:
+        response = completion_with_backoff_claude(messages=messages, model_name=model_name, sys_msg=template.system, decoding_args=decoding_args)
+        # extract the contents from the response
+        content = template.extract_content(response)
+        cost = -1  # just a placeholder
     else:
         if "o1" in model_name:
             # TODO: currently, o1 doesn't support any hyperparameters

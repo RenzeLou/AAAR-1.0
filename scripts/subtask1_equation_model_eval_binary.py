@@ -101,6 +101,8 @@ def main():
     # openai.api_key = os.getenv("OPENAI_API_KEY") if args.api_key is None else args.api_key
     if 'gemini' in args.api_name:
         client = None
+    elif 'claude' in args.api_name:
+        client = None
     else:
         client = openai.OpenAI()
 
@@ -182,7 +184,6 @@ def main():
                             pred = 1  ## let model predict correct equation as defult due to the label imbalance
                             flag = False
                 pred_list.append(pred)
-
             results_list.append({
                 "context_before": context_before,
                 "context_after": context_after,
@@ -191,12 +192,13 @@ def main():
                 "answer": lables,
                 "cost": cost
             })
+            # save_intermediate_results(results_list, "eval_results1.json",os.path.join(args.save_dir, f"{args.eval_data_file}", f"{args.api_name}"), 'e')
     except tenacity.RetryError as e:
             print("==> Error: {}".format(e))
             print("\nOpenAI API rate limit reached. Please increase the waiting/retry times in the tenacity decorator.\n")
             save_intermediate_results(results_list, "eval_results.json", os.path.join(args.save_dir, f"{args.eval_data_file}", f"{args.api_name}"), e)
             sys.exit(1)
-    
+
     # calculate the F1
     all_labels, all_preds = [], []
     for res in results_list:
