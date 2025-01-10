@@ -11,10 +11,10 @@ import logging
 import tiktoken
 from tqdm import tqdm
 from typing import Optional, Sequence, Union, List
-import google.generativeai as genai
+# import google.generativeai as genai
 
 import litellm
-import anthropic
+# import anthropic
 litellm.drop_params=True  # allow litellm to drop the parameters that are not supported by the model
 # litellm.set_verbose=True  # for debugging
 
@@ -119,6 +119,7 @@ def construct_prompt_gpt4(input_dic: dict, template: ConversationPrompt, max_tok
 
 
 @retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(16))
+# @retry(wait=wait_random_exponential(min=20, max=180), stop=stop_after_attempt(50))
 def completion_with_backoff(model_name,messages,decoding_args):
     '''
     # Retry with exponential backoff
@@ -170,7 +171,8 @@ def completion_with_backoff_gemini(model_name,messages,decoding_args):
                 "threshold": "BLOCK_NONE",
             },
         ]
-
+    import google.generativeai as genai
+    
     genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
     # system_instruction = messages[0]["content"]
 
@@ -198,6 +200,7 @@ def completion_with_backoff_claude(messages, model_name="claude-3-5-sonnet-20240
     '''
     # result = litellm.completion(model=model_name, messages=messages, **decoding_args)
     # Set up the model
+    import anthropic
     time.sleep(1)
 
     client = anthropic.Anthropic()

@@ -22,7 +22,6 @@ atomicwrites==1.4.0
 attr==0.3.1
 attrs==21.4.0
 Automat==20.2.0
-autopep8==1.6.0
 azure-core==1.26.2
 azure-storage-blob==12.14.1
 Babel==2.9.1
@@ -65,7 +64,7 @@ conda-package-handling==1.8.1
 conda-repo-cli==1.0.4
 conda-token==0.3.0
 conda-verify==3.4.2
-confection==0.0.4
+# confection==0.0.4
 configparser==6.0.0
 constantly==15.1.0
 cookiecutter==1.7.3
