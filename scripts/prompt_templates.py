@@ -479,6 +479,58 @@ class Exp_entailment(ConversationPrompt):
         return content
 
 
+# v2 concatenate the exp list instead of doing pair-wise comparison
+# TODO: current the prompt don't allow model generate explanation on the decision (due to the limited budget)
+class Exp_entailment_v2(ConversationPrompt):
+    def __init__(self):
+        super().__init__()
+        self.system = (
+            "You are an expert in Machine Learning and Natural Language Processing (NLP). " +
+            "Your responsibility is to help the user check some ML experiments."
+        )
+        self.examples = (
+            "### Example A:\n" +
+            "## P1: 'Parameter/Performance trade-off: The authors should consider different adapter sizes and compare to two baselines: (i) Fine-tuning of only the top k layers of the base model. (ii) Tuning only the layer normalization parameters.'\n" +
+            "## P2: '1. Adapter performance on GLUE:  The authors should evaluate the adapter performance on common and widely used benchmarks such as GLUE. They should compare the full finetuned base model as the baseline. 2. Efficiency tests: The authors have to evaluate the efficiency of the model in terms of the number of parameters increased per task and its correlation with performance degradation.'\n" +
+            "## Decision: 1\n" +
+            "## Explanation: P1 and the second experiments of P2 are the same experiments, as both of them mention the key idea --- 'correlation between model parameter and performance'. Although P1 are more detailed.\n\n" +
+            "### Example B:\n" +
+            "## P1: 'Evaluating adapters on more types of tasks: The authors should evaluate adapters on more types of tasks. For example, if previous tasks are text classification tasks, the authors should also evaluate adapters on another type of task such as question answering.'\n" +
+            "## P2: '1. Evaluate model on continual learning scenario: The authors should evaluate the model's capability in a continual learning setup to ensure that the model is actually capable of handling an endless stream of tasks without forgetting the previous ones. 2. Performance on downstream tasks: Test adapter-based tuning on a variety of specific downstream tasks such as text classification, extractive QA, and translation to demonstrate versatility.'\n" +
+            "## Decision: 1\n" +
+            "## Explanation: Though P1  doesn't explicitly mention 'continual learning', its underlying target is the continual learning scenario, which is exactly the same as P2's two experiments wanna to test.\n\n" +
+            "### Example C:\n" +
+            "## P1: 'Effect of initialization scale: The authors should report the performance of the model using adapters with different initial weight magnitudes. For example, test standard deviations in a certain interval such as [10^-7, 1]'\n" +
+            "## P2: '1. Adapter insertion position analysis: Evaluate the impact of inserting adapters at different layers and positions within the Transformer model. 2. Perform ablation study: The authors need to perform an ablation study to understand the contribution of each component in the architecture (e.g., bottleneck architecture, initialization to identity function, etc.) to the final performance.'\n" +
+            "## Decision: 0\n" +
+            "## Explanation: Though both P1 and P2's second experiment mention the ablation on 'initialization', P1 focuses on 'initial weight magnitudes', while P2 only mentions 'initialization to identity function'. Essentially, they didn't share the same experiment ideas.\n\n"
+        )
+        self.query_prompt = (
+            "You are given two paragraphs (P1 and P2), P1 describes a specific ML experiment and P2 is a long paragraph that concatenates multiple experiments. Please help me decide whether P1 is included in P2.\n\n" +
+            "If P1 is included in P2, there must be (at least) one experiment in P2 that is similar to the experiment in P1.\n\n" +
+            "Please give me '1' if you think P2 includes P1, give me '0' otherwise.\n\n" +
+            self.examples +
+            "Now, look at the following case, and give me only the decision without any explanation:\n" +
+            "## P1: {EXP1}\n" +
+            "## P2: {EXP2}\n" +
+            "## Decision: "           
+        )
+
+    def extract_content(self, content:str):
+        '''
+        use re to find the first "0" ir "1" in the content
+        for example, "0, because the test is bad" -> "0"; "1, 000.1 is a good number" -> "1"; "### test: 1\n" -> "1"
+        '''
+        content = content.strip()
+        match = re.search(r'[01]', content)
+        if match:
+            content = match.group(0)
+        else:
+            content = None
+        return content
+
+
+
 
 # used for prompting the model to generate weakness list of subtask3
 class Weakness_eval(ConversationPrompt):
@@ -578,11 +630,11 @@ if __name__ == "__main__":
     # print(len(weakness_eval.extract_content(response)))
     
     
-    exp_ential = Exp_entailment()
-    # value_dic = {
-    #     "EXP1": "The first experiment.",
-    #     "EXP2": "The second experiment."
-    # }
-    # print(exp_ential.query_prompt.format(**value_dic))
-    response = "## Decision: 0.001, 01, 0, 111, because the test is bad"
-    print(int(exp_ential.extract_content(response)))
+    exp_ential = Exp_entailment_v2()
+    value_dic = {
+        "EXP1": "XXX.",
+        "EXP2": "1. YYY. 2. YYY"
+    }
+    print(exp_ential.query_prompt.format(**value_dic))
+    # response = "## Decision: 0.001, 01, 0, 111, because the test is bad"
+    # print(int(exp_ential.extract_content(response)))
