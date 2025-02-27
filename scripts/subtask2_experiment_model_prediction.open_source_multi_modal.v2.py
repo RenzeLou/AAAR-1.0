@@ -127,7 +127,7 @@ def main():
         raise ValueError(unparsed)
     
     
-    sampling_params = SamplingParams(temperature=args.temperature, top_p=args.top_p)
+    sampling_params = SamplingParams(temperature=args.temperature, top_p=args.top_p, max_tokens=2048)
     # if args.images:
     # use meta-llama/Llama-3.2-90B-Vision-Instruct
     llm = LLM(

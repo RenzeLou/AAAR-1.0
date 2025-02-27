@@ -127,7 +127,7 @@ def main():
     if unparsed:
         raise ValueError(unparsed)
     
-    sampling_params = SamplingParams(temperature=args.temperature, top_p=args.top_p)
+    sampling_params = SamplingParams(temperature=args.temperature, top_p=args.top_p, max_tokens=2048)
     llm = LLM(model=args.api_name, tensor_parallel_size=args.gpu_num, max_model_len=args.max_model_len)
     
     template = Weakness_eval()
