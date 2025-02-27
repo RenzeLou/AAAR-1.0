@@ -163,9 +163,10 @@ def main():
             lables[correct_index] = 1
             
             pred_list = []
-            for candidate in options_list:
+            for ii, candidate in enumerate(options_list):
                 forward_ins = copy.deepcopy(eval_ins)
                 forward_ins["candidate"] = candidate
+                gt_label = lables[ii]
                 flag = True
                 try_cnt = 0
                 while flag:
@@ -181,7 +182,7 @@ def main():
                         try_cnt += 1
                         if try_cnt > 3:
                             print("max retry, terminate")
-                            pred = 1  ## let model predict correct equation as defult due to the label imbalance
+                            pred = 0 if gt_label == 1 else 1 ## let the model be wrong pred as default
                             flag = False
                 pred_list.append(pred)
             results_list.append({
