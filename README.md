@@ -91,24 +91,34 @@ While for running open-source LLMs from HuggingFace, you have to write a `huggin
 
 ```bash
 conda activate litellm
-python scripts/subtask1_equation_model_eval.py --root_dir './Equation_Inference' --eval_data_file 'equation.1049.json' --save_dir './Equation_Inference/eval_results' --context_max_len [max_context_len] --api_name [model_name]
+python scripts/subtask1_equation_model_eval_binary.py --root_dir './Equation_Inference' --eval_data_file 'equation.1049.json' --save_dir './Equation_Inference/eval_results_binary' --context_max_len [max_context_len] --api_name [model_name]
 
 # for example
-python scripts/subtask1_equation_model_eval.py --root_dir './Equation_Inference' --eval_data_file 'equation.1049.json' --save_dir './Equation_Inference/eval_results' --context_max_len 1000 --api_name 'o1-preview'
+python scripts/subtask1_equation_model_eval_binary.py --root_dir './Equation_Inference' --eval_data_file 'equation.1049.json' --save_dir './Equation_Inference/eval_results_binary' --context_max_len 1000 --api_name 'o1-preview'
 ```
 
 - For **open-source** LLMs (such as Llama), please using the following command:
 
 ```bash
 conda activate vllm
-sh scripts/run_subtask1.sh [GPU_IDs] [model_name] [max_context_len] [max_model_len]
+sh scripts/run_subtask1_binary.sh [GPU_IDs] [model_name] [max_context_len] [max_model_len]
 
 # for example
-sh scripts/run_subtask1.sh 6,7 meta-llama/Meta-Llama-3.1-70B-Instruct 1000 10000
+sh scripts/run_subtask1_binary.sh 6,7 meta-llama/Meta-Llama-3.1-70B-Instruct 1000 10000
 ```
 
-All the evaluation results are saved to `./Equation_Inference/eval_results` directory.
+All the evaluation results are saved to `./Equation_Inference/eval_results_binary` directory.
 
+
+> Note that, in our paper, we treat the equation inference task as a binary classification task, i.e., do binary decision on each equation. However, since there are 4 candidate equations (1 correct and 3 incorrect), we can also regard it as a **multi-class classification task (QA)**:
+
+```bash
+# for closed-source LLMs
+python scripts/subtask1_equation_model_eval.py --root_dir './Equation_Inference' --eval_data_file 'equation.1049.json' --save_dir './Equation_Inference/eval_results' --context_max_len [max_context_len] --api_name [model_name]
+
+# for open-source LLMs
+sh scripts/run_subtask1.sh [GPU_IDs] [model_name] [max_context_len] [max_model_len]
+```
 
 ### 2. Experiment Design 🧪:
 
@@ -137,7 +147,13 @@ All the evaluation results are saved to `./Experiment_Design/eval_results` direc
 
 - **Evaluation Metrics**:
 
-Use the following command to run SentenceBERT to evaluate the model performance:
+For experiment design task, we use LLM-as-judge to measure the matching degree between the generated experiments and the ground-truth experiments. Use the following scripts:
+```bash
+python scripts/calculate_metrics_subtask2_exp_entailment.v2.py --api_name 'gpt-4o' --paper_selection_path none --model_prediction_path 'xxx' ## use the specific model prediction output directory
+python scripts/subtask2_metric_llm_as_judge.py --root_dir './Experiment_Design/eval_results/'
+```
+
+For the generated explanations, we use SentenceBERT to evaluate the semantic similarity between the generated explanations and the ground-truth explanations. Use the following command to run SentenceBERT on your local machine:
 
 ```bash
 python scripts/subtask2_metric.py --root_dir './Experiment_Design/eval_results/xxx'  ## use the specific model results directory
