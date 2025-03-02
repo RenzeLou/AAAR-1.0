@@ -283,8 +283,8 @@ def openai_chat_completion(
     # convert decoding_args to a dictionary
     decoding_args = dataclasses.asdict(decoding_args)
     
-    # translate decoding_args 
     if "gemini" in model_name:
+        # translate decoding_args 
         decoding_args = {
             "temperature": decoding_args["temperature"],
             "top_p": decoding_args["top_p"],
@@ -295,16 +295,24 @@ def openai_chat_completion(
         # extract the contents from the response
         content = template.extract_content(response)
         cost = -1  # just a placeholder
-    # translate decoding_args
     elif "claude" in model_name:
+        # translate decoding_args
         response = completion_with_backoff_claude(messages=messages, model_name=model_name, sys_msg=template.system, decoding_args=decoding_args)
         # extract the contents from the response
         content = template.extract_content(response)
         cost = -1  # just a placeholder
     else:
-        if "o1" in model_name:
-            # TODO: currently, o1 doesn't support any hyperparameters
+        # for openai, do not need to translate decoding_args
+        if "o1-preview" in model_name or "o1-mini" in model_name:
+            # TODO: currently, o1-preview doesn't support any hyperparameters
             decoding_args = {}
+        elif "o1" in model_name or "o3" in model_name:
+            # for other reasoning models, set the reasoning effort
+            # TODO: hard coded for now
+            decoding_args = {
+                "response_format": { "type": "text"},
+                "reasoning_effort": "medium"
+            }
         # res = litellm.completion(model_name, messages, **decoding_args)
         res = completion_with_backoff(model_name=model_name,messages=messages,decoding_args=decoding_args)
         response = res.choices[0].message.content
