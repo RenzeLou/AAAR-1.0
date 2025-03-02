@@ -307,7 +307,7 @@ sh scripts/run_subtask2.multi_modal.v2.sh 4,5,6,7 OpenGVLab/InternVL2-26B 2000 1
 
 then, use the following command to get the final evaluation metrics, for both close source and open source models:
 ```bash
-conda activate crawl_arxiv
+conda activate crawl_arxiv  # conda activate alpaca (if crawl_arxiv is broken)
 
 python scripts/subtask2_metric.py --root_dir './subtask2_experiment_human_anno/eval_results/xxx'
 ```
@@ -533,7 +533,7 @@ python scripts/subtask3_review_model_prediction.agent.py --api_name 'gpt-4o-2024
 ### 5. metrics calculation
 
 ```bash
-conda activate crawl_arxiv
+conda activate crawl_arxiv  # conda activate llama (if crawl_arxiv is broken)
 
 # soft score
 python scripts/subtask3_metric.py
