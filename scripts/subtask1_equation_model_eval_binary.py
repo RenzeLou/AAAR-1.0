@@ -98,11 +98,14 @@ def main():
         raise ValueError(unparsed)
     
     os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY") if args.api_key is None else args.api_key
+    os.environ["DEEPSEEK_API_KEY"] = os.getenv("DEEPSEEK_API_KEY") 
     # openai.api_key = os.getenv("OPENAI_API_KEY") if args.api_key is None else args.api_key
     if 'gemini' in args.api_name:
         client = None
     elif 'claude' in args.api_name:
         client = None
+    elif 'deepseek' in args.api_name:
+        client = openai.OpenAI(api_key=os.getenv("DEEPSEEK_API_KEY"), base_url="https://api.deepseek.com")
     else:
         client = openai.OpenAI()
 

@@ -112,7 +112,7 @@ def main():
         raise ValueError(unparsed)
     
     os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY") if args.api_key is None else args.api_key
-    # openai.api_key = os.getenv("OPENAI_API_KEY") if args.api_key is None else args.api_key
+    os.environ["DEEPSEEK_API_KEY"] = os.getenv("DEEPSEEK_API_KEY") 
     if 'gemini' in args.api_name:
         client = None
     else:

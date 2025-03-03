@@ -301,6 +301,19 @@ def openai_chat_completion(
         # extract the contents from the response
         content = template.extract_content(response)
         cost = -1  # just a placeholder
+    elif "deepseek" in model_name:
+        # TODO: currently, deepseek doesn't support reasoning_effort
+        decoding_args = {
+            "max_tokens": decoding_args["max_tokens"]
+        }
+        res = completion_with_backoff(model_name="deepseek/"+model_name,messages=messages,decoding_args=decoding_args)
+        response = res.choices[0].message.content
+        # if "reason" in model_name:
+        #     # reasoning model also returns the reasoning content
+        #     reasoning_content = res.choices[0].message.reasoning_content
+        cost = -1
+        # extract the contents from the response
+        content = template.extract_content(response)
     else:
         # for openai, do not need to translate decoding_args
         if "o1-preview" in model_name or "o1-mini" in model_name:
