@@ -303,6 +303,15 @@ sh scripts/run_subtask2.multi_modal.v2.sh 4,5,6,7 OpenGVLab/InternVL2-26B 2000 1
 sh scripts/run_subtask2.multi_modal.v2.sh 4,5,6,7 OpenGVLab/InternVL2-26B 2000 12000 0  # 0 images for comparison
 ```
 
+#### 5.3 CycleResearcher
+
+Use following line to run the CycleResearcher (policy trained model, in ICLR 2025):
+
+```bash
+sh scripts/run_subtask2.cycleresearcher.sh 4,5,6,7 12B 100 10000
+```
+
+
 ### 6. metrics calculation
 
 then, use the following command to get the final evaluation metrics, for both close source and open source models:
@@ -529,6 +538,13 @@ conda activate ai_scientist
 
 python scripts/subtask3_review_model_prediction.agent.py --api_name 'gpt-4o-2024-05-13' --root_dir './subtask3_review_final_v2' --save_dir './subtask3_review_final_v2/eval_results' --max_word_len 3000 --split
 ```
+
+- CycleReviewer
+
+```bash
+python scripts/subtask3_review_model_prediction.cycleresearcher.py  --root_dir './temp/subtask3_review_final_v2' --save_dir './subtask3_review_final_v2/eval_results' --max_word_len 3000 
+```
+
 
 ### 5. metrics calculation
 
