@@ -309,7 +309,7 @@
                                     <source src="./static/videos/paradigms.mov"
                                             type="video/mp4">
                                   </video> -->
-                                  <img src="static/images/task_illustration.png" alt="data_statistics" width="650" height="800" />
+                                  <img src="static/images/task_illustration.2.png" alt="data_statistics" width="650" height="800" />
                                   <h2 class="subtitle"  style="text-align:center; font-size: 16px;">
                                   <u>Figure 1</u>: The input-output illustration of four tasks in the proposed <span class="muffin-font">AAAR-1.0</span> benchmark.
                                   </h2>
@@ -524,7 +524,7 @@ identifying each segment in human reviews is deficient or not.
 
 <div class="content has-text-justified">
 <p>
-  Since <span class="muffin-font">AAAR-1.0</span> introduces high-level research tasks with language outputs, semantic-based metrics are necessary. We propose several task-specific metrics for quantitatively assessing LLM research outputs.
+  Since <span class="muffin-font">AAAR-1.0</span> introduces expertise-demanding research tasks with language outputs, semantic-based metrics are necessary. We propose several task-specific metrics for quantitatively assessing LLM research outputs.
 </p>
 <!-- <p id="indented"> -->
   <ul>
@@ -562,9 +562,9 @@ identifying each segment in human reviews is deficient or not.
                     <div class="column is-full">
                         <div class="item">
                             <!-- Your image here -->
-                            <img src="static/images/performance_task1.png" alt="MainTable_task1" width="450" height="400" />
+                            <img src="static/images/performance_task1_bar.png" alt="MainTable_task1" width="450" height="400" />
                             <h2 class="subtitle"  style="text-align:center; font-size: 16px;">
-                            <u>Table 1</u>: Various LLMs' performances on the 1,049 instances of <span style="background-color: #cff0da;"><b>EquationInference</b></span>.
+                            <u>Figure 1</u>: Various LLMs' performances on the 1,049 instances of <span style="background-color: #cff0da;"><b>EquationInference</b></span>.
                             </h2>
                         </div>
                     </div>
@@ -575,21 +575,17 @@ identifying each segment in human reviews is deficient or not.
 
 <div class="content has-text-justified">
   <p>
-    Table 1 shows the main results on <span style="background-color: #cff0da;">EquationInference</span>.
-Firstly, the open-source LLMs, especially the
-Falcon and Gemma, perform unexpectedly disappointing (even worse than random guesses).
-These screwed scores are mainly due to the poor
-long-context instruction following ability, where
-we find some open-source LLMs are confused
-with the massive input and often copy the LaTeX code from the input. In contrast, closed-source
-LLMs generally achieve superior accuracy, probably owing to the richer scientific knowledge from
-the larger model parameters.
+
+    Figure 1 shows the main results on <span style="background-color: #cff0da;">EquationInference</span>.
+    Firstly, a simple baseline that predicts all equations as positive achieves 40% F1, while nearly all open-source LLMs even cannot beat this naive baseline.
+    Meanwhile, compared to the random baseline, the performance superiority of the strong close-source LLMs is not significant, the best LLM on this task
+only obtains 47.98%. The generally <b>high recall</b> with <b>low precision</b> indicates the LLMs are genrally behaving similarly as the random baseline, i.e., simply predicting any given equations as correct instead of truly reasoning over the paper context. 
 </p>
-<p>
+<!-- <p>
 However, considering the conventional multi-choice QA formulation
 of <span style="background-color: #cff0da;">EquationInference</span>, the recently-released GPT-4o solely gets 43.18, implying the unique challenge of
 <span style="background-color: #cff0da;">EquationInference</span> compared with other scientific QA benchmarks. Notably, with the help of internal CoT, o1 gains stronger performances than GPT-4/GPT-4o, indicating the potential benefits of adopting reasoning for this task.
-  </p>
+  </p> -->
 </div>
 
 <!-- Task 2-->
@@ -600,10 +596,10 @@ of <span style="background-color: #cff0da;">EquationInference</span>, the recent
               <div class="column is-full">
                   <div class="item">
                       <!-- Your image here -->
-                      <img src="static/images/performance_task2.png" alt="MainTable_task2" width="770" height="650" />
+                      <img src="static/images/performance_task2_bar.png" alt="MainTable_task2" width="770" height="650" />
                       <h2 class="subtitle"  style="text-align:center; font-size: 16px;">
-                      <u>Table 2</u>: Various LLMs' performances on the 100 instances of <span style="background-color: #fadfdc;"><b>ExperimentDesign</b></span>. The explanation
-                          generation is based on the oracle experiments to prevent error propagation. 
+                      <u>Figure 2</u>: Various LLMs' performances on the 100 instances of <span style="background-color: #fadfdc;"><b>ExperimentDesign</b></span>.
+                       <!-- The explanation generation is based on the oracle experiments to prevent error propagation.  -->
                           <!-- "Copy Input" is a random baseline: for experiment design, randomly select 5 sentences from the input paper; for experiment explanation, directly copy each experiment idea. -->
                       </h2>
                   </div>
@@ -615,16 +611,16 @@ of <span style="background-color: #cff0da;">EquationInference</span>, the recent
 
 <div class="content has-text-justified">
 <p>
-  Table 2 shows the main results on <span style="background-color: #fadfdc;">ExperimentDesign</span>. For the experiment design, the closed-source LLMs
-  generally outperform open-source LLMs, and both closed-/open-source LLMs are superior to the
-  “Copy Input” baseline (except the Falcon). Despite the higher S-Precision, the open-source LLMs
-  are seriously deficient in S-Recall compared with closed-source LLMs (~10%↓). We find that
-  <b>closed-source LLMs are more creative in experiment design and tend to generate more experiment
-  ideas than open-source LLMs (though most of the experiment ideas are trivial), leading to excellent
-  S-Recall</b>. 
+  Figure 2 shows the main results on <span style="background-color: #fadfdc;">ExperimentDesign</span>. 
+  
+  For the experiment design, the closed-source LLMs generally out-perform open-source LLMs. However, the score values
+of all LLMs are relatively low, implying the
+LLMs consistently miss ground-truth experiments from
+the origin paper (<b>low recall</b>), and they tend to generate
+more novel experiments that didn’t show in the origin paper (<b>low precision</b>).  
 </p>
 
-<p>
+<!-- <p>
   As for the experiment explanation, the S-Match scores of closed-source LLMs still surpass
   the open-source LLMs, while the score difference is not significant. Furthermore, we find the negative
   correlation between S-Match and the ROUGE, where the ROUGE scores of closed-source LLMs are
@@ -632,7 +628,7 @@ of <span style="background-color: #cff0da;">EquationInference</span>, the recent
   given experiment, or even simply paraphrase the experiment instead of explaining, which results in a
   high superficial overlap with the ground-truth explanation. This observation highlights the importance
   of adopting the proposed S-Match to avoid evaluation bias of traditional generation metrics.
-</p>
+</p> -->
 </div>
 
 
@@ -647,9 +643,9 @@ of <span style="background-color: #cff0da;">EquationInference</span>, the recent
               <div class="column is-full">
                   <div class="item">
                       <!-- Your image here -->
-                      <img src="static/images/performance_task3.png" alt="MainTable_task3" width="770" height="650" />
+                      <img src="static/images/performance_task3_bar.png" alt="MainTable_task3" width="770" height="650" />
                       <h2 class="subtitle" style="text-align:center; font-size: 16px;">
-                      <u>Table 3</u>: Various LLMs' performances on the 993 instances of <span style="background-color: #ddf2ff;"><b>PaperWeakness</b></span>.
+                      <u>Figure 3</u>: Various LLMs' performances on the 993 instances of <span style="background-color: #ddf2ff;"><b>PaperWeakness</b></span>.
                       </h2>
                   </div>
               </div>
@@ -661,13 +657,11 @@ of <span style="background-color: #cff0da;">EquationInference</span>, the recent
 
     <div class="content has-text-justified">
       <p>
-        Table 3 shows the main results on <span style="background-color: #ddf2ff;">PaperWeakness</span>, where the closed-source LLMs' overall performances
-are generally superior to the results of open-source LLMs. Similarly, closed-source LLMs are
-particularly excellent in SN-Recall because of more generated weaknesses. However, there is still
+        Figure 3 shows the main results on <span style="background-color: #ddf2ff;">PaperWeakness</span>, where the closed-source LLMs' overall performances
+are generally superior to the results of open-source LLMs. However, there is still
 a considerable gap in the weakness diversity between the LLMs and human experts. <b>Compared
 with human review, most LLM-generated weaknesses are vague and lack the necessary knowledge
-about some frontier research works</b>. Surprisingly, AI-scientist performs worse than backbone GPT-4o,
-especially on ITF-IDF, which suggests the challenge of <span style="background-color: #ddf2ff;">PaperWeakness</span>, i.e., simply adopting popular
+about some frontier research works</b>. Surprisingly, AI-scientist performs worse than backbone GPT-4o, which suggests the challenge of <span style="background-color: #ddf2ff;">PaperWeakness</span>, i.e., simply adopting popular
 prompting techniques cannot well address this task.
       </p>
     </div>
@@ -680,11 +674,11 @@ prompting techniques cannot well address this task.
                   <div class="column is-full">
                       <div class="item">
                           <!-- Your image here -->
-                          <img src="static/images/performance_task4.png" alt="MainTable_task4" width="770" height="650" />
+                          <img src="static/images/performance_task4_bar.png" alt="MainTable_task4" width="770" height="650" />
                           <h2 class="subtitle" style="text-align:center; font-size: 16px;">
-                              <u>Table 4</u>: From (<a href="https://arxiv.org/pdf/2406.16253" target="_blank">Du et al., 2024</a>), various LLMs' performances on the 11,376 instances of
-                              <span style="background-color: #fff1b9;"><b>ReviewCritique</b></span>. The best F1 score among different prompt methods for a single model is
-                              underlined. The best F1 score across all models is also bold.
+                              <u>Figure 4</u>: From (<a href="https://arxiv.org/pdf/2406.16253" target="_blank">Du et al., 2024</a>), various LLMs' performances on the 11,376 instances of
+                              <span style="background-color: #fff1b9;"><b>ReviewCritique</b></span>. 
+                              <!-- The best F1 score among different prompt methods for a single model is underlined. The best F1 score across all models is also bold. -->
                           </h2>
                       </div>
                   </div>
@@ -696,12 +690,10 @@ prompting techniques cannot well address this task.
 
   <div class="content has-text-justified">
     <p>
-      We put the results of <span style="background-color: #fff1b9;">ReviewCritique</span> in Table 4. Closed-source models (GPT-4,
+      We put the results of <span style="background-color: #fff1b9;">ReviewCritique</span> in Figure 4. Closed-source models (GPT-4,
 Claude Opus, and Gemini 1.5) generally outperform open-source models (Llama3-8B and 70B,
 Qwen2-72B) in F1 score. Claude Opus achieves the highest F1 scores, with GPT-4 and Gemini 1.5
-performing slightly worse. Notably, recall scores are consistently higher than precision scores across
-all LLMs and prompting strategies, suggesting that LLMs tend to incorrectly identify segments as
-deficient. Despite the superior performance of the closed-source models, their F1 scores remain
+performing slightly worse. Despite the superior performance of the closed-source models, their F1 scores remain
 relatively low even with different prompt strategies, highlighting the challenges LLMs face in such
 expertise-intensive tasks and emphasizing the importance of human expertise in the meta-reviewing
 process.
